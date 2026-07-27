@@ -36,14 +36,18 @@
     <style>
         .bg-hero-pattern {
             background-color: #3f0707;
-            background-image: radial-gradient(#eab308 0.75px, transparent 0.75px), radial-gradient(#eab308 0.75px, #3f0707 0.75px);
+            background-image: radial-gradient(#eab308 0.8px, transparent 0.8px), radial-gradient(#eab308 0.8px, #3f0707 0.8px);
             background-size: 24px 24px;
             background-position: 0 0, 12px 12px;
         }
         .glass-panel {
             background: rgba(15, 23, 42, 0.85);
             backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(234, 179, 8, 0.15);
+        }
+        .glass-panel-hover:hover {
+            border-color: rgba(234, 179, 8, 0.4);
+            box-shadow: 0 0 20px rgba(234, 179, 8, 0.1);
         }
         button, a, input, select {
             touch-action: manipulation;
@@ -53,7 +57,7 @@
 <body class="h-full flex flex-col text-slate-100 font-sans antialiased selection:bg-amber-400 selection:text-slate-900">
 
     <!-- CABECERA ADAPTATIVA -->
-    <header class="sticky top-0 z-50 glass-panel border-b border-slate-800">
+    <header class="sticky top-0 z-50 glass-panel border-b border-amber-500/20">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
             <div class="flex items-center space-x-3 cursor-pointer" onclick="mostrarSeccion('publico')">
                 <div class="relative w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-tr from-amber-400 via-amber-600 to-red-700 p-0.5 shadow-lg shadow-amber-500/20">
@@ -87,7 +91,7 @@
         </div>
     </header>
 
-    <!-- VISTA PÚBLICA / PORTADA -->
+    <!-- PORTADA PÚBLICA -->
     <div id="seccion-publica" class="flex-1 pb-12">
         
         <!-- HERO BANNER -->
@@ -106,41 +110,33 @@
             </div>
         </section>
 
-        <!-- TARJETAS DE INFORMACIÓN RÁPIDA -->
-        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div class="glass-panel p-5 rounded-2xl border border-slate-800 flex items-center gap-4 cursor-pointer hover:border-amber-500/30 transition" onclick="irASeccion('sec-socios')">
+        <!-- TARJETAS DE INFORMACIÓN RÁPIDA (RESTRICCIONALMENTE A 2 COLUMNAS) -->
+        <section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-20">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="glass-panel glass-panel-hover p-6 rounded-2xl flex items-center gap-4 cursor-pointer transition" onclick="irASeccion('sec-socios')">
                     <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 text-xl flex-shrink-0">
                         <i class="fa-solid fa-users"></i>
                     </div>
                     <div>
-                        <h4 class="font-bold text-white text-sm">Comunidad de Socios</h4>
+                        <h4 class="font-bold text-white text-base font-serif">Comunidad de Socios</h4>
                         <p class="text-xs text-slate-400 mt-0.5">Espacio reservado e identidades registradas</p>
                     </div>
                 </div>
-                <div class="glass-panel p-5 rounded-2xl border border-slate-800 flex items-center gap-4 cursor-pointer hover:border-amber-500/30 transition" onclick="irASeccion('sec-eventos')">
+
+                <div class="glass-panel glass-panel-hover p-6 rounded-2xl flex items-center gap-4 cursor-pointer transition" onclick="irASeccion('sec-eventos')">
                     <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 text-xl flex-shrink-0">
                         <i class="fa-solid fa-calendar-check"></i>
                     </div>
                     <div>
-                        <h4 class="font-bold text-white text-sm">Agenda de Actos</h4>
-                        <p class="text-xs text-slate-400 mt-0.5">Programación de actuaciones y cenas</p>
-                    </div>
-                </div>
-                <div class="glass-panel p-5 rounded-2xl border border-slate-800 flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 text-xl flex-shrink-0">
-                        <i class="fa-solid fa-mobile-screen-button"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-white text-sm">Acceso Móvil</h4>
-                        <p class="text-xs text-slate-400 mt-0.5">Añade esta app a tu pantalla de inicio</p>
+                        <h4 class="font-bold text-white text-base font-serif">Agenda de Actos</h4>
+                        <p class="text-xs text-slate-400 mt-0.5">Programación de actuaciones y cenas de gala</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- SECCIÓN AGENDA DE ACTOS Y EVENTOS EN PORTADA -->
-        <section id="sec-eventos" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <!-- AGENDA DE ACTOS -->
+        <section id="sec-eventos" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-6">
             <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-6 gap-2">
                 <div>
                     <span class="text-amber-400 text-xs font-bold uppercase tracking-widest">Programación Oficial</span>
@@ -150,7 +146,7 @@
             <div id="grid-eventos-publico" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
         </section>
 
-        <!-- SECCIÓN DE SOCIOS EN PORTADA -->
+        <!-- SOCIOS COMPONENTES -->
         <section id="sec-socios" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-6 gap-2">
                 <div>
@@ -163,7 +159,7 @@
 
     </div>
 
-    <!-- VISTA ADMINISTRACIÓN (DIRECTIVA) -->
+    <!-- PANEL DIRECTIVA / ADMINISTRACIÓN -->
     <div id="seccion-admin" class="hidden flex-1 bg-slate-900">
         <div class="bg-slate-950 border-b border-slate-800 px-4 py-3">
             <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
@@ -171,7 +167,7 @@
                     <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
                     <span class="text-xs font-bold uppercase tracking-wider text-slate-300">Panel Directivo Autenticado</span>
                 </div>
-                <div class="w-full md:w-auto overflow-x-auto flex space-x-1 p-1 bg-slate-900 rounded-xl border border-slate-800 scrollbar-none">
+                <div class="w-full md:w-auto overflow-x-auto flex space-x-1 p-1 bg-slate-900 rounded-xl border border-slate-800">
                     <button id="tab-balance" onclick="cambiarPestana('balance')" class="px-3 py-1.5 rounded-lg text-xs font-bold text-amber-400 bg-slate-800 whitespace-nowrap">
                         <i class="fa-solid fa-chart-pie mr-1"></i> Balance
                     </button>
@@ -241,7 +237,7 @@
                                     <th class="p-3 text-center">Acciones</th>
                                 </tr>
                             </thead>
-                            <tbody id="tabla-socios-admin" class="divide-y divide-slate-800"></tbody>
+                            <tbody id="tabla-socios-admin" class="divide-y divide-slate-800/80"></tbody>
                         </table>
                     </div>
                 </div>
@@ -266,7 +262,7 @@
                                     <th class="p-3 text-center">Acciones</th>
                                 </tr>
                             </thead>
-                            <tbody id="tabla-eventos-admin" class="divide-y divide-slate-800"></tbody>
+                            <tbody id="tabla-eventos-admin" class="divide-y divide-slate-800/80"></tbody>
                         </table>
                     </div>
                 </div>
@@ -291,7 +287,7 @@
                                     <th class="p-3 text-center">Acción</th>
                                 </tr>
                             </thead>
-                            <tbody id="tabla-gastos-admin" class="divide-y divide-slate-800"></tbody>
+                            <tbody id="tabla-gastos-admin" class="divide-y divide-slate-800/80"></tbody>
                         </table>
                     </div>
                 </div>
@@ -302,7 +298,7 @@
 
     <!-- MODAL AUTENTICACIÓN -->
     <div id="modal-login" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4 z-50">
-        <div class="glass-panel rounded-3xl w-full max-w-xs sm:max-w-sm p-6 text-center space-y-5 border border-slate-700 shadow-2xl">
+        <div class="glass-panel rounded-3xl w-full max-w-xs sm:max-w-sm p-6 text-center space-y-5 border border-amber-500/30 shadow-2xl">
             <div class="w-14 h-14 bg-amber-500/10 text-amber-400 rounded-full flex items-center justify-center mx-auto text-xl border border-amber-500/20">
                 <i class="fa-solid fa-lock"></i>
             </div>
@@ -320,7 +316,7 @@
         </div>
     </div>
 
-    <!-- MODAL EDITAR SOCIO -->
+    <!-- MODAL SOCIO -->
     <div id="modal-socio" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4 z-50">
         <div class="glass-panel rounded-3xl w-full max-w-md overflow-hidden border border-slate-700">
             <div class="bg-slate-900 px-5 py-3.5 border-b border-slate-800 flex justify-between items-center">
@@ -332,20 +328,20 @@
                 <div class="grid grid-cols-3 gap-3">
                     <div>
                         <label class="block font-bold text-slate-400 uppercase mb-1">Nº Socio</label>
-                        <input type="number" id="socio-num" required class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white outline-none">
+                        <input type="number" id="socio-num" required class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white outline-none focus:border-amber-400">
                     </div>
                     <div class="col-span-2">
                         <label class="block font-bold text-slate-400 uppercase mb-1">Nombre Completo</label>
-                        <input type="text" id="socio-nombre" required class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white outline-none">
+                        <input type="text" id="socio-nombre" required class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white outline-none focus:border-amber-400">
                     </div>
                 </div>
                 <div>
                     <label class="block font-bold text-slate-400 uppercase mb-1">Cargo / Etiqueta (Ej: Presidente, Directiva)</label>
-                    <input type="text" id="socio-cargo" placeholder="Dejar en blanco si es socio normal" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-amber-300 font-semibold outline-none">
+                    <input type="text" id="socio-cargo" placeholder="Dejar en blanco si es socio normal" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-amber-300 font-semibold outline-none focus:border-amber-400">
                 </div>
                 <div>
                     <label class="block font-bold text-slate-400 uppercase mb-1">URL Fotografía</label>
-                    <input type="url" id="socio-foto" placeholder="https://..." class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white outline-none">
+                    <input type="url" id="socio-foto" placeholder="https://..." class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white outline-none focus:border-amber-400">
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
@@ -354,7 +350,7 @@
                     </div>
                     <div>
                         <label class="block font-bold text-slate-400 uppercase mb-1">Importe Abonado (€)</label>
-                        <input type="number" step="0.01" id="socio-pagado" required class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-emerald-400 font-bold outline-none">
+                        <input type="number" step="0.01" id="socio-pagado" required class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-emerald-400 font-bold outline-none focus:border-amber-400">
                     </div>
                 </div>
                 <div class="flex justify-end gap-2 pt-3 border-t border-slate-800">
@@ -365,7 +361,7 @@
         </div>
     </div>
 
-    <!-- MODAL EDITAR EVENTO -->
+    <!-- MODAL EVENTO -->
     <div id="modal-evento" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4 z-50">
         <div class="glass-panel rounded-3xl w-full max-w-md overflow-hidden border border-slate-700">
             <div class="bg-slate-900 px-5 py-3.5 border-b border-slate-800 flex justify-between items-center">
@@ -376,15 +372,15 @@
                 <input type="hidden" id="evento-id">
                 <div>
                     <label class="block font-bold text-slate-400 uppercase mb-1">Título del Evento</label>
-                    <input type="text" id="evento-titulo" placeholder="Ej: Cena del Pescaíto" required class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white outline-none">
+                    <input type="text" id="evento-titulo" placeholder="Ej: Cena del Pescaíto" required class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white outline-none focus:border-amber-400">
                 </div>
                 <div>
                     <label class="block font-bold text-slate-400 uppercase mb-1">Fecha y Hora</label>
-                    <input type="datetime-local" id="evento-fecha" required class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white outline-none">
+                    <input type="datetime-local" id="evento-fecha" required class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white outline-none focus:border-amber-400">
                 </div>
                 <div>
                     <label class="block font-bold text-slate-400 uppercase mb-1">Descripción / Detalles</label>
-                    <textarea id="evento-descripcion" rows="3" placeholder="Detalles de la actuación o comida..." class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white outline-none"></textarea>
+                    <textarea id="evento-descripcion" rows="3" placeholder="Detalles de la actuación o comida..." class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white outline-none focus:border-amber-400"></textarea>
                 </div>
                 <div class="flex justify-end gap-2 pt-3 border-t border-slate-800">
                     <button type="button" onclick="cerrarModalEvento()" class="px-3.5 py-2 bg-slate-800 text-slate-300 rounded-xl font-bold">Cancelar</button>
@@ -394,7 +390,7 @@
         </div>
     </div>
 
-    <!-- MODAL REGISTRO GASTO -->
+    <!-- MODAL GASTO -->
     <div id="modal-gasto" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4 z-50">
         <div class="glass-panel rounded-3xl w-full max-w-md overflow-hidden border border-slate-700">
             <div class="bg-slate-900 px-5 py-3.5 border-b border-slate-800 flex justify-between items-center">
@@ -404,12 +400,12 @@
             <form id="form-gasto" onsubmit="guardarGasto(event)" class="p-5 space-y-4 text-xs">
                 <div>
                     <label class="block font-bold text-slate-400 uppercase mb-1">Concepto / Proveedor</label>
-                    <input type="text" id="gasto-concepto" required class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white outline-none">
+                    <input type="text" id="gasto-concepto" required class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white outline-none focus:border-amber-400">
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block font-bold text-slate-400 uppercase mb-1">Categoría</label>
-                        <select id="gasto-categoria" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white outline-none">
+                        <select id="gasto-categoria" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white outline-none focus:border-amber-400">
                             <option value="Montaje">Montaje / Estructura</option>
                             <option value="Catering">Catering / Bebida</option>
                             <option value="Actuaciones">Música / Luces</option>
@@ -418,7 +414,7 @@
                     </div>
                     <div>
                         <label class="block font-bold text-slate-400 uppercase mb-1">Importe (€)</label>
-                        <input type="number" step="0.01" id="gasto-importe" required class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-red-400 font-bold outline-none">
+                        <input type="number" step="0.01" id="gasto-importe" required class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-red-400 font-bold outline-none focus:border-amber-400">
                     </div>
                 </div>
                 <div class="flex justify-end gap-2 pt-3 border-t border-slate-800">
@@ -429,7 +425,7 @@
         </div>
     </div>
 
-    <!-- SCRIPT PRINCIPAL CON FIREBASE Y EVENTOS -->
+    <!-- SCRIPT CONTROLADOR FIREBASE Y NAVEGACIÓN -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, push, set, update, remove, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
@@ -490,13 +486,15 @@
         };
 
         window.solicitarAccesoAdmin = function() {
-            document.getElementById('modal-login').classList.remove('hidden');
-            document.getElementById('modal-login').classList.add('flex');
+            const modal = document.getElementById('modal-login');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
         };
 
         window.cerrarModalLogin = function() {
-            document.getElementById('modal-login').classList.add('hidden');
-            document.getElementById('modal-login').classList.remove('flex');
+            const modal = document.getElementById('modal-login');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
         };
 
         window.verificarPassword = function(e) {
@@ -537,7 +535,7 @@
             });
         };
 
-        // RENDERIZADO Y LÓGICA DE BALANCE Y TABLAS
+        // BALANCE Y TABLAS
         function actualizarBalance() {
             const totalRecaudado = socios.reduce((sum, s) => sum + (parseFloat(s.pagado) || 0), 0);
             const totalGastos = gastos.reduce((sum, g) => sum + (parseFloat(g.importe) || 0), 0);
@@ -556,7 +554,7 @@
             const container = document.getElementById('grid-socios-publico');
             if (!container) return;
             container.innerHTML = socios.map(s => `
-                <div class="glass-panel p-4 rounded-2xl border border-slate-800 text-center flex flex-col items-center space-y-2">
+                <div class="glass-panel p-4 rounded-2xl border border-slate-800 text-center flex flex-col items-center space-y-2 hover:border-amber-500/30 transition">
                     <img src="${s.foto || FOTO_DEFAULT}" class="w-16 h-16 rounded-full object-cover border-2 border-amber-500/40">
                     <div>
                         <h5 class="font-bold text-sm text-white">${s.nombre}</h5>
@@ -630,16 +628,18 @@
             `).join('');
         }
 
-        // MODALES Y CRUD FIREBASE
+        // FUNCIONES MODALES Y CRUD
         window.abrirModalSocio = function() {
             document.getElementById('form-socio').reset();
             document.getElementById('socio-id').value = '';
-            document.getElementById('modal-socio').classList.remove('hidden');
-            document.getElementById('modal-socio').classList.add('flex');
+            const modal = document.getElementById('modal-socio');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
         };
         window.cerrarModalSocio = function() {
-            document.getElementById('modal-socio').classList.add('hidden');
-            document.getElementById('modal-socio').classList.remove('flex');
+            const modal = document.getElementById('modal-socio');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
         };
         window.guardarSocio = function(e) {
             e.preventDefault();
@@ -667,8 +667,9 @@
             document.getElementById('socio-cargo').value = s.cargo || '';
             document.getElementById('socio-foto').value = s.foto || '';
             document.getElementById('socio-pagado').value = s.pagado || 0;
-            document.getElementById('modal-socio').classList.remove('hidden');
-            document.getElementById('modal-socio').classList.add('flex');
+            const modal = document.getElementById('modal-socio');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
         };
         window.eliminarSocio = function(id) {
             if (confirm('¿Desea eliminar este socio?')) remove(ref(db, `socios/${id}`));
@@ -677,12 +678,14 @@
         window.abrirModalEvento = function() {
             document.getElementById('form-evento').reset();
             document.getElementById('evento-id').value = '';
-            document.getElementById('modal-evento').classList.remove('hidden');
-            document.getElementById('modal-evento').classList.add('flex');
+            const modal = document.getElementById('modal-evento');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
         };
         window.cerrarModalEvento = function() {
-            document.getElementById('modal-evento').classList.add('hidden');
-            document.getElementById('modal-evento').classList.remove('flex');
+            const modal = document.getElementById('modal-evento');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
         };
         window.guardarEvento = function(e) {
             e.preventDefault();
@@ -706,8 +709,9 @@
             document.getElementById('evento-titulo').value = ev.titulo;
             document.getElementById('evento-fecha').value = ev.fecha;
             document.getElementById('evento-descripcion').value = ev.descripcion || '';
-            document.getElementById('modal-evento').classList.remove('hidden');
-            document.getElementById('modal-evento').classList.add('flex');
+            const modal = document.getElementById('modal-evento');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
         };
         window.eliminarEvento = function(id) {
             if (confirm('¿Desea eliminar este evento?')) remove(ref(db, `eventos/${id}`));
@@ -715,12 +719,14 @@
 
         window.abrirModalGasto = function() {
             document.getElementById('form-gasto').reset();
-            document.getElementById('modal-gasto').classList.remove('hidden');
-            document.getElementById('modal-gasto').classList.add('flex');
+            const modal = document.getElementById('modal-gasto');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
         };
         window.cerrarModalGasto = function() {
-            document.getElementById('modal-gasto').classList.add('hidden');
-            document.getElementById('modal-gasto').classList.remove('flex');
+            const modal = document.getElementById('modal-gasto');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
         };
         window.guardarGasto = function(e) {
             e.preventDefault();
