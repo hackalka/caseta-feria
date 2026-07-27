@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Socios - Caseta de Feria</title>
-    <!-- Tailwind CSS desde CDN -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome para iconos -->
+    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col">
@@ -15,7 +15,7 @@
     <header class="bg-red-700 text-white shadow-md">
         <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
             <div class="flex items-center space-x-3">
-                <i class="fa-solid fa-[#ffffff] fa-tent text-2xl text-amber-300"></i>
+                <i class="fa-solid fa-tent text-2xl text-amber-300"></i>
                 <h1 class="text-xl font-bold tracking-wide">Caseta "La Jarana" — Control de Socios</h1>
             </div>
             <button onclick="abrirModal()" class="bg-amber-400 hover:bg-amber-300 text-red-950 font-semibold px-4 py-2 rounded-lg shadow transition flex items-center gap-2">
@@ -27,7 +27,7 @@
     <!-- Contenido Principal -->
     <main class="max-w-7xl mx-auto px-4 py-8 flex-1 w-full">
 
-        <!-- Tarjetas de Resumen / Estadísticas -->
+        <!-- Estadísticas -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
             <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
                 <p class="text-xs uppercase font-bold text-slate-400">Total Socios</p>
@@ -47,7 +47,7 @@
             </div>
         </div>
 
-        <!-- Barra de búsqueda y Filtros -->
+        <!-- Buscador -->
         <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 mb-6 flex flex-col md:flex-row gap-4 justify-between items-center">
             <div class="relative w-full md:w-96">
                 <i class="fa-solid fa-magnifying-glass absolute left-3 top-3.5 text-slate-400"></i>
@@ -78,14 +78,14 @@
                         </tr>
                     </thead>
                     <tbody id="tabla-socios" class="divide-y divide-slate-100 text-sm">
-                        <!-- Se rellena dinámicamente con JavaScript -->
+                        <tr><td colspan="6" class="p-6 text-center text-slate-400">Conectando con Firebase...</td></tr>
                     </tbody>
                 </table>
             </div>
         </div>
     </main>
 
-    <!-- Modal para Añadir / Editar Socio -->
+    <!-- Modal -->
     <div id="modal-socio" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
         <div class="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden">
             <div class="bg-red-700 px-6 py-4 text-white flex justify-between items-center">
@@ -104,8 +104,8 @@
                     <input type="text" id="socio-nombre" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 outline-none">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Teléfono</label>
-                    <input type="tel" id="socio-telefono" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 outline-none">
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Teléfono (ej. 600112233)</label>
+                    <input type="tel" id="socio-telefono" required placeholder="600000000" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 outline-none">
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
@@ -130,81 +130,107 @@
         </div>
     </div>
 
-    <!-- Script de Lógica -->
-    <script>
-        // Datos iniciales de ejemplo (se guardarán en el navegador con localStorage)
-        let socios = JSON.parse(localStorage.getItem('caseta_socios')) || [
-            { id: 1, numero: 1, nombre: "Manuel Garcia Lopez", telefono: "600112233", cuota: 150, estado: "Pagado" },
-            { id: 2, numero: 2, nombre: "Rocío Fernández Ruiz", telefono: "611223344", cuota: 150, estado: "Pendiente" },
-            { id: 3, numero: 3, nombre: "Antonio Gómez Martín", telefono: "622334455", cuota: 150, estado: "Atrasado" }
-        ];
+    <!-- SDK Firebase Configurado -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, push, set, update, remove, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        // Cargar tabla al iniciar
-        document.addEventListener('DOMContentLoaded', () => {
-            renderizarTabla();
+        // Configuración oficial de tu proyecto
+        const firebaseConfig = {
+            apiKey: "AIzaSyB6_1m_Cpx4PowfpNq1nXwpLHm2RAOvy8w",
+            authDomain: "casetaferia-1bd4f.firebaseapp.com",
+            databaseURL: "https://casetaferia-1bd4f-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "casetaferia-1bd4f",
+            storageBucket: "casetaferia-1bd4f.firebasestorage.app",
+            messagingSenderId: "404103026231",
+            appId: "1:404103026231:web:1f5bbcc26828f20969d1b2"
+        };
+
+        // Inicializar Firebase Realtime Database
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const sociosRef = ref(db, 'socios');
+
+        let socios = [];
+
+        // Escuchar datos en tiempo real desde Realtime Database
+        onValue(sociosRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                socios = Object.keys(data).map(key => ({
+                    id: key,
+                    ...data[key]
+                }));
+            } else {
+                socios = [];
+            }
+            filtrarTabla();
         });
 
-        // Función para renderizar la tabla de socios
-        function renderizarTabla(lista = socios) {
-            const tbody = document.getElementById('tabla-socios');
-            tbody.innerHTML = '';
-
-            if (lista.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-400">No se encontraron socios registrados.</td></tr>`;
-                actualizarEstadisticas();
-                return;
+        // Guardar o Actualizar Socio
+        window.guardarSocio = async function(e) {
+            e.preventDefault();
+            
+            const id = document.getElementById('socio-id').value;
+            const numero = parseInt(document.getElementById('socio-num').value);
+            const nombre = document.getElementById('socio-nombre').value;
+            let telefono = document.getElementById('socio-telefono').value.replace(/\s+/g, '');
+            
+            // Añadir prefijo 34 de España si falta
+            if (!telefono.startsWith('34') && telefono.length === 9) {
+                telefono = '34' + telefono;
             }
 
-            lista.sort((a, b) => a.numero - b.numero).forEach(socio => {
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-50 transition";
-                
-                // Formatear badge de estado
-                let badgeClass = "";
-                if (socio.estado === 'Pagado') badgeClass = "bg-green-100 text-green-700 border-green-200";
-                else if (socio.estado === 'Pendiente') badgeClass = "bg-amber-100 text-amber-700 border-amber-200";
-                else badgeClass = "bg-red-100 text-red-700 border-red-200";
+            const cuota = parseFloat(document.getElementById('socio-cuota').value);
+            const estado = document.getElementById('socio-estado').value;
 
-                tr.innerHTML = `
-                    <td class="p-4 font-bold text-slate-600">#${socio.numero}</td>
-                    <td class="p-4 font-semibold text-slate-800">${socio.nombre}</td>
-                    <td class="p-4 text-slate-500"><i class="fa-solid fa-phone text-xs mr-1"></i>${socio.telefono}</td>
-                    <td class="p-4 font-bold text-slate-700">${socio.cuota} €</td>
-                    <td class="p-4">
-                        <span class="px-2.5 py-1 text-xs font-bold rounded-full border ${badgeClass}">
-                            ${socio.estado}
-                        </span>
-                    </td>
-                    <td class="p-4 text-center">
-                        <div class="flex justify-center gap-2">
-                            <button onclick="cambiarEstadoRapido(${socio.id})" title="Cambiar Estado Rápido" class="p-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded">
-                                <i class="fa-solid fa-rotate"></i>
-                            </button>
-                            <button onclick="editarSocio(${socio.id})" title="Editar Socio" class="p-1.5 bg-slate-100 hover:bg-blue-100 text-blue-600 rounded">
-                                <i class="fa-solid fa-pen-to-square"></i>
-                            </button>
-                            <button onclick="eliminarSocio(${socio.id})" title="Eliminar Socio" class="p-1.5 bg-slate-100 hover:bg-red-100 text-red-600 rounded">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
-                        </div>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
+            const datosSocio = { numero, nombre, telefono, cuota, estado };
 
-            actualizarEstadisticas();
-        }
+            if (id) {
+                // Editar socio existente
+                const socioRefExact = ref(db, `socios/${id}`);
+                await update(socioRefExact, datosSocio);
+            } else {
+                // Crear nuevo socio
+                const nuevoSocioRef = push(sociosRef);
+                await set(nuevoSocioRef, datosSocio);
+            }
 
-        // Actualiza los contadores del panel superior
-        function actualizarEstadisticas() {
-            document.getElementById('stat-total').innerText = socios.length;
-            document.getElementById('stat-pagados').innerText = socios.filter(s => s.estado === 'Pagado').length;
-            document.getElementById('stat-pendientes').innerText = socios.filter(s => s.estado === 'Pendiente').length;
-            document.getElementById('stat-atrasados').innerText = socios.filter(s => s.estado === 'Atrasado').length;
-        }
+            // Si el pago está completado, se genera el aviso de WhatsApp
+            if (estado === 'Pagado') {
+                enviarWhatsAppPago(nombre, telefono, cuota);
+            }
 
-        // Búsqueda y filtrado dinámico
-        function filtrarTabla() {
+            cerrarModal();
+        };
+
+        // Eliminar Socio
+        window.eliminarSocio = async function(id) {
+            if (confirm('¿Estás seguro de que quieres eliminar este socio?')) {
+                const socioRefExact = ref(db, `socios/${id}`);
+                await remove(socioRefExact);
+            }
+        };
+
+        // Cambio rápido de Estado al hacer clic en el botón de rotación
+        window.cambiarEstadoRapido = async function(id) {
+            const socio = socios.find(s => s.id === id);
+            if (!socio) return;
+
+            let nuevoEstado = "Pendiente";
+            if (socio.estado === 'Pendiente') nuevoEstado = 'Pagado';
+            else if (socio.estado === 'Pagado') nuevoEstado = 'Atrasado';
+
+            const socioRefExact = ref(db, `socios/${id}`);
+            await update(socioRefExact, { estado: nuevoEstado });
+
+            if (nuevoEstado === 'Pagado') {
+                enviarWhatsAppPago(socio.nombre, socio.telefono, socio.cuota);
+            }
+        };
+
+        // Filtrar y Buscar
+        window.filtrarTabla = function() {
             const texto = document.getElementById('input-buscar').value.toLowerCase();
             const estado = document.getElementById('filtro-estado').value;
 
@@ -215,64 +241,92 @@
             });
 
             renderizarTabla(resultado);
+        };
+
+        function renderizarTabla(lista) {
+            const tbody = document.getElementById('tabla-socios');
+            tbody.innerHTML = '';
+
+            if (lista.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-400">No hay socios registrados todavía.</td></tr>`;
+                actualizarEstadisticas(lista);
+                return;
+            }
+
+            lista.sort((a, b) => a.numero - b.numero).forEach(socio => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition";
+                
+                let badgeClass = "";
+                if (socio.estado === 'Pagado') badgeClass = "bg-green-100 text-green-700 border-green-200";
+                else if (socio.estado === 'Pendiente') badgeClass = "bg-amber-100 text-amber-700 border-amber-200";
+                else badgeClass = "bg-red-100 text-red-700 border-red-200";
+
+                tr.innerHTML = `
+                    <td class="p-4 font-bold text-slate-600">#${socio.numero}</td>
+                    <td class="p-4 font-semibold text-slate-800">${socio.nombre}</td>
+                    <td class="p-4 text-slate-500"><i class="fa-solid fa-phone text-xs mr-1"></i>+${socio.telefono}</td>
+                    <td class="p-4 font-bold text-slate-700">${socio.cuota} €</td>
+                    <td class="p-4">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-full border ${badgeClass}">
+                            ${socio.estado}
+                        </span>
+                    </td>
+                    <td class="p-4 text-center">
+                        <div class="flex justify-center gap-2">
+                            <button onclick="enviarWhatsAppPago('${socio.nombre}', '${socio.telefono}', ${socio.cuota})" title="Enviar WhatsApp de Pago" class="p-1.5 bg-green-50 hover:bg-green-100 text-green-600 rounded">
+                                <i class="fa-brands fa-whatsapp font-bold"></i>
+                            </button>
+                            <button onclick="cambiarEstadoRapido('${socio.id}')" title="Cambiar Estado" class="p-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded">
+                                <i class="fa-solid fa-rotate"></i>
+                            </button>
+                            <button onclick="editarSocio('${socio.id}')" title="Editar Socio" class="p-1.5 bg-slate-100 hover:bg-blue-100 text-blue-600 rounded">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+                            <button onclick="eliminarSocio('${socio.id}')" title="Eliminar Socio" class="p-1.5 bg-slate-100 hover:bg-red-100 text-red-600 rounded">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            actualizarEstadisticas(socios);
         }
 
-        // Gestión del Modal
-        function abrirModal() {
+        function actualizarEstadisticas(lista) {
+            document.getElementById('stat-total').innerText = lista.length;
+            document.getElementById('stat-pagados').innerText = lista.filter(s => s.estado === 'Pagado').length;
+            document.getElementById('stat-pendientes').innerText = lista.filter(s => s.estado === 'Pendiente').length;
+            document.getElementById('stat-atrasados').innerText = lista.filter(s => s.estado === 'Atrasado').length;
+        }
+
+        // Abrir WhatsApp con el recibo de pago
+        window.enviarWhatsAppPago = function(nombre, telefono, cuota) {
+            const mensaje = `Hola *${nombre}*, te confirmamos que hemos recibido correctamente el pago de tu cuota de socio de la caseta por un importe de *${cuota}€*. ¡Muchas gracias y nos vemos en la Feria! 🎉🎪`;
+            const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
+            window.open(url, '_blank');
+        };
+
+        window.abrirModal = function() {
             document.getElementById('form-socio').reset();
             document.getElementById('socio-id').value = '';
             document.getElementById('modal-titulo').innerText = 'Registrar Nuevo Socio';
             
-            // Sugerir el siguiente número disponible
             const maxNum = socios.reduce((max, s) => s.numero > max ? s.numero : max, 0);
             document.getElementById('socio-num').value = maxNum + 1;
 
-            const modal = document.getElementById('modal-socio');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-        }
+            document.getElementById('modal-socio').classList.remove('hidden');
+            document.getElementById('modal-socio').classList.add('flex');
+        };
 
-        function cerrarModal() {
-            const modal = document.getElementById('modal-socio');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }
+        window.cerrarModal = function() {
+            document.getElementById('modal-socio').classList.add('hidden');
+            document.getElementById('modal-socio').classList.remove('flex');
+        };
 
-        // Guardar o Actualizar Socio
-        function guardarSocio(e) {
-            e.preventDefault();
-            
-            const id = document.getElementById('socio-id').value;
-            const numero = parseInt(document.getElementById('socio-num').value);
-            const nombre = document.getElementById('socio-nombre').value;
-            const telefono = document.getElementById('socio-telefono').value;
-            const cuota = parseFloat(document.getElementById('socio-cuota').value);
-            const estado = document.getElementById('socio-estado').value;
-
-            if (id) {
-                // Editar existente
-                const index = socios.findIndex(s => s.id == id);
-                socios[index] = { id: parseInt(id), numero, nombre, telefono, cuota, estado };
-            } else {
-                // Crear nuevo
-                const nuevoSocio = {
-                    id: Date.now(),
-                    numero,
-                    nombre,
-                    telefono,
-                    cuota,
-                    estado
-                };
-                socios.push(nuevoSocio);
-            }
-
-            guardarDatos();
-            cerrarModal();
-            filtrarTabla();
-        }
-
-        // Cargar datos en el modal para editar
-        function editarSocio(id) {
+        window.editarSocio = function(id) {
             const socio = socios.find(s => s.id === id);
             if (!socio) return;
 
@@ -285,37 +339,9 @@
 
             document.getElementById('modal-titulo').innerText = 'Editar Socio';
             
-            const modal = document.getElementById('modal-socio');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-        }
-
-        // Rotar estados de pago con un solo clic
-        function cambiarEstadoRapido(id) {
-            const socio = socios.find(s => s.id === id);
-            if (!socio) return;
-
-            if (socio.estado === 'Pendiente') socio.estado = 'Pagado';
-            else if (socio.estado === 'Pagado') socio.estado = 'Atrasado';
-            else socio.estado = 'Pendiente';
-
-            guardarDatos();
-            filtrarTabla();
-        }
-
-        // Eliminar socio
-        function eliminarSocio(id) {
-            if (confirm('¿Estás seguro de que quieres eliminar a este socio?')) {
-                socios = socios.filter(s => s.id !== id);
-                guardarDatos();
-                filtrarTabla();
-            }
-        }
-
-        // Persistencia local en el navegador
-        function guardarDatos() {
-            localStorage.setItem('caseta_socios', JSON.stringify(socios));
-        }
+            document.getElementById('modal-socio').classList.remove('hidden');
+            document.getElementById('modal-socio').classList.add('flex');
+        };
     </script>
 </body>
 </html>
