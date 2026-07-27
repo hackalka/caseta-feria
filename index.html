@@ -110,7 +110,7 @@
             </div>
         </section>
 
-        <!-- TARJETAS DE INFORMACIÓN RÁPIDA (RESTRICCIONALMENTE A 2 COLUMNAS) -->
+        <!-- TARJETAS DE INFORMACIÓN RÁPIDA -->
         <section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-20">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div class="glass-panel glass-panel-hover p-6 rounded-2xl flex items-center gap-4 cursor-pointer transition" onclick="irASeccion('sec-socios')">
@@ -229,6 +229,7 @@
                         <table class="w-full text-left text-xs sm:text-sm">
                             <thead class="bg-slate-950 font-bold text-slate-400 uppercase border-b border-slate-800">
                                 <tr>
+                                    <th class="p-3">Foto</th>
                                     <th class="p-3">Nº</th>
                                     <th class="p-3">Socio</th>
                                     <th class="p-3">Cargo / Etiqueta</th>
@@ -268,7 +269,7 @@
                 </div>
             </div>
 
-            <!-- VISTA GASTOS -->
+            <!-- VISTA GASTOS Y PROVEEDORES -->
             <div id="view-gastos" class="hidden space-y-4">
                 <div class="flex justify-between items-center glass-panel p-4 rounded-2xl">
                     <h3 class="font-bold text-white text-sm sm:text-base">Facturas y Proveedores</h3>
@@ -282,6 +283,8 @@
                             <thead class="bg-slate-950 font-bold text-slate-400 uppercase border-b border-slate-800">
                                 <tr>
                                     <th class="p-3">Concepto</th>
+                                    <th class="p-3">Proveedor</th>
+                                    <th class="p-3">Teléfono</th>
                                     <th class="p-3">Categoría</th>
                                     <th class="p-3">Importe</th>
                                     <th class="p-3 text-center">Acción</th>
@@ -294,6 +297,17 @@
             </div>
 
         </main>
+    </div>
+
+    <!-- MODAL IMAGEN AMPLIALA (LIGHTBOX) -->
+    <div id="modal-lightbox" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md hidden items-center justify-center p-4 z-50 transition-opacity" onclick="cerrarLightbox()">
+        <div class="relative max-w-xl w-full flex flex-col items-center" onclick="event.stopPropagation()">
+            <button onclick="cerrarLightbox()" class="absolute -top-12 right-0 text-white hover:text-amber-400 text-3xl font-bold transition focus:outline-none">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <img id="lightbox-img" src="" alt="Foto Socio" class="max-h-[80vh] w-auto object-contain rounded-2xl border-2 border-amber-500/50 shadow-2xl">
+            <h4 id="lightbox-nombre" class="mt-4 text-white font-serif font-bold text-lg text-center"></h4>
+        </div>
     </div>
 
     <!-- MODAL AUTENTICACIÓN -->
@@ -390,17 +404,27 @@
         </div>
     </div>
 
-    <!-- MODAL GASTO -->
+    <!-- MODAL GASTO / PROVEEDOR -->
     <div id="modal-gasto" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4 z-50">
         <div class="glass-panel rounded-3xl w-full max-w-md overflow-hidden border border-slate-700">
             <div class="bg-slate-900 px-5 py-3.5 border-b border-slate-800 flex justify-between items-center">
-                <h3 class="font-bold text-white text-sm">Añadir Gasto / Factura</h3>
+                <h3 class="font-bold text-white text-sm">Añadir Gasto / Proveedor</h3>
                 <button onclick="cerrarModalGasto()" class="text-slate-400 hover:text-white text-lg">&times;</button>
             </div>
             <form id="form-gasto" onsubmit="guardarGasto(event)" class="p-5 space-y-4 text-xs">
                 <div>
-                    <label class="block font-bold text-slate-400 uppercase mb-1">Concepto / Proveedor</label>
-                    <input type="text" id="gasto-concepto" required class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white outline-none focus:border-amber-400">
+                    <label class="block font-bold text-slate-400 uppercase mb-1">Concepto o Descripción</label>
+                    <input type="text" id="gasto-concepto" placeholder="Ej: Bebidas, Iluminación, Catering..." required class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white outline-none focus:border-amber-400">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-400 uppercase mb-1">Nombre Proveedor</label>
+                        <input type="text" id="gasto-proveedor" placeholder="Empresa o Nombre" required class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white outline-none focus:border-amber-400">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-400 uppercase mb-1">Teléfono Proveedor</label>
+                        <input type="tel" id="gasto-telefono" placeholder="600000000" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white outline-none focus:border-amber-400">
+                    </div>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
@@ -469,6 +493,25 @@
                 }
                 deferredPrompt = null;
             }
+        };
+
+        // VISOR DE IMAGEN AMPLIALA (LIGHTBOX)
+        window.ampliarImagen = function(url, nombre) {
+            const modal = document.getElementById('modal-lightbox');
+            const img = document.getElementById('lightbox-img');
+            const txt = document.getElementById('lightbox-nombre');
+            
+            img.src = url || FOTO_DEFAULT;
+            txt.textContent = nombre || '';
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        };
+
+        window.cerrarLightbox = function() {
+            const modal = document.getElementById('modal-lightbox');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
         };
 
         // NAVEGACIÓN Y VISTAS
@@ -553,15 +596,17 @@
         function renderizarSociosPublico() {
             const container = document.getElementById('grid-socios-publico');
             if (!container) return;
-            container.innerHTML = socios.map(s => `
+            container.innerHTML = socios.map(s => {
+                const fotoUrl = s.foto || FOTO_DEFAULT;
+                return `
                 <div class="glass-panel p-4 rounded-2xl border border-slate-800 text-center flex flex-col items-center space-y-2 hover:border-amber-500/30 transition">
-                    <img src="${s.foto || FOTO_DEFAULT}" class="w-16 h-16 rounded-full object-cover border-2 border-amber-500/40">
+                    <img src="${fotoUrl}" onclick="ampliarImagen('${fotoUrl}', '${s.nombre}')" class="w-16 h-16 rounded-full object-cover border-2 border-amber-500/40 cursor-pointer hover:scale-105 transition-transform" title="Ampliar imagen">
                     <div>
                         <h5 class="font-bold text-sm text-white">${s.nombre}</h5>
                         <span class="text-[10px] text-amber-400 font-semibold">${s.cargo || `Socio Nº ${s.num}`}</span>
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
         }
 
         function renderizarSociosAdmin() {
@@ -569,8 +614,12 @@
             if (!container) return;
             container.innerHTML = socios.map(s => {
                 const pendiente = 400 - (parseFloat(s.pagado) || 0);
+                const fotoUrl = s.foto || FOTO_DEFAULT;
                 return `
                     <tr class="hover:bg-slate-800/40">
+                        <td class="p-3">
+                            <img src="${fotoUrl}" onclick="ampliarImagen('${fotoUrl}', '${s.nombre}')" class="w-8 h-8 rounded-full object-cover border border-amber-500/40 cursor-pointer hover:scale-110 transition-transform">
+                        </td>
                         <td class="p-3 font-bold text-amber-400">#${s.num}</td>
                         <td class="p-3 font-medium text-white">${s.nombre}</td>
                         <td class="p-3 text-slate-400">${s.cargo || '—'}</td>
@@ -619,6 +668,10 @@
             container.innerHTML = gastos.map(g => `
                 <tr class="hover:bg-slate-800/40">
                     <td class="p-3 text-white font-medium">${g.concepto}</td>
+                    <td class="p-3 text-amber-300 font-semibold">${g.proveedor || '—'}</td>
+                    <td class="p-3 text-slate-300">
+                        ${g.telefono ? `<a href="tel:${g.telefono}" class="hover:underline text-amber-400"><i class="fa-solid fa-phone mr-1"></i>${g.telefono}</a>` : '—'}
+                    </td>
                     <td class="p-3 text-slate-400">${g.categoria}</td>
                     <td class="p-3 text-red-400 font-bold">${parseFloat(g.importe || 0).toFixed(2)} €</td>
                     <td class="p-3 text-center">
@@ -732,6 +785,8 @@
             e.preventDefault();
             const payload = {
                 concepto: document.getElementById('gasto-concepto').value,
+                proveedor: document.getElementById('gasto-proveedor').value,
+                telefono: document.getElementById('gasto-telefono').value,
                 categoria: document.getElementById('gasto-categoria').value,
                 importe: parseFloat(document.getElementById('gasto-importe').value) || 0
             };
