@@ -378,8 +378,8 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // HASH CONTRASEÑA ENCRIPTADA "losmanolos2026"
-        const ADMIN_HASH_PERMITIDO = "ca829b37c02b2b1a134d193d50f8ff78b056efadcc79fbddc802f0cb2ccdd0f2";
+        // CONTRASEÑA DIRECTA SINFALLOS
+        const CLAVE_ADMIN = "losmanolos2026";
         const FOTO_DEFAULT = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop&q=80";
 
         let socios = [], gastos = [];
@@ -406,18 +406,12 @@
             }
         };
 
-        async function sha256(str) {
-            const buffer = new TextEncoder().encode(str);
-            const hash = await crypto.subtle.digest('SHA-256', buffer);
-            return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
-        }
-
-        window.verificarPassword = async function(e) {
+        // VERIFICACIÓN DE CONTRASEÑA DIRECTA
+        window.verificarPassword = function(e) {
             e.preventDefault();
             const inputVal = document.getElementById('input-admin-pass').value.trim();
-            const inputHash = await sha256(inputVal);
 
-            if (inputHash === ADMIN_HASH_PERMITIDO) {
+            if (inputVal === CLAVE_ADMIN) {
                 cerrarModalLogin();
                 mostrarSeccion('admin');
                 document.getElementById('input-admin-pass').value = '';
