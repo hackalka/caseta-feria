@@ -32,7 +32,7 @@
                 </div>
             </div>
 
-            <!-- Navegación / Admin -->
+            <!-- Botones Navegación / Admin -->
             <div class="flex items-center gap-3">
                 <button onclick="mostrarSeccion('publico')" class="text-xs md:text-sm bg-red-900/80 hover:bg-red-900 text-amber-200 px-3 py-2 rounded-lg font-semibold transition">
                     <i class="fa-solid fa-house mr-1"></i> Inicio
@@ -49,33 +49,26 @@
     <!-- ========================================================================= -->
     <div id="seccion-publica" class="flex-1 flex flex-col">
         
-        <!-- Hero Principal / Banner de Entrada -->
+        <!-- Hero Principal -->
         <section class="bg-pattern text-white py-12 px-4 shadow-inner relative overflow-hidden">
             <div class="max-w-4xl mx-auto text-center relative z-10 flex flex-col items-center">
-                <!-- LOGO EN GRANDE -->
+                <!-- LOGO PORTADA -->
                 <div class="bg-white p-4 rounded-full shadow-2xl border-4 border-amber-400 mb-6 w-44 h-44 sm:w-56 sm:h-56 flex items-center justify-center hover:scale-105 transition-transform duration-300">
                     <img src="logo.png" alt="Logo Los Manolos y Cia." class="object-contain w-full h-full" onerror="this.src='https://via.placeholder.com/200?text=Los+Manolos+y+Cia.'">
                 </div>
                 
                 <span class="bg-amber-400 text-red-950 text-xs uppercase font-black px-4 py-1 rounded-full shadow mb-3">Caseta Nº 28</span>
                 <h2 class="text-3xl sm:text-5xl font-black text-amber-300 tracking-tight drop-shadow-md">Bienvenidos a Los Manolos y Cia.</h2>
-                <p class="mt-3 text-red-100 text-sm sm:text-lg max-w-2xl font-medium">Portal oficial de gestión, convivencia y transparencia de nuestra caseta de feria.</p>
-
-                <!-- Botón rápido para aportar factura / justificante -->
-                <div class="mt-8 flex flex-wrap justify-center gap-4">
-                    <button onclick="abrirModalGastoPublico()" class="bg-amber-400 hover:bg-amber-300 text-red-950 font-black px-6 py-3 rounded-xl shadow-lg transition transform hover:-translate-y-0.5 flex items-center gap-2 text-sm sm:text-base">
-                        <i class="fa-solid fa-file-circle-plus text-lg"></i> Registrar Factura / Pago
-                    </button>
-                </div>
+                <p class="mt-3 text-red-100 text-sm sm:text-lg max-w-2xl font-medium">Portal oficial de convivencia y reunión de nuestra caseta de feria.</p>
             </div>
         </section>
 
-        <!-- Listado Oficial de Socios (2026) -->
+        <!-- Listado Oficial de Socios (Sin números en la pública) -->
         <section class="max-w-7xl mx-auto px-4 py-10 w-full flex-1">
             <div class="text-center mb-8">
                 <span class="text-xs uppercase font-extrabold text-red-700 tracking-widest">Convivencia 2026</span>
                 <h3 class="text-2xl sm:text-3xl font-black text-slate-800 mt-1">Listado Oficial de Socios</h3>
-                <p class="text-slate-500 text-sm mt-1">Los 19 componentes que hacen posible nuestra caseta</p>
+                <p class="text-slate-500 text-sm mt-1">Componentes de la Caseta Los Manolos y Cia.</p>
                 <div class="w-16 h-1 bg-amber-400 mx-auto mt-3 rounded-full"></div>
             </div>
 
@@ -99,7 +92,7 @@
                         <i class="fa-solid fa-scale-balanced"></i> Balance y Caja
                     </button>
                     <button id="tab-btn-socios" onclick="cambiarPestanaAdmin('socios')" class="px-5 py-3 font-bold text-sm text-slate-300 hover:text-white flex items-center gap-2">
-                        <i class="fa-solid fa-users"></i> Control de Cuotas
+                        <i class="fa-solid fa-users"></i> Control de Cuotas (400€)
                     </button>
                     <button id="tab-btn-gastos" onclick="cambiarPestanaAdmin('gastos')" class="px-5 py-3 font-bold text-sm text-slate-300 hover:text-white flex items-center gap-2">
                         <i class="fa-solid fa-receipt"></i> Facturas y Gastos
@@ -117,13 +110,13 @@
             <div id="pestana-balance" class="space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                        <p class="text-xs uppercase font-extrabold text-slate-400 tracking-wider">Ingresos (Cuotas Cobradas)</p>
+                        <p class="text-xs uppercase font-extrabold text-slate-400 tracking-wider">Ingresos Recaudados</p>
                         <p id="balance-ingresos" class="text-4xl font-black text-green-600 mt-2">0,00 €</p>
-                        <p id="balance-ingresos-det" class="text-xs text-slate-500 mt-2">0/19 socios pagados</p>
+                        <p id="balance-ingresos-det" class="text-xs text-slate-500 mt-2">Sumatorio de pagos realizados</p>
                     </div>
 
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                        <p class="text-xs uppercase font-extrabold text-slate-400 tracking-wider">Gastos Totales Registrados</p>
+                        <p class="text-xs uppercase font-extrabold text-slate-400 tracking-wider">Gastos Totales Pagados</p>
                         <p id="balance-gastos" class="text-4xl font-black text-red-600 mt-2">0,00 €</p>
                         <p id="balance-gastos-det" class="text-xs text-slate-500 mt-2">0 facturas procesadas</p>
                     </div>
@@ -137,16 +130,16 @@
 
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
                     <h4 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-piggy-bank text-amber-500"></i> Proyección Recaudación Completa
+                        <i class="fa-solid fa-piggy-bank text-amber-500"></i> Proyección del Total (19 socios x 400€ = 7.600€)
                     </h4>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="bg-amber-50 p-4 rounded-xl border border-amber-200">
-                            <p class="text-xs font-bold text-amber-800 uppercase">Cuotas Pendientes de Cobro</p>
+                            <p class="text-xs font-bold text-amber-800 uppercase">Pendiente total por cobrar</p>
                             <p id="resumen-cobros-pendientes" class="text-2xl font-black text-amber-900">0,00 €</p>
                         </div>
                         <div class="bg-blue-50 p-4 rounded-xl border border-blue-200">
-                            <p class="text-xs font-bold text-blue-800 uppercase">Presupuesto Potencial Total</p>
-                            <p id="resumen-potencial-total" class="text-2xl font-black text-blue-900">0,00 €</p>
+                            <p class="text-xs font-bold text-blue-800 uppercase">Presupuesto Recaudación Total</p>
+                            <p id="resumen-potencial-total" class="text-2xl font-black text-blue-900">7.600,00 €</p>
                         </div>
                     </div>
                 </div>
@@ -155,7 +148,10 @@
             <!-- Pestaña 2: Control de Cuotas Socios -->
             <div id="pestana-socios" class="hidden space-y-4">
                 <div class="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-                    <h3 class="font-bold text-slate-800">Gestión de Cobro de Cuotas</h3>
+                    <div>
+                        <h3 class="font-bold text-slate-800">Control de Cuotas y Plazos</h3>
+                        <p class="text-xs text-slate-500">Cuota fija: 400€ / socio (Permite pago único o 2 pagos)</p>
+                    </div>
                     <button onclick="abrirModalSocio()" class="bg-red-800 hover:bg-red-700 text-white font-bold px-3 py-2 rounded-lg text-xs shadow flex items-center gap-1">
                         <i class="fa-solid fa-user-plus"></i> + Nuevo Socio
                     </button>
@@ -167,8 +163,8 @@
                                 <tr class="bg-slate-50 border-b text-xs text-slate-500 uppercase">
                                     <th class="p-4">Nº</th>
                                     <th class="p-4">Socio(s)</th>
-                                    <th class="p-4">Contacto</th>
-                                    <th class="p-4">Cuota</th>
+                                    <th class="p-4">Pagado</th>
+                                    <th class="p-4">Pendiente</th>
                                     <th class="p-4">Estado</th>
                                     <th class="p-4 text-center">Acciones</th>
                                 </tr>
@@ -181,12 +177,12 @@
                 </div>
             </div>
 
-            <!-- Pestaña 3: Facturas y Gastos -->
+            <!-- Pestaña 3: Facturas y Gastos (Solo Administración) -->
             <div id="pestana-gastos" class="hidden space-y-4">
                 <div class="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-                    <h3 class="font-bold text-slate-800">Registro de Gastos y Proveedores</h3>
-                    <button onclick="abrirModalGastoPublico()" class="bg-slate-900 hover:bg-slate-800 text-white font-bold px-3 py-2 rounded-lg text-xs shadow flex items-center gap-1">
-                        <i class="fa-solid fa-receipt"></i> + Añadir Factura/Gasto
+                    <h3 class="font-bold text-slate-800">Facturas, Proveedores y Gastos Generales</h3>
+                    <button onclick="abrirModalGastoAdmin()" class="bg-slate-900 hover:bg-slate-800 text-white font-bold px-4 py-2 rounded-lg text-xs shadow flex items-center gap-1">
+                        <i class="fa-solid fa-receipt"></i> + Registrar Factura / Gasto
                     </button>
                 </div>
                 <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
@@ -219,7 +215,7 @@
                 <i class="fa-solid fa-shield-halved"></i>
             </div>
             <h3 class="text-xl font-black text-slate-800">Acceso a Directiva</h3>
-            <p class="text-xs text-slate-500">Introduce la clave de administración para acceder al balance económico de la caseta.</p>
+            <p class="text-xs text-slate-500">Introduce la contraseña para acceder al panel de administración.</p>
             <form onsubmit="verificarPassword(event)">
                 <input type="password" id="input-admin-pass" required placeholder="Contraseña..." class="w-full px-4 py-2.5 border rounded-xl text-center text-lg font-bold focus:ring-2 focus:ring-red-800 outline-none mb-4">
                 <div class="flex gap-2">
@@ -234,7 +230,7 @@
     <div id="modal-gasto" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
         <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
             <div class="bg-slate-900 px-6 py-4 text-white flex justify-between items-center">
-                <h3 class="font-bold text-amber-400">Registrar Factura / Pago</h3>
+                <h3 class="font-bold text-amber-400">Registrar Factura / Pago Administrador</h3>
                 <button onclick="cerrarModalGasto()" class="text-white hover:text-amber-300 text-xl font-bold">&times;</button>
             </div>
             <form id="form-gasto" onsubmit="guardarGasto(event)" class="p-6 space-y-4">
@@ -266,60 +262,57 @@
                 </div>
                 <div class="flex justify-end gap-3 pt-4 border-t">
                     <button type="button" onclick="cerrarModalGasto()" class="px-4 py-2 border text-slate-600 rounded-lg text-sm font-semibold">Cancelar</button>
-                    <button type="submit" class="px-4 py-2 bg-slate-900 text-white rounded-lg text-sm font-semibold shadow">Añadir Gasto</button>
+                    <button type="submit" class="px-4 py-2 bg-slate-900 text-white rounded-lg text-sm font-semibold shadow">Guardar Gasto</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- MODAL SOCIO -->
+    <!-- MODAL SOCIO / CONTROL DE PAGOS -->
     <div id="modal-socio" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
         <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
             <div class="bg-red-800 px-6 py-4 text-white flex justify-between items-center">
-                <h3 class="font-bold">Editar / Crear Socio</h3>
+                <h3 class="font-bold">Actualizar Datos y Pagos de Socio</h3>
                 <button onclick="cerrarModalSocio()" class="text-white hover:text-amber-300 text-xl font-bold">&times;</button>
             </div>
             <form id="form-socio" onsubmit="guardarSocio(event)" class="p-6 space-y-4">
                 <input type="hidden" id="socio-id">
                 <div>
-                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Nº Socio</label>
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Nº Socio (Orden Administrador)</label>
                     <input type="number" id="socio-num" required class="w-full px-3 py-2 border rounded-lg outline-none">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Nombre Componentes</label>
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Nombre Componente(s)</label>
                     <input type="text" id="socio-nombre" required class="w-full px-3 py-2 border rounded-lg outline-none">
                 </div>
                 <div>
                     <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Teléfono (WhatsApp)</label>
-                    <input type="tel" id="socio-telefono" placeholder="600000000" class="w-full px-3 py-2 border rounded-lg outline-none">
+                    <input type="tel" id="socio-telefono" placeholder="Ej. 600000000" class="w-full px-3 py-2 border rounded-lg outline-none">
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Cuota (€)</label>
-                        <input type="number" id="socio-cuota" required value="150" class="w-full px-3 py-2 border rounded-lg outline-none">
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Cuota Total (€)</label>
+                        <input type="number" id="socio-cuota-total" value="400" readonly class="w-full px-3 py-2 border rounded-lg bg-slate-100 font-bold text-slate-700 outline-none">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Estado Pago</label>
-                        <select id="socio-estado" class="w-full px-3 py-2 border rounded-lg outline-none bg-white">
-                            <option value="Pagado">Pagado</option>
-                            <option value="Pendiente">Pendiente</option>
-                            <option value="Atrasado">Atrasado</option>
-                        </select>
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Importe Pagado (€)</label>
+                        <input type="number" step="0.01" id="socio-pagado" required placeholder="0.00" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-800 outline-none font-bold text-green-700">
                     </div>
                 </div>
+                <p class="text-[11px] text-slate-500 italic">* Puedes introducir pagos parciales (ej. 200€) o el total (400€).</p>
                 <div class="flex justify-end gap-3 pt-4 border-t">
                     <button type="button" onclick="cerrarModalSocio()" class="px-4 py-2 border rounded-lg text-sm font-semibold">Cancelar</button>
-                    <button type="submit" class="px-4 py-2 bg-red-800 text-white rounded-lg text-sm font-semibold shadow">Guardar</button>
+                    <button type="submit" class="px-4 py-2 bg-red-800 text-white rounded-lg text-sm font-semibold shadow">Guardar Cambios</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- FIRMA / FOOTER -->
+    <!-- FOOTER -->
     <footer class="bg-slate-900 text-slate-400 text-xs py-6 border-t border-slate-800">
         <div class="max-w-7xl mx-auto px-4 text-center space-y-2">
             <p class="font-semibold text-slate-300">Caseta Los Manolos y Cia. — Nº 28</p>
-            <p>© 2026 Sistema de Gestión y Control Financiero de Caseta</p>
+            <p>© 2026 Sistema de Gestión Interna y Control de Pagos</p>
         </div>
     </footer>
 
@@ -344,33 +337,47 @@
         const sociosRef = ref(db, 'socios');
         const gastosRef = ref(db, 'gastos');
 
-        // CONTRASEÑA DE ADMINISTRADOR (Cambiar si se desea)
+        // CONTRASEÑA ADMIN (Puedes cambiarla si lo deseas)
         const ADMIN_PASSWORD = "manolos2026";
 
-        // LISTA OFICIAL DE 19 SOCIOS BASE 2026
+        // LISTADO OFICIAL EXACTO DE LOS 19 SOCIOS (2026)
         const listaOficialInicial = [
-            "Miguel y Cristina", "Manuel y Lorena", "Cristina y Joaquín", "Ramón y Almudena",
-            "Pedro y Ana Mari", "Inés y Juan Luis", "Juanje y Granada", "Fernando y Chari",
-            "Rafi y María José", "Josemi y Hermi", "Alejandro y Coral", "Juan Manuel y Romina",
-            "Patricia y Javier", "Francisco Javier", "Marcelo y María", "Emilio y Rocío",
-            "Juanma y Mari", "Alba Santamaría y Mª Jose", "Alicia y Melero"
+            { num: 1, nombre: "Ramón y Almudena" },
+            { num: 2, nombre: "Manuel y Lorena" },
+            { num: 3, nombre: "Cristina y Joaquín" },
+            { num: 4, nombre: "Miguel y Cristina" },
+            { num: 5, nombre: "Pedro y Ana Mari" },
+            { num: 6, nombre: "Inés y Juan Luis" },
+            { num: 7, nombre: "Juanje y Granada" },
+            { num: 8, nombre: "Fernando y Chari" },
+            { num: 9, nombre: "Rafi y María José" },
+            { num: 10, nombre: "Josemi y Hermi" },
+            { num: 11, nombre: "Alejandro y Coral" },
+            { num: 12, nombre: "Juan Manuel y Romina" },
+            { num: 13, nombre: "Patricia y Javier" },
+            { num: 14, nombre: "Francisco Javier" },
+            { num: 15, nombre: "Marcelo y María" },
+            { num: 16, nombre: "Emilio y Rocío" },
+            { num: 17, nombre: "Juanma y Mari" },
+            { num: 18, nombre: "Alba Santamaría y Mª Jose" },
+            { num: 19, nombre: "Alicia y Melero" }
         ];
 
         let socios = [];
         let gastos = [];
 
-        // Inicializar datos
+        // Cargar/Sincronizar Socios
         onValue(sociosRef, (snapshot) => {
             const data = snapshot.val();
             if (!data) {
-                // Cargar lista por primera vez
-                listaOficialInicial.forEach((nombre, idx) => {
+                // Si la base de datos está vacía, creamos los 19 socios iniciales
+                listaOficialInicial.forEach((item) => {
                     push(sociosRef, {
-                        numero: idx + 1,
-                        nombre: nombre,
+                        numero: item.num,
+                        nombre: item.nombre,
                         telefono: "34600000000",
-                        cuota: 150,
-                        estado: "Pendiente"
+                        cuotaTotal: 400,
+                        pagado: 0
                     });
                 });
             } else {
@@ -381,6 +388,7 @@
             }
         });
 
+        // Cargar Gastos
         onValue(gastosRef, (snapshot) => {
             const data = snapshot.val();
             gastos = data ? Object.keys(data).map(k => ({ id: k, ...data[k] })) : [];
@@ -388,31 +396,34 @@
             actualizarBalance();
         });
 
-        // RENDERIZAR VISTA PÚBLICA DE SOCIOS
+        // VISTA PÚBLICA (Muestra solo nombres, sin números)
         function renderizarSociosPublico() {
             const container = document.getElementById('grid-socios-publico');
             container.innerHTML = '';
             socios.sort((a,b) => a.numero - b.numero).forEach(s => {
-                const isPagado = s.estado === 'Pagado';
+                const total = parseFloat(s.cuotaTotal) || 400;
+                const pagado = parseFloat(s.pagado) || 0;
+                const estaAlDia = pagado >= total;
+
                 const div = document.createElement('div');
-                div.className = "bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center space-x-4 hover:shadow-md transition";
+                div.className = "bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between hover:shadow-md transition";
                 div.innerHTML = `
-                    <div class="w-10 h-10 rounded-full bg-red-100 text-red-900 font-black flex items-center justify-center text-sm shrink-0 border border-red-200">
-                        #${s.numero}
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-full bg-red-800 text-amber-300 flex items-center justify-center shrink-0">
+                            <i class="fa-solid fa-users text-sm"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold text-slate-800 text-sm">${s.nombre}</p>
+                            <p class="text-[11px] text-slate-400 font-semibold">Socio Componente 2026</p>
+                        </div>
                     </div>
-                    <div class="flex-1 min-w-0">
-                        <p class="font-bold text-slate-800 text-sm truncate">${s.nombre}</p>
-                        <p class="text-[11px] text-slate-400 uppercase font-semibold">Socio Oficial 2026</p>
-                    </div>
-                    <div>
-                        <span title="${isPagado ? 'Al día' : 'Pendiente'}" class="w-3 h-3 rounded-full block ${isPagado ? 'bg-green-500' : 'bg-amber-400'}"></span>
-                    </div>
+                    <span title="${estaAlDia ? 'Cuota Completa' : 'Pendiente'}" class="w-3 h-3 rounded-full ${estaAlDia ? 'bg-green-500' : 'bg-amber-400'}"></span>
                 `;
                 container.appendChild(div);
             });
         }
 
-        // ACCESO PÚBLICO VS ADMIN
+        // VISTA PÚBLICA / ADMIN
         window.mostrarSeccion = function(seccion) {
             if (seccion === 'publico') {
                 document.getElementById('seccion-publica').classList.remove('hidden');
@@ -471,55 +482,74 @@
             }
         };
 
-        // BALANCE FINANCIERO
+        // CÁLCULOS DE BALANCE
         function actualizarBalance() {
-            const totalIngresos = socios.filter(s => s.estado === 'Pagado').reduce((sum, s) => sum + (parseFloat(s.cuota) || 0), 0);
-            const totalPendiente = socios.filter(s => s.estado !== 'Pagado').reduce((sum, s) => sum + (parseFloat(s.cuota) || 0), 0);
-            const totalEstimado = socios.reduce((sum, s) => sum + (parseFloat(s.cuota) || 0), 0);
+            const totalIngresos = socios.reduce((sum, s) => sum + (parseFloat(s.pagado) || 0), 0);
+            const totalCuotasEsperadas = socios.reduce((sum, s) => sum + (parseFloat(s.cuotaTotal) || 400), 0);
+            const totalPendiente = totalCuotasEsperadas - totalIngresos;
 
             const totalGastos = gastos.reduce((sum, g) => sum + (parseFloat(g.importe) || 0), 0);
             const neto = totalIngresos - totalGastos;
 
             document.getElementById('balance-ingresos').innerText = `${totalIngresos.toFixed(2)} €`;
-            document.getElementById('balance-ingresos-det').innerText = `${socios.filter(s => s.estado === 'Pagado').length} de ${socios.length} socios al día`;
+            document.getElementById('balance-ingresos-det').innerText = `Recaudado de cuotas en caja`;
 
             document.getElementById('balance-gastos').innerText = `${totalGastos.toFixed(2)} €`;
-            document.getElementById('balance-gastos-det').innerText = `${gastos.length} facturas registradas`;
+            document.getElementById('balance-gastos-det').innerText = `${gastos.length} facturas abonadas`;
 
             document.getElementById('balance-neto').innerText = `${neto.toFixed(2)} €`;
             
             const elemEst = document.getElementById('balance-estado-caja');
             if (neto >= 0) {
-                elemEst.innerText = "Estado: Superávit en caja";
+                elemEst.innerText = "Estado: Saldo positivo en caja";
                 elemEst.className = "text-xs text-green-400 font-bold mt-2";
             } else {
-                elemEst.innerText = "Estado: Déficit temporal";
+                elemEst.innerText = "Estado: Saldo negativo temporal";
                 elemEst.className = "text-xs text-red-400 font-bold mt-2";
             }
 
             document.getElementById('resumen-cobros-pendientes').innerText = `${totalPendiente.toFixed(2)} €`;
-            document.getElementById('resumen-potencial-total').innerText = `${totalEstimado.toFixed(2)} €`;
+            document.getElementById('resumen-potencial-total').innerText = `${totalCuotasEsperadas.toFixed(2)} €`;
         }
 
-        // RENDERIZAR TABLA SOCIOS ADMIN
+        // TABLA SOCIOS EN PANEL ADMIN (Con numeración y gestión de cobros en 2 plazos)
         function renderizarSociosAdmin() {
             const tbody = document.getElementById('tabla-socios-admin');
             tbody.innerHTML = '';
             socios.sort((a,b) => a.numero - b.numero).forEach(s => {
-                let badge = s.estado === 'Pagado' ? "bg-green-100 text-green-700" : (s.estado === 'Pendiente' ? "bg-amber-100 text-amber-700" : "bg-red-100 text-red-700");
+                const total = parseFloat(s.cuotaTotal) || 400;
+                const pagado = parseFloat(s.pagado) || 0;
+                const pendiente = total - pagado;
+
+                let estadoTxt = "";
+                let badgeClass = "";
+
+                if (pagado >= total) {
+                    estadoTxt = "Completo (400€)";
+                    badgeClass = "bg-green-100 text-green-800 border-green-200";
+                } else if (pagado > 0) {
+                    estadoTxt = "Parcial (1er Pago)";
+                    badgeClass = "bg-amber-100 text-amber-800 border-amber-200";
+                } else {
+                    estadoTxt = "Pendiente";
+                    badgeClass = "bg-red-100 text-red-800 border-red-200";
+                }
+
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td class="p-4 font-bold text-slate-600">#${s.numero}</td>
-                    <td class="p-4 font-semibold text-slate-800">${s.nombre}</td>
-                    <td class="p-4 text-slate-500 text-xs">+${s.telefono}</td>
-                    <td class="p-4 font-bold">${s.cuota} €</td>
-                    <td class="p-4"><span class="px-2.5 py-1 text-xs font-bold rounded-full ${badge}">${s.estado}</span></td>
+                    <td class="p-4 font-black text-slate-600">#${s.numero}</td>
+                    <td class="p-4 font-semibold text-slate-800">
+                        ${s.nombre}
+                        <div class="text-[11px] text-slate-400 font-normal">+${s.telefono}</div>
+                    </td>
+                    <td class="p-4 font-bold text-green-600">${pagado.toFixed(2)} €</td>
+                    <td class="p-4 font-bold text-red-600">${pendiente.toFixed(2)} €</td>
+                    <td class="p-4"><span class="px-2.5 py-1 text-xs font-bold rounded-full border ${badgeClass}">${estadoTxt}</span></td>
                     <td class="p-4 text-center">
                         <div class="flex justify-center gap-1.5">
-                            <button onclick="enviarWhatsAppPago('${s.nombre}', '${s.telefono}', ${s.cuota})" title="WhatsApp" class="p-1.5 bg-green-50 text-green-600 rounded"><i class="fa-brands fa-whatsapp font-bold"></i></button>
-                            <button onclick="cambiarEstadoRapido('${s.id}')" title="Cambiar Estado" class="p-1.5 bg-slate-100 text-slate-600 rounded"><i class="fa-solid fa-rotate"></i></button>
-                            <button onclick="editarSocio('${s.id}')" title="Editar" class="p-1.5 bg-slate-100 text-blue-600 rounded"><i class="fa-solid fa-pen-to-square"></i></button>
-                            <button onclick="eliminarSocio('${s.id}')" title="Eliminar" class="p-1.5 bg-slate-100 text-red-600 rounded"><i class="fa-solid fa-trash"></i></button>
+                            <button onclick="enviarWhatsAppPago('${s.nombre}', '${s.telefono}', ${pagado}, ${pendiente})" title="Enviar Recibo WhatsApp" class="p-2 bg-green-50 text-green-600 rounded hover:bg-green-100"><i class="fa-brands fa-whatsapp font-bold text-base"></i></button>
+                            <button onclick="editarSocio('${s.id}')" title="Registrar Pago / Editar" class="p-2 bg-slate-100 text-blue-600 rounded hover:bg-blue-50"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button onclick="eliminarSocio('${s.id}')" title="Eliminar" class="p-2 bg-slate-100 text-red-600 rounded hover:bg-red-50"><i class="fa-solid fa-trash"></i></button>
                         </div>
                     </td>
                 `;
@@ -527,19 +557,19 @@
             });
         }
 
-        // RENDERIZAR TABLA GASTOS ADMIN
+        // TABLA GASTOS EN PANEL ADMIN
         function renderizarGastosAdmin() {
             const tbody = document.getElementById('tabla-gastos-admin');
             tbody.innerHTML = '';
             if (gastos.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-400">No hay facturas o gastos registrados.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-400">No hay facturas ni gastos registrados.</td></tr>`;
                 return;
             }
             gastos.forEach(g => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td class="p-4 font-semibold text-slate-800">${g.concepto}</td>
-                    <td class="p-4"><span class="px-2 py-0.5 text-xs font-bold rounded bg-slate-100 border text-slate-700">${g.categoria}</span></td>
+                    <td class="p-4"><span class="px-2.5 py-1 text-xs font-bold rounded-full bg-slate-100 text-slate-700 border border-slate-200">${g.categoria}</span></td>
                     <td class="p-4 font-black text-red-600">-${g.importe.toFixed(2)} €</td>
                     <td class="p-4 text-slate-500 text-xs">${g.fecha}</td>
                     <td class="p-4 text-center">
@@ -550,7 +580,55 @@
             });
         }
 
-        // ACCIONES DE GASTOS Y SOCIOS
+        // OPERACIONES DE SOCIOS / PAGOS
+        window.guardarSocio = async function(e) {
+            e.preventDefault();
+            const id = document.getElementById('socio-id').value;
+            const numero = parseInt(document.getElementById('socio-num').value);
+            const nombre = document.getElementById('socio-nombre').value;
+            let telefono = document.getElementById('socio-telefono').value.replace(/\s+/g, '');
+            if (telefono && !telefono.startsWith('34') && telefono.length === 9) telefono = '34' + telefono;
+
+            const cuotaTotal = parseFloat(document.getElementById('socio-cuota-total').value) || 400;
+            const pagado = parseFloat(document.getElementById('socio-pagado').value) || 0;
+
+            const datos = { numero, nombre, telefono, cuotaTotal, pagado };
+
+            if (id) {
+                await update(ref(db, `socios/${id}`), datos);
+            } else {
+                await set(push(sociosRef), datos);
+            }
+            
+            const pendiente = cuotaTotal - pagado;
+            cerrarModalSocio();
+
+            // Preguntar si quiere enviar el recibo por WhatsApp tras actualizar
+            if (confirm(`Pago registrado con éxito. ¿Enviar justificante de cobro por WhatsApp a ${nombre}?`)) {
+                enviarWhatsAppPago(nombre, telefono, pagado, pendiente);
+            }
+        };
+
+        window.eliminarSocio = async function(id) {
+            if (confirm('¿Eliminar socio del registro?')) await remove(ref(db, `socios/${id}`));
+        };
+
+        window.enviarWhatsAppPago = function(nombre, telefono, pagado, pendiente) {
+            let msg = `Hola *${nombre}*, desde la caseta *Los Manolos y Cia.* te confirmamos que hemos registrado tu pago.\n\n`;
+            msg += `• *Importe Pagado:* ${pagado.toFixed(2)}€\n`;
+            
+            if (pendiente > 0) {
+                msg += `• *Pendiente de Pago:* ${pendiente.toFixed(2)}€ (Cuota total: 400€)\n\n`;
+                msg += `¡Muchas gracias! Recuerda abonar el resto antes del inicio de la feria. 🎪💃`;
+            } else {
+                msg += `• *Estado Cuota:* ¡PAGADO TOTAL (400€)!\n\n`;
+                msg += `¡Muchas gracias, tienes la cuota completa abonada. Nos vemos en la Feria! 🎪💃`;
+            }
+
+            window.open(`https://wa.me/${telefono}?text=${encodeURIComponent(msg)}`, '_blank');
+        };
+
+        // OPERACIONES DE GASTOS
         window.guardarGasto = async function(e) {
             e.preventDefault();
             const concepto = document.getElementById('gasto-concepto').value;
@@ -560,52 +638,14 @@
 
             await set(push(gastosRef), { concepto, categoria, importe, fecha });
             cerrarModalGasto();
-            alert('Factura/Gasto registrado correctamente.');
         };
 
         window.eliminarGasto = async function(id) {
             if (confirm('¿Deseas eliminar este gasto?')) await remove(ref(db, `gastos/${id}`));
         };
 
-        window.guardarSocio = async function(e) {
-            e.preventDefault();
-            const id = document.getElementById('socio-id').value;
-            const numero = parseInt(document.getElementById('socio-num').value);
-            const nombre = document.getElementById('socio-nombre').value;
-            let telefono = document.getElementById('socio-telefono').value.replace(/\s+/g, '');
-            if (!telefono.startsWith('34') && telefono.length === 9) telefono = '34' + telefono;
-
-            const cuota = parseFloat(document.getElementById('socio-cuota').value);
-            const estado = document.getElementById('socio-estado').value;
-            const datos = { numero, nombre, telefono, cuota, estado };
-
-            if (id) {
-                await update(ref(db, `socios/${id}`), datos);
-            } else {
-                await set(push(sociosRef), datos);
-            }
-            cerrarModalSocio();
-        };
-
-        window.cambiarEstadoRapido = async function(id) {
-            const socio = socios.find(s => s.id === id);
-            if (!socio) return;
-            let nuevoEstado = socio.estado === 'Pendiente' ? 'Pagado' : (socio.estado === 'Pagado' ? 'Atrasado' : 'Pendiente');
-            await update(ref(db, `socios/${id}`), { estado: nuevoEstado });
-            if (nuevoEstado === 'Pagado') enviarWhatsAppPago(socio.nombre, socio.telefono, socio.cuota);
-        };
-
-        window.eliminarSocio = async function(id) {
-            if (confirm('¿Eliminar este socio?')) await remove(ref(db, `socios/${id}`));
-        };
-
-        window.enviarWhatsAppPago = function(nombre, telefono, cuota) {
-            const msg = `Hola *${nombre}*, desde la caseta *Los Manolos y Cia.* te confirmamos el cobro de tu cuota de *${cuota}€*. ¡Muchas gracias y nos vemos en la Feria! 🎪💃`;
-            window.open(`https://wa.me/${telefono}?text=${encodeURIComponent(msg)}`, '_blank');
-        };
-
-        // MODALES
-        window.abrirModalGastoPublico = function() {
+        // MANEJO DE MODALES
+        window.abrirModalGastoAdmin = function() {
             document.getElementById('form-gasto').reset();
             document.getElementById('gasto-fecha').valueAsDate = new Date();
             document.getElementById('modal-gasto').classList.remove('hidden');
@@ -621,6 +661,7 @@
             document.getElementById('form-socio').reset();
             document.getElementById('socio-id').value = '';
             document.getElementById('socio-num').value = socios.length + 1;
+            document.getElementById('socio-pagado').value = '0';
             document.getElementById('modal-socio').classList.remove('hidden');
             document.getElementById('modal-socio').classList.add('flex');
         };
@@ -632,8 +673,8 @@
             document.getElementById('socio-num').value = s.numero;
             document.getElementById('socio-nombre').value = s.nombre;
             document.getElementById('socio-telefono').value = s.telefono;
-            document.getElementById('socio-cuota').value = s.cuota;
-            document.getElementById('socio-estado').value = s.estado;
+            document.getElementById('socio-cuota-total').value = s.cuotaTotal || 400;
+            document.getElementById('socio-pagado').value = s.pagado || 0;
             document.getElementById('modal-socio').classList.remove('hidden');
             document.getElementById('modal-socio').classList.add('flex');
         };
