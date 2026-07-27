@@ -475,7 +475,30 @@
             }
         };
 
-        // NAVEGACIÓN Y ACCESO DIRECTIVA
+        // NAVEGACIÓN Y VISTAS
+        window.mostrarSeccion = function(tipo) {
+            const secPublica = document.getElementById('seccion-publica');
+            const secAdmin = document.getElementById('seccion-admin');
+            
+            if (tipo === 'admin') {
+                secPublica.classList.add('hidden');
+                secAdmin.classList.remove('hidden');
+            } else {
+                secAdmin.classList.add('hidden');
+                secPublica.classList.remove('hidden');
+            }
+        };
+
+        window.solicitarAccesoAdmin = function() {
+            document.getElementById('modal-login').classList.remove('hidden');
+            document.getElementById('modal-login').classList.add('flex');
+        };
+
+        window.cerrarModalLogin = function() {
+            document.getElementById('modal-login').classList.add('hidden');
+            document.getElementById('modal-login').classList.remove('flex');
+        };
+
         window.verificarPassword = function(e) {
             e.preventDefault();
             const inputVal = document.getElementById('input-admin-pass').value.trim();
@@ -489,12 +512,231 @@
             }
         };
 
+        window.cerrarSesionAdmin = function() {
+            mostrarSeccion('publico');
+        };
+
         window.irASeccion = function(id) {
             const el = document.getElementById(id);
             if(el) el.scrollIntoView({ behavior: 'smooth' });
         };
 
-        // LISTENER REALTIME FIREBASE
+        window.cambiarPestana = function(pestana) {
+            ['balance', 'socios', 'eventos', 'gastos'].forEach(p => {
+                const view = document.getElementById(`view-${p}`);
+                const tab = document.getElementById(`tab-${p}`);
+                if (p === pestana) {
+                    view.classList.remove('hidden');
+                    tab.classList.add('bg-slate-800', 'text-amber-400');
+                    tab.classList.remove('text-slate-400');
+                } else {
+                    view.classList.add('hidden');
+                    tab.classList.remove('bg-slate-800', 'text-amber-400');
+                    tab.classList.add('text-slate-400');
+                }
+            });
+        };
+
+        // RENDERIZADO Y LÓGICA DE BALANCE Y TABLAS
+        function actualizarBalance() {
+            const totalRecaudado = socios.reduce((sum, s) => sum + (parseFloat(s.pagado) || 0), 0);
+            const totalGastos = gastos.reduce((sum, g) => sum + (parseFloat(g.importe) || 0), 0);
+            const liquido = totalRecaudado - totalGastos;
+
+            const totalCuotasEsperadas = socios.length * 400;
+            const porcentaje = totalCuotasEsperadas > 0 ? Math.min(100, Math.round((totalRecaudado / totalCuotasEsperadas) * 100)) : 0;
+
+            document.getElementById('bal-ingresos').textContent = `${totalRecaudado.toFixed(2)} €`;
+            document.getElementById('bal-gastos').textContent = `${totalGastos.toFixed(2)} €`;
+            document.getElementById('bal-neto').textContent = `${liquido.toFixed(2)} €`;
+            document.getElementById('progreso-bar').style.width = `${porcentaje}%`;
+        }
+
+        function renderizarSociosPublico() {
+            const container = document.getElementById('grid-socios-publico');
+            if (!container) return;
+            container.innerHTML = socios.map(s => `
+                <div class="glass-panel p-4 rounded-2xl border border-slate-800 text-center flex flex-col items-center space-y-2">
+                    <img src="${s.foto || FOTO_DEFAULT}" class="w-16 h-16 rounded-full object-cover border-2 border-amber-500/40">
+                    <div>
+                        <h5 class="font-bold text-sm text-white">${s.nombre}</h5>
+                        <span class="text-[10px] text-amber-400 font-semibold">${s.cargo || `Socio Nº ${s.num}`}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderizarSociosAdmin() {
+            const container = document.getElementById('tabla-socios-admin');
+            if (!container) return;
+            container.innerHTML = socios.map(s => {
+                const pendiente = 400 - (parseFloat(s.pagado) || 0);
+                return `
+                    <tr class="hover:bg-slate-800/40">
+                        <td class="p-3 font-bold text-amber-400">#${s.num}</td>
+                        <td class="p-3 font-medium text-white">${s.nombre}</td>
+                        <td class="p-3 text-slate-400">${s.cargo || '—'}</td>
+                        <td class="p-3 text-emerald-400 font-bold">${parseFloat(s.pagado || 0).toFixed(2)} €</td>
+                        <td class="p-3 text-amber-500 font-bold">${pendiente.toFixed(2)} €</td>
+                        <td class="p-3 text-center space-x-2">
+                            <button onclick="editarSocio('${s.id}')" class="text-amber-400 hover:text-amber-300"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="eliminarSocio('${s.id}')" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function renderizarEventosPublico() {
+            const container = document.getElementById('grid-eventos-publico');
+            if (!container) return;
+            container.innerHTML = eventos.map(e => `
+                <div class="glass-panel p-5 rounded-2xl border border-slate-800 space-y-2">
+                    <div class="text-xs text-amber-400 font-bold uppercase"><i class="fa-regular fa-clock mr-1"></i>${e.fecha ? new Date(e.fecha).toLocaleString() : ''}</div>
+                    <h4 class="font-bold text-white text-base">${e.titulo}</h4>
+                    <p class="text-xs text-slate-400">${e.descripcion || ''}</p>
+                </div>
+            `).join('');
+        }
+
+        function renderizarEventosAdmin() {
+            const container = document.getElementById('tabla-eventos-admin');
+            if (!container) return;
+            container.innerHTML = eventos.map(e => `
+                <tr class="hover:bg-slate-800/40">
+                    <td class="p-3 text-amber-400 font-medium">${e.fecha ? new Date(e.fecha).toLocaleString() : ''}</td>
+                    <td class="p-3 text-white font-bold">${e.titulo}</td>
+                    <td class="p-3 text-slate-400">${e.descripcion || '—'}</td>
+                    <td class="p-3 text-center space-x-2">
+                        <button onclick="editarEvento('${e.id}')" class="text-amber-400 hover:text-amber-300"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="eliminarEvento('${e.id}')" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderizarGastosAdmin() {
+            const container = document.getElementById('tabla-gastos-admin');
+            if (!container) return;
+            container.innerHTML = gastos.map(g => `
+                <tr class="hover:bg-slate-800/40">
+                    <td class="p-3 text-white font-medium">${g.concepto}</td>
+                    <td class="p-3 text-slate-400">${g.categoria}</td>
+                    <td class="p-3 text-red-400 font-bold">${parseFloat(g.importe || 0).toFixed(2)} €</td>
+                    <td class="p-3 text-center">
+                        <button onclick="eliminarGasto('${g.id}')" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // MODALES Y CRUD FIREBASE
+        window.abrirModalSocio = function() {
+            document.getElementById('form-socio').reset();
+            document.getElementById('socio-id').value = '';
+            document.getElementById('modal-socio').classList.remove('hidden');
+            document.getElementById('modal-socio').classList.add('flex');
+        };
+        window.cerrarModalSocio = function() {
+            document.getElementById('modal-socio').classList.add('hidden');
+            document.getElementById('modal-socio').classList.remove('flex');
+        };
+        window.guardarSocio = function(e) {
+            e.preventDefault();
+            const id = document.getElementById('socio-id').value;
+            const payload = {
+                num: document.getElementById('socio-num').value,
+                nombre: document.getElementById('socio-nombre').value,
+                cargo: document.getElementById('socio-cargo').value,
+                foto: document.getElementById('socio-foto').value,
+                pagado: parseFloat(document.getElementById('socio-pagado').value) || 0
+            };
+            if (id) {
+                update(ref(db, `socios/${id}`), payload);
+            } else {
+                push(sociosRef, payload);
+            }
+            cerrarModalSocio();
+        };
+        window.editarSocio = function(id) {
+            const s = socios.find(item => item.id === id);
+            if (!s) return;
+            document.getElementById('socio-id').value = s.id;
+            document.getElementById('socio-num').value = s.num;
+            document.getElementById('socio-nombre').value = s.nombre;
+            document.getElementById('socio-cargo').value = s.cargo || '';
+            document.getElementById('socio-foto').value = s.foto || '';
+            document.getElementById('socio-pagado').value = s.pagado || 0;
+            document.getElementById('modal-socio').classList.remove('hidden');
+            document.getElementById('modal-socio').classList.add('flex');
+        };
+        window.eliminarSocio = function(id) {
+            if (confirm('¿Desea eliminar este socio?')) remove(ref(db, `socios/${id}`));
+        };
+
+        window.abrirModalEvento = function() {
+            document.getElementById('form-evento').reset();
+            document.getElementById('evento-id').value = '';
+            document.getElementById('modal-evento').classList.remove('hidden');
+            document.getElementById('modal-evento').classList.add('flex');
+        };
+        window.cerrarModalEvento = function() {
+            document.getElementById('modal-evento').classList.add('hidden');
+            document.getElementById('modal-evento').classList.remove('flex');
+        };
+        window.guardarEvento = function(e) {
+            e.preventDefault();
+            const id = document.getElementById('evento-id').value;
+            const payload = {
+                titulo: document.getElementById('evento-titulo').value,
+                fecha: document.getElementById('evento-fecha').value,
+                descripcion: document.getElementById('evento-descripcion').value
+            };
+            if (id) {
+                update(ref(db, `eventos/${id}`), payload);
+            } else {
+                push(eventosRef, payload);
+            }
+            cerrarModalEvento();
+        };
+        window.editarEvento = function(id) {
+            const ev = eventos.find(item => item.id === id);
+            if (!ev) return;
+            document.getElementById('evento-id').value = ev.id;
+            document.getElementById('evento-titulo').value = ev.titulo;
+            document.getElementById('evento-fecha').value = ev.fecha;
+            document.getElementById('evento-descripcion').value = ev.descripcion || '';
+            document.getElementById('modal-evento').classList.remove('hidden');
+            document.getElementById('modal-evento').classList.add('flex');
+        };
+        window.eliminarEvento = function(id) {
+            if (confirm('¿Desea eliminar este evento?')) remove(ref(db, `eventos/${id}`));
+        };
+
+        window.abrirModalGasto = function() {
+            document.getElementById('form-gasto').reset();
+            document.getElementById('modal-gasto').classList.remove('hidden');
+            document.getElementById('modal-gasto').classList.add('flex');
+        };
+        window.cerrarModalGasto = function() {
+            document.getElementById('modal-gasto').classList.add('hidden');
+            document.getElementById('modal-gasto').classList.remove('flex');
+        };
+        window.guardarGasto = function(e) {
+            e.preventDefault();
+            const payload = {
+                concepto: document.getElementById('gasto-concepto').value,
+                categoria: document.getElementById('gasto-categoria').value,
+                importe: parseFloat(document.getElementById('gasto-importe').value) || 0
+            };
+            push(gastosRef, payload);
+            cerrarModalGasto();
+        };
+        window.eliminarGasto = function(id) {
+            if (confirm('¿Desea eliminar este gasto?')) remove(ref(db, `gastos/${id}`));
+        };
+
+        // LISTENERS REALTIME FIREBASE
         onValue(sociosRef, (s) => {
             const data = s.val();
             socios = data ? Object.keys(data).map(k => ({ id: k, ...data[k] })) : [];
@@ -516,275 +758,6 @@
             renderizarEventosPublico();
             renderizarEventosAdmin();
         });
-
-        // RENDERIZADO EN PORTADA (PÚBLICO)
-        function renderizarSociosPublico() {
-            const container = document.getElementById('grid-socios-publico');
-            container.innerHTML = '';
-            socios.sort((a,b) => a.numero - b.numero).forEach(s => {
-                const foto = s.foto && s.foto.trim() !== '' ? s.foto : FOTO_DEFAULT;
-                const total = parseFloat(s.cuotaTotal) || 400;
-                const pagado = parseFloat(s.pagado) || 0;
-                const estaAlDia = pagado >= total;
-                const cargoHtml = s.cargo && s.cargo.trim() !== '' 
-                    ? `<span class="inline-block mt-1 px-2 py-0.5 text-[10px] font-extrabold uppercase rounded bg-amber-500 text-slate-950 tracking-wider">${s.cargo}</span>`
-                    : '';
-
-                const div = document.createElement('div');
-                div.className = "glass-panel rounded-2xl overflow-hidden border border-slate-800 flex flex-col";
-                div.innerHTML = `
-                    <div class="h-36 sm:h-44 relative bg-slate-900">
-                        <img src="${foto}" class="w-full h-full object-cover" onerror="this.src='${FOTO_DEFAULT}'">
-                        <span class="absolute top-2 right-2 text-[9px] font-bold px-2 py-0.5 rounded-full ${estaAlDia ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40' : 'bg-amber-500/20 text-amber-400 border border-amber-500/40'} backdrop-blur-md">
-                            ${estaAlDia ? 'Al día' : 'Pendiente'}
-                        </span>
-                    </div>
-                    <div class="p-3 flex-1 flex flex-col justify-between">
-                        <div>
-                            <span class="text-[9px] font-bold text-slate-500 uppercase">Socio #${s.numero}</span>
-                            <h4 class="font-serif font-bold text-white text-xs sm:text-sm mt-0.5 truncate">${s.nombre}</h4>
-                            ${cargoHtml}
-                        </div>
-                    </div>
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        function renderizarEventosPublico() {
-            const container = document.getElementById('grid-eventos-publico');
-            container.innerHTML = '';
-
-            if (eventos.length === 0) {
-                container.innerHTML = `
-                    <div class="col-span-full glass-panel p-6 rounded-2xl text-center text-slate-400 text-xs">
-                        No hay actos ni eventos programados en este momento.
-                    </div>
-                `;
-                return;
-            }
-
-            eventos.sort((a,b) => new Date(a.fecha) - new Date(b.fecha)).forEach(ev => {
-                const fechaObj = new Date(ev.fecha);
-                const fechaTexto = isNaN(fechaObj) ? ev.fecha : fechaObj.toLocaleString('es-ES', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
-
-                const div = document.createElement('div');
-                div.className = "glass-panel p-4 rounded-2xl border border-slate-800 flex flex-col justify-between space-y-2";
-                div.innerHTML = `
-                    <div class="space-y-1">
-                        <span class="text-amber-400 text-[11px] font-bold flex items-center gap-1.5">
-                            <i class="fa-regular fa-clock"></i> ${fechaTexto}
-                        </span>
-                        <h4 class="font-serif font-bold text-white text-base">${ev.titulo}</h4>
-                        <p class="text-xs text-slate-300 leading-relaxed">${ev.descripcion || ''}</p>
-                    </div>
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        // RENDERIZADO PANEL DE CONTROL (ADMIN)
-        function renderizarSociosAdmin() {
-            const tbody = document.getElementById('tabla-socios-admin');
-            tbody.innerHTML = '';
-            socios.sort((a,b) => a.numero - b.numero).forEach(s => {
-                const total = parseFloat(s.cuotaTotal) || 400;
-                const pagado = parseFloat(s.pagado) || 0;
-                const pendiente = total - pagado;
-
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td class="p-3 font-bold text-amber-400">#${s.numero}</td>
-                    <td class="p-3 font-bold text-white">${s.nombre}</td>
-                    <td class="p-3"><span class="px-2 py-0.5 text-[10px] font-bold rounded bg-amber-500/10 text-amber-300 border border-amber-500/20">${s.cargo || 'Socio'}</span></td>
-                    <td class="p-3 text-emerald-400 font-bold">${pagado.toFixed(0)}€</td>
-                    <td class="p-3 text-red-400 font-bold">${pendiente.toFixed(0)}€</td>
-                    <td class="p-3 text-center">
-                        <button onclick="editarSocio('${s.id}')" class="p-1.5 text-blue-400 hover:bg-slate-800 rounded"><i class="fa-solid fa-pen"></i></button>
-                        <button onclick="eliminarSocio('${s.id}')" class="p-1.5 text-red-400 hover:bg-slate-800 rounded"><i class="fa-solid fa-trash"></i></button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function renderizarEventosAdmin() {
-            const tbody = document.getElementById('tabla-eventos-admin');
-            tbody.innerHTML = '';
-            eventos.sort((a,b) => new Date(a.fecha) - new Date(b.fecha)).forEach(ev => {
-                const fechaObj = new Date(ev.fecha);
-                const fechaTexto = isNaN(fechaObj) ? ev.fecha : fechaObj.toLocaleString('es-ES', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
-
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td class="p-3 text-amber-400 font-bold">${fechaTexto}</td>
-                    <td class="p-3 font-bold text-white">${ev.titulo}</td>
-                    <td class="p-3 text-slate-300">${ev.descripcion || '-'}</td>
-                    <td class="p-3 text-center">
-                        <button onclick="editarEvento('${ev.id}')" class="p-1.5 text-blue-400 hover:bg-slate-800 rounded"><i class="fa-solid fa-pen"></i></button>
-                        <button onclick="eliminarEvento('${ev.id}')" class="p-1.5 text-red-400 hover:bg-slate-800 rounded"><i class="fa-solid fa-trash"></i></button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function renderizarGastosAdmin() {
-            const tbody = document.getElementById('tabla-gastos-admin');
-            tbody.innerHTML = '';
-            gastos.forEach(g => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td class="p-3 font-bold text-white">${g.concepto}</td>
-                    <td class="p-3"><span class="px-2 py-0.5 text-[10px] font-bold rounded bg-slate-800 text-slate-300">${g.categoria}</span></td>
-                    <td class="p-3 font-bold text-red-400">-${parseFloat(g.importe).toFixed(2)}€</td>
-                    <td class="p-3 text-center">
-                        <button onclick="eliminarGasto('${g.id}')" class="p-1.5 text-red-400 hover:bg-slate-800 rounded"><i class="fa-solid fa-trash"></i></button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function actualizarBalance() {
-            const totalIngresos = socios.reduce((sum, s) => sum + (parseFloat(s.pagado) || 0), 0);
-            const totalEsperado = socios.reduce((sum, s) => sum + (parseFloat(s.cuotaTotal) || 400), 0);
-            const totalGastos = gastos.reduce((sum, g) => sum + (parseFloat(g.importe) || 0), 0);
-            const neto = totalIngresos - totalGastos;
-
-            document.getElementById('bal-ingresos').innerText = `${totalIngresos.toFixed(2)} €`;
-            document.getElementById('bal-gastos').innerText = `${totalGastos.toFixed(2)} €`;
-            document.getElementById('bal-neto').innerText = `${neto.toFixed(2)} €`;
-
-            const pct = Math.min(100, (totalIngresos / (totalEsperado || 1)) * 100);
-            document.getElementById('progreso-bar').style.width = `${pct}%`;
-        }
-
-        window.cambiarPestana = function(p) {
-            ['balance', 'socios', 'eventos', 'gastos'].forEach(v => {
-                document.getElementById(`view-${v}`).classList.add('hidden');
-                document.getElementById(`tab-${v}`).className = "px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400 whitespace-nowrap";
-            });
-            document.getElementById(`view-${p}`).classList.remove('hidden');
-            document.getElementById(`tab-${p}`).className = "px-3 py-1.5 rounded-lg text-xs font-bold text-amber-400 bg-slate-800 whitespace-nowrap";
-        };
-
-        // ACCIONES BASE DE DATOS
-        window.guardarSocio = async function(e) {
-            e.preventDefault();
-            const id = document.getElementById('socio-id').value;
-            const datos = {
-                numero: parseInt(document.getElementById('socio-num').value),
-                nombre: document.getElementById('socio-nombre').value,
-                cargo: document.getElementById('socio-cargo').value.trim(),
-                foto: document.getElementById('socio-foto').value,
-                cuotaTotal: parseFloat(document.getElementById('socio-cuota-total').value) || 400,
-                pagado: parseFloat(document.getElementById('socio-pagado').value) || 0
-            };
-            if (id) await update(ref(db, `socios/${id}`), datos);
-            else await set(push(sociosRef), datos);
-            cerrarModalSocio();
-        };
-
-        window.guardarEvento = async function(e) {
-            e.preventDefault();
-            const id = document.getElementById('evento-id').value;
-            const datos = {
-                titulo: document.getElementById('evento-titulo').value,
-                fecha: document.getElementById('evento-fecha').value,
-                descripcion: document.getElementById('evento-descripcion').value
-            };
-            if (id) await update(ref(db, `eventos/${id}`), datos);
-            else await set(push(eventosRef), datos);
-            cerrarModalEvento();
-        };
-
-        window.guardarGasto = async function(e) {
-            e.preventDefault();
-            const datos = {
-                concepto: document.getElementById('gasto-concepto').value,
-                categoria: document.getElementById('gasto-categoria').value,
-                importe: parseFloat(document.getElementById('gasto-importe').value) || 0
-            };
-            await set(push(gastosRef), datos);
-            cerrarModalGasto();
-        };
-
-        window.editarSocio = function(id) {
-            const s = socios.find(i => i.id === id);
-            if(!s) return;
-            document.getElementById('socio-id').value = s.id;
-            document.getElementById('socio-num').value = s.numero;
-            document.getElementById('socio-nombre').value = s.nombre;
-            document.getElementById('socio-cargo').value = s.cargo || '';
-            document.getElementById('socio-foto').value = s.foto || '';
-            document.getElementById('socio-cuota-total').value = s.cuotaTotal || 400;
-            document.getElementById('socio-pagado').value = s.pagado || 0;
-            document.getElementById('modal-socio').classList.remove('hidden');
-            document.getElementById('modal-socio').classList.add('flex');
-        };
-
-        window.editarEvento = function(id) {
-            const ev = eventos.find(i => i.id === id);
-            if(!ev) return;
-            document.getElementById('evento-id').value = ev.id;
-            document.getElementById('evento-titulo').value = ev.titulo;
-            document.getElementById('evento-fecha').value = ev.fecha;
-            document.getElementById('evento-descripcion').value = ev.descripcion || '';
-            document.getElementById('modal-evento').classList.remove('hidden');
-            document.getElementById('modal-evento').classList.add('flex');
-        };
-
-        window.eliminarSocio = async (id) => { if(confirm('¿Eliminar socio?')) await remove(ref(db, `socios/${id}`)); };
-        window.eliminarEvento = async (id) => { if(confirm('¿Eliminar evento?')) await remove(ref(db, `eventos/${id}`)); };
-        window.eliminarGasto = async (id) => { if(confirm('¿Eliminar gasto?')) await remove(ref(db, `gastos/${id}`)); };
-
-        window.mostrarSeccion = function(s) {
-            document.getElementById('seccion-publica').classList.toggle('hidden', s !== 'publico');
-            document.getElementById('seccion-admin').classList.toggle('hidden', s !== 'admin');
-        };
-
-        window.solicitarAccesoAdmin = () => {
-            document.getElementById('modal-login').classList.remove('hidden');
-            document.getElementById('modal-login').classList.add('flex');
-        };
-        window.cerrarModalLogin = () => {
-            document.getElementById('modal-login').classList.add('hidden');
-            document.getElementById('modal-login').classList.remove('flex');
-        };
-        window.cerrarSesionAdmin = () => mostrarSeccion('publico');
-
-        window.abrirModalSocio = () => {
-            document.getElementById('form-socio').reset();
-            document.getElementById('socio-id').value = '';
-            document.getElementById('modal-socio').classList.remove('hidden');
-            document.getElementById('modal-socio').classList.add('flex');
-        };
-        window.cerrarModalSocio = () => {
-            document.getElementById('modal-socio').classList.add('hidden');
-            document.getElementById('modal-socio').classList.remove('flex');
-        };
-
-        window.abrirModalEvento = () => {
-            document.getElementById('form-evento').reset();
-            document.getElementById('evento-id').value = '';
-            document.getElementById('modal-evento').classList.remove('hidden');
-            document.getElementById('modal-evento').classList.add('flex');
-        };
-        window.cerrarModalEvento = () => {
-            document.getElementById('modal-evento').classList.add('hidden');
-            document.getElementById('modal-evento').classList.remove('flex');
-        };
-
-        window.abrirModalGasto = () => {
-            document.getElementById('form-gasto').reset();
-            document.getElementById('modal-gasto').classList.remove('hidden');
-            document.getElementById('modal-gasto').classList.add('flex');
-        };
-        window.cerrarModalGasto = () => {
-            document.getElementById('modal-gasto').classList.add('hidden');
-            document.getElementById('modal-gasto').classList.remove('flex');
-        };
     </script>
 </body>
 </html>
