@@ -58,27 +58,44 @@
                 
                 <span class="bg-amber-400 text-red-950 text-xs uppercase font-black px-4 py-1 rounded-full shadow mb-3">Caseta Nº 28</span>
                 <h2 class="text-3xl sm:text-5xl font-black text-amber-300 tracking-tight drop-shadow-md">Bienvenidos a Los Manolos y Cia.</h2>
-                <p class="mt-3 text-red-100 text-sm sm:text-lg max-w-2xl font-medium">Portal oficial de convivencia y reunión de nuestra caseta de feria.</p>
+                <p class="mt-3 text-red-100 text-sm sm:text-lg max-w-2xl font-medium">Portal oficial de convivencia, historia y reunión de nuestra caseta de feria.</p>
             </div>
         </section>
 
-        <!-- SECCIÓN DE EVENTOS Y PROGRAMACIÓN -->
+        <!-- SECCIÓN DE HISTORIA Y NOTICIAS / CONTEXTO DE LA CASETA -->
         <section class="max-w-7xl mx-auto px-4 py-10 w-full">
             <div class="text-center mb-8">
-                <span class="text-xs uppercase font-extrabold text-red-700 tracking-widest">Feria 2026</span>
-                <h3 class="text-2xl sm:text-3xl font-black text-slate-800 mt-1">Próximos Eventos y Actuaciones</h3>
-                <p class="text-slate-500 text-sm mt-1">No te pierdas ninguna de nuestras actividades programadas.</p>
+                <span class="text-xs uppercase font-extrabold text-red-700 tracking-widest">Nuestra Historia y Novedades</span>
+                <h3 class="text-2xl sm:text-3xl font-black text-slate-800 mt-1">Conoce más de Los Manolos y Cia.</h3>
+                <p class="text-slate-500 text-sm mt-1">Un recorrido por nuestros orígenes, momentos clave y noticias destacadas.</p>
                 <div class="w-16 h-1 bg-amber-400 mx-auto mt-3 rounded-full"></div>
             </div>
 
-            <!-- Grid de Eventos -->
-            <div id="grid-eventos-publico" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Grid de Historias / Anuncios -->
+            <div id="grid-historias-publico" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Se llena dinámicamente -->
             </div>
         </section>
 
+        <!-- SECCIÓN DE EVENTOS Y PROGRAMACIÓN -->
+        <section class="bg-slate-100 py-10 border-t border-slate-200">
+            <div class="max-w-7xl mx-auto px-4 w-full">
+                <div class="text-center mb-8">
+                    <span class="text-xs uppercase font-extrabold text-red-700 tracking-widest">Feria 2026</span>
+                    <h3 class="text-2xl sm:text-3xl font-black text-slate-800 mt-1">Próximos Eventos y Actuaciones</h3>
+                    <p class="text-slate-500 text-sm mt-1">No te pierdas ninguna de nuestras actividades programadas.</p>
+                    <div class="w-16 h-1 bg-amber-400 mx-auto mt-3 rounded-full"></div>
+                </div>
+
+                <!-- Grid de Eventos -->
+                <div id="grid-eventos-publico" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Se llena dinámicamente -->
+                </div>
+            </div>
+        </section>
+
         <!-- LISTADO OFICIAL DE SOCIOS (TARJETAS ELEGANTES CON FOTO) -->
-        <section class="bg-slate-100 py-12 border-t border-slate-200">
+        <section class="py-12 border-t border-slate-200">
             <div class="max-w-7xl mx-auto px-4 w-full">
                 <div class="text-center mb-10">
                     <span class="text-xs uppercase font-extrabold text-red-700 tracking-widest">Convivencia 2026</span>
@@ -109,6 +126,9 @@
                     </button>
                     <button id="tab-btn-socios" onclick="cambiarPestanaAdmin('socios')" class="px-5 py-3 font-bold text-sm border-b-2 border-amber-400 text-amber-400 flex items-center gap-2">
                         <i class="fa-solid fa-users"></i> Cuotas y Socios
+                    </button>
+                    <button id="tab-btn-historias" onclick="cambiarPestanaAdmin('historias')" class="px-5 py-3 font-bold text-sm text-slate-300 hover:text-white flex items-center gap-2">
+                        <i class="fa-solid fa-book-open"></i> Historia / Noticias
                     </button>
                     <button id="tab-btn-eventos" onclick="cambiarPestanaAdmin('eventos')" class="px-5 py-3 font-bold text-sm text-slate-300 hover:text-white flex items-center gap-2">
                         <i class="fa-solid fa-calendar-days"></i> Eventos Portada
@@ -197,7 +217,23 @@
                 </div>
             </div>
 
-            <!-- Pestaña 3: Gestión de Eventos -->
+            <!-- Pestaña 3: Gestión de Historia y Noticias -->
+            <div id="pestana-historias" class="hidden space-y-4">
+                <div class="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                    <div>
+                        <h3 class="font-bold text-slate-800">Sección de Historia, Fundación y Noticias</h3>
+                        <p class="text-xs text-slate-500">Añade información de contexto, anécdotas o avisos sobre la caseta para la portada.</p>
+                    </div>
+                    <button onclick="abrirModalHistoria()" class="bg-red-800 hover:bg-red-700 text-white font-bold px-4 py-2 rounded-lg text-xs shadow flex items-center gap-1">
+                        <i class="fa-solid fa-plus"></i> + Añadir Historia / Noticia
+                    </button>
+                </div>
+                <div id="contenedor-historias-admin" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Cards de historias admin -->
+                </div>
+            </div>
+
+            <!-- Pestaña 4: Gestión de Eventos -->
             <div id="pestana-eventos" class="hidden space-y-4">
                 <div class="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-slate-200">
                     <div>
@@ -213,7 +249,7 @@
                 </div>
             </div>
 
-            <!-- Pestaña 4: Facturas y Gastos -->
+            <!-- Pestaña 5: Facturas y Gastos -->
             <div id="pestana-gastos" class="hidden space-y-4">
                 <div class="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-slate-200">
                     <h3 class="font-bold text-slate-800">Facturas, Proveedores y Gastos Generales</h3>
@@ -257,6 +293,39 @@
                 <div class="flex gap-2">
                     <button type="button" onclick="cerrarModalLogin()" class="w-1/2 py-2.5 border text-slate-600 rounded-xl font-bold text-sm">Cancelar</button>
                     <button type="submit" class="w-1/2 py-2.5 bg-red-800 text-white rounded-xl font-bold text-sm shadow">Entrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL REGISTRO DE HISTORIA / NOTICIA -->
+    <div id="modal-historia" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
+            <div class="bg-red-900 px-6 py-4 text-white flex justify-between items-center">
+                <h3 class="font-black">Crear / Editar Historia o Noticia</h3>
+                <button onclick="cerrarModalHistoria()" class="text-white hover:text-amber-300 text-xl font-bold">&times;</button>
+            </div>
+            <form id="form-historia" onsubmit="guardarHistoria(event)" class="p-6 space-y-4">
+                <input type="hidden" id="historia-id">
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Título</label>
+                    <input type="text" id="historia-titulo" required placeholder="Ej. Fundación de la Caseta / Nuestra Tradición" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-800 outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Subtítulo o Fecha Destacada</label>
+                    <input type="text" id="historia-subtitulo" placeholder="Ej. Año 2010 o Noticia de Mayo" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-800 outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">URL de la Imagen (Opcional)</label>
+                    <input type="url" id="historia-imagen" placeholder="https://ejemplo.com/foto.jpg" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-800 outline-none text-xs">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Texto / Contenido</label>
+                    <textarea id="historia-contenido" rows="4" required placeholder="Escribe aquí los detalles, historia u orígenes de la caseta..." class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-800 outline-none text-sm"></textarea>
+                </div>
+                <div class="flex justify-end gap-3 pt-4 border-t">
+                    <button type="button" onclick="cerrarModalHistoria()" class="px-4 py-2 border text-slate-600 rounded-lg text-sm font-semibold">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 bg-red-900 text-white rounded-lg text-sm font-bold shadow">Guardar Historia</button>
                 </div>
             </form>
         </div>
@@ -416,10 +485,12 @@
         const sociosRef = ref(db, 'socios');
         const gastosRef = ref(db, 'gastos');
         const eventosRef = ref(db, 'eventos');
+        const historiasRef = ref(db, 'historias');
 
         const ADMIN_PASSWORD = "manolos2026";
         const FOTO_DEFAULT = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop&q=80";
         const EVENTO_DEFAULT = "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&auto=format&fit=crop&q=80";
+        const HISTORIA_DEFAULT = "https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=600&auto=format&fit=crop&q=80";
 
         // LISTADO OFICIAL REGISTRADO
         const listaOficialInicial = [
@@ -447,6 +518,7 @@
         let socios = [];
         let gastos = [];
         let eventos = [];
+        let historias = [];
 
         // Cargar Socios
         onValue(sociosRef, (snapshot) => {
@@ -485,6 +557,127 @@
             renderizarEventosPublico();
             renderizarEventosAdmin();
         });
+
+        // Cargar Historias
+        onValue(historiasRef, (snapshot) => {
+            const data = snapshot.val();
+            if (!data) {
+                // Crear historia inicial de ejemplo si no existe
+                push(historiasRef, {
+                    titulo: "Fundación de la Caseta",
+                    subtitulo: "Nuestros Orígenes",
+                    imagen: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=600&auto=format&fit=crop&q=80",
+                    contenido: "La Caseta Los Manolos y Cia. nació con el objetivo de reunir a familiares y amigos en un espacio lleno de alegría, buena música y grandes momentos compartidos durante las fiestas de la feria."
+                });
+            } else {
+                historias = Object.keys(data).map(k => ({ id: k, ...data[k] }));
+                renderizarHistoriasPublico();
+                renderizarHistoriasAdmin();
+            }
+        });
+
+        // VISTA PÚBLICA HISTORIAS / CONTEXTO
+        function renderizarHistoriasPublico() {
+            const container = document.getElementById('grid-historias-publico');
+            container.innerHTML = '';
+
+            if (historias.length === 0) {
+                container.innerHTML = `<p class="col-span-full text-center text-slate-400 text-sm">Próximamente añadiremos más relatos de la caseta.</p>`;
+                return;
+            }
+
+            historias.forEach(h => {
+                const imgUrl = h.imagen && h.imagen.trim() !== "" ? h.imagen : HISTORIA_DEFAULT;
+
+                const div = document.createElement('div');
+                div.className = "bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden flex flex-col hover:shadow-lg transition";
+                div.innerHTML = `
+                    <div class="h-48 w-full bg-slate-200 relative overflow-hidden">
+                        <img src="${imgUrl}" class="w-full h-full object-cover" onerror="this.src='${HISTORIA_DEFAULT}'">
+                        ${h.subtitulo ? `<span class="absolute top-3 left-3 bg-red-900/90 text-amber-300 text-xs font-bold px-3 py-1 rounded-full backdrop-blur-sm">${h.subtitulo}</span>` : ''}
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col justify-between">
+                        <div>
+                            <h4 class="text-xl font-black text-slate-800">${h.titulo}</h4>
+                            <p class="text-slate-600 text-sm mt-3 leading-relaxed whitespace-pre-line">${h.contenido}</p>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // ADMIN: HISTORIAS
+        function renderizarHistoriasAdmin() {
+            const container = document.getElementById('contenedor-historias-admin');
+            container.innerHTML = '';
+            if (historias.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-400 italic col-span-full">No hay historias publicadas.</p>`;
+                return;
+            }
+            historias.forEach(h => {
+                const div = document.createElement('div');
+                div.className = "bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex justify-between items-center";
+                div.innerHTML = `
+                    <div>
+                        <h4 class="font-bold text-slate-800 text-sm">${h.titulo}</h4>
+                        <p class="text-xs text-slate-500">${h.subtitulo || 'Sin subtítulo'}</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="editarHistoria('${h.id}')" class="p-2 bg-slate-100 text-blue-600 rounded"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button onclick="eliminarHistoria('${h.id}')" class="p-2 bg-slate-100 text-red-600 rounded"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // ACCIONES HISTORIA
+        window.guardarHistoria = async function(e) {
+            e.preventDefault();
+            const id = document.getElementById('historia-id').value;
+            const titulo = document.getElementById('historia-titulo').value;
+            const subtitulo = document.getElementById('historia-subtitulo').value;
+            const imagen = document.getElementById('historia-imagen').value;
+            const contenido = document.getElementById('historia-contenido').value;
+
+            const datos = { titulo, subtitulo, imagen, contenido };
+
+            if (id) {
+                await update(ref(db, `historias/${id}`), datos);
+            } else {
+                await set(push(historiasRef), datos);
+            }
+            cerrarModalHistoria();
+        };
+
+        window.editarHistoria = function(id) {
+            const h = historias.find(item => item.id === id);
+            if (!h) return;
+            document.getElementById('historia-id').value = h.id;
+            document.getElementById('historia-titulo').value = h.titulo;
+            document.getElementById('historia-subtitulo').value = h.subtitulo || '';
+            document.getElementById('historia-imagen').value = h.imagen || '';
+            document.getElementById('historia-contenido').value = h.contenido;
+            document.getElementById('modal-historia').classList.remove('hidden');
+            document.getElementById('modal-historia').classList.add('flex');
+        };
+
+        window.eliminarHistoria = async function(id) {
+            if (confirm('¿Deseas eliminar esta historia o noticia?')) await remove(ref(db, `historias/${id}`));
+        };
+
+        window.abrirModalHistoria = function() {
+            document.getElementById('form-historia').reset();
+            document.getElementById('historia-id').value = '';
+            document.getElementById('modal-historia').classList.remove('hidden');
+            document.getElementById('modal-historia').classList.add('flex');
+        };
+
+        window.cerrarModalHistoria = function() {
+            document.getElementById('modal-historia').classList.add('hidden');
+            document.getElementById('modal-historia').classList.remove('flex');
+        };
 
         // VISTA PÚBLICA SOCIOS (Súper Elegante estilo tarjeta)
         function renderizarSociosPublico() {
@@ -592,11 +785,13 @@
         window.cambiarPestanaAdmin = function(pestana) {
             document.getElementById('pestana-balance').classList.add('hidden');
             document.getElementById('pestana-socios').classList.add('hidden');
+            document.getElementById('pestana-historias').classList.add('hidden');
             document.getElementById('pestana-eventos').classList.add('hidden');
             document.getElementById('pestana-gastos').classList.add('hidden');
 
             document.getElementById('tab-btn-balance').className = "px-5 py-3 font-bold text-sm text-slate-300 hover:text-white flex items-center gap-2";
             document.getElementById('tab-btn-socios').className = "px-5 py-3 font-bold text-sm text-slate-300 hover:text-white flex items-center gap-2";
+            document.getElementById('tab-btn-historias').className = "px-5 py-3 font-bold text-sm text-slate-300 hover:text-white flex items-center gap-2";
             document.getElementById('tab-btn-eventos').className = "px-5 py-3 font-bold text-sm text-slate-300 hover:text-white flex items-center gap-2";
             document.getElementById('tab-btn-gastos').className = "px-5 py-3 font-bold text-sm text-slate-300 hover:text-white flex items-center gap-2";
 
@@ -606,6 +801,9 @@
             } else if (pestana === 'socios') {
                 document.getElementById('pestana-socios').classList.remove('hidden');
                 document.getElementById('tab-btn-socios').className = "px-5 py-3 font-bold text-sm border-b-2 border-amber-400 text-amber-400 flex items-center gap-2";
+            } else if (pestana === 'historias') {
+                document.getElementById('pestana-historias').classList.remove('hidden');
+                document.getElementById('tab-btn-historias').className = "px-5 py-3 font-bold text-sm border-b-2 border-amber-400 text-amber-400 flex items-center gap-2";
             } else if (pestana === 'eventos') {
                 document.getElementById('pestana-eventos').classList.remove('hidden');
                 document.getElementById('tab-btn-eventos').className = "px-5 py-3 font-bold text-sm border-b-2 border-amber-400 text-amber-400 flex items-center gap-2";
@@ -664,7 +862,7 @@
             document.getElementById('modal-evento').classList.remove('flex');
         };
 
-        // ACCIONES DE SOCIO Y OTRAS VISTAS (EXISTENTES)
+        // ACCIONES GENERALES
         window.mostrarSeccion = function(seccion) {
             if (seccion === 'publico') {
                 document.getElementById('seccion-publica').classList.remove('hidden');
