@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Socios - Caseta de Feria</title>
+    <!-- Tailwind CSS desde CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col">
+
+    <!-- Navegación -->
+    <header class="bg-red-700 text-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <i class="fa-solid fa-[#ffffff] fa-tent text-2xl text-amber-300"></i>
+                <h1 class="text-xl font-bold tracking-wide">Caseta "La Jarana" — Control de Socios</h1>
+            </div>
+            <button onclick="abrirModal()" class="bg-amber-400 hover:bg-amber-300 text-red-950 font-semibold px-4 py-2 rounded-lg shadow transition flex items-center gap-2">
+                <i class="fa-solid fa-user-plus"></i> Nuevo Socio
+            </button>
+        </div>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="max-w-7xl mx-auto px-4 py-8 flex-1 w-full">
+
+        <!-- Tarjetas de Resumen / Estadísticas -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                <p class="text-xs uppercase font-bold text-slate-400">Total Socios</p>
+                <p id="stat-total" class="text-3xl font-extrabold text-slate-800 mt-1">0</p>
+            </div>
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                <p class="text-xs uppercase font-bold text-green-600">Al Día</p>
+                <p id="stat-pagados" class="text-3xl font-extrabold text-green-600 mt-1">0</p>
+            </div>
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                <p class="text-xs uppercase font-bold text-amber-600">Pendientes</p>
+                <p id="stat-pendientes" class="text-3xl font-extrabold text-amber-600 mt-1">0</p>
+            </div>
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                <p class="text-xs uppercase font-bold text-red-600">Atrasados</p>
+                <p id="stat-atrasados" class="text-3xl font-extrabold text-red-600 mt-1">0</p>
+            </div>
+        </div>
+
+        <!-- Barra de búsqueda y Filtros -->
+        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 mb-6 flex flex-col md:flex-row gap-4 justify-between items-center">
+            <div class="relative w-full md:w-96">
+                <i class="fa-solid fa-magnifying-glass absolute left-3 top-3.5 text-slate-400"></i>
+                <input type="text" id="input-buscar" oninput="filtrarTabla()" placeholder="Buscar por socio o Nº..." class="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-sm">
+            </div>
+            <div class="flex gap-2 w-full md:w-auto">
+                <select id="filtro-estado" onchange="filtrarTabla()" class="w-full md:w-auto px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-sm bg-white">
+                    <option value="TODOS">Todos los estados</option>
+                    <option value="Pagado">Pagado</option>
+                    <option value="Pendiente">Pendiente</option>
+                    <option value="Atrasado">Atrasado</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Tabla de Socios -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-slate-50 border-b border-slate-200 text-xs text-slate-500 uppercase tracking-wider">
+                            <th class="p-4">Nº</th>
+                            <th class="p-4">Nombre Completo</th>
+                            <th class="p-4">Contacto</th>
+                            <th class="p-4">Cuota Estipulada</th>
+                            <th class="p-4">Estado Pago</th>
+                            <th class="p-4 text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-socios" class="divide-y divide-slate-100 text-sm">
+                        <!-- Se rellena dinámicamente con JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal para Añadir / Editar Socio -->
+    <div id="modal-socio" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden">
+            <div class="bg-red-700 px-6 py-4 text-white flex justify-between items-center">
+                <h3 id="modal-titulo" class="font-bold text-lg">Registrar Nuevo Socio</h3>
+                <button onclick="cerrarModal()" class="text-white hover:text-amber-300 text-xl font-bold">&times;</button>
+            </div>
+            <form id="form-socio" onsubmit="guardarSocio(event)" class="p-6 space-y-4">
+                <input type="hidden" id="socio-id">
+                
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Número de Socio</label>
+                    <input type="number" id="socio-num" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Nombre Completo</label>
+                    <input type="text" id="socio-nombre" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Teléfono</label>
+                    <input type="tel" id="socio-telefono" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 outline-none">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Cuota (€)</label>
+                        <input type="number" id="socio-cuota" required value="150" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Estado</label>
+                        <select id="socio-estado" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 outline-none bg-white">
+                            <option value="Pagado">Pagado</option>
+                            <option value="Pendiente">Pendiente</option>
+                            <option value="Atrasado">Atrasado</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="flex justify-end gap-3 pt-4 border-t">
+                    <button type="button" onclick="cerrarModal()" class="px-4 py-2 border text-slate-600 rounded-lg hover:bg-slate-50 font-semibold text-sm">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 bg-red-700 hover:bg-red-800 text-white rounded-lg font-semibold text-sm shadow">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Script de Lógica -->
+    <script>
+        // Datos iniciales de ejemplo (se guardarán en el navegador con localStorage)
+        let socios = JSON.parse(localStorage.getItem('caseta_socios')) || [
+            { id: 1, numero: 1, nombre: "Manuel Garcia Lopez", telefono: "600112233", cuota: 150, estado: "Pagado" },
+            { id: 2, numero: 2, nombre: "Rocío Fernández Ruiz", telefono: "611223344", cuota: 150, estado: "Pendiente" },
+            { id: 3, numero: 3, nombre: "Antonio Gómez Martín", telefono: "622334455", cuota: 150, estado: "Atrasado" }
+        ];
+
+        // Cargar tabla al iniciar
+        document.addEventListener('DOMContentLoaded', () => {
+            renderizarTabla();
+        });
+
+        // Función para renderizar la tabla de socios
+        function renderizarTabla(lista = socios) {
+            const tbody = document.getElementById('tabla-socios');
+            tbody.innerHTML = '';
+
+            if (lista.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-400">No se encontraron socios registrados.</td></tr>`;
+                actualizarEstadisticas();
+                return;
+            }
+
+            lista.sort((a, b) => a.numero - b.numero).forEach(socio => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition";
+                
+                // Formatear badge de estado
+                let badgeClass = "";
+                if (socio.estado === 'Pagado') badgeClass = "bg-green-100 text-green-700 border-green-200";
+                else if (socio.estado === 'Pendiente') badgeClass = "bg-amber-100 text-amber-700 border-amber-200";
+                else badgeClass = "bg-red-100 text-red-700 border-red-200";
+
+                tr.innerHTML = `
+                    <td class="p-4 font-bold text-slate-600">#${socio.numero}</td>
+                    <td class="p-4 font-semibold text-slate-800">${socio.nombre}</td>
+                    <td class="p-4 text-slate-500"><i class="fa-solid fa-phone text-xs mr-1"></i>${socio.telefono}</td>
+                    <td class="p-4 font-bold text-slate-700">${socio.cuota} €</td>
+                    <td class="p-4">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-full border ${badgeClass}">
+                            ${socio.estado}
+                        </span>
+                    </td>
+                    <td class="p-4 text-center">
+                        <div class="flex justify-center gap-2">
+                            <button onclick="cambiarEstadoRapido(${socio.id})" title="Cambiar Estado Rápido" class="p-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded">
+                                <i class="fa-solid fa-rotate"></i>
+                            </button>
+                            <button onclick="editarSocio(${socio.id})" title="Editar Socio" class="p-1.5 bg-slate-100 hover:bg-blue-100 text-blue-600 rounded">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+                            <button onclick="eliminarSocio(${socio.id})" title="Eliminar Socio" class="p-1.5 bg-slate-100 hover:bg-red-100 text-red-600 rounded">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            actualizarEstadisticas();
+        }
+
+        // Actualiza los contadores del panel superior
+        function actualizarEstadisticas() {
+            document.getElementById('stat-total').innerText = socios.length;
+            document.getElementById('stat-pagados').innerText = socios.filter(s => s.estado === 'Pagado').length;
+            document.getElementById('stat-pendientes').innerText = socios.filter(s => s.estado === 'Pendiente').length;
+            document.getElementById('stat-atrasados').innerText = socios.filter(s => s.estado === 'Atrasado').length;
+        }
+
+        // Búsqueda y filtrado dinámico
+        function filtrarTabla() {
+            const texto = document.getElementById('input-buscar').value.toLowerCase();
+            const estado = document.getElementById('filtro-estado').value;
+
+            const resultado = socios.filter(socio => {
+                const coincideTexto = socio.nombre.toLowerCase().includes(texto) || socio.numero.toString().includes(texto);
+                const coincideEstado = estado === 'TODOS' || socio.estado === estado;
+                return coincideTexto && coincideEstado;
+            });
+
+            renderizarTabla(resultado);
+        }
+
+        // Gestión del Modal
+        function abrirModal() {
+            document.getElementById('form-socio').reset();
+            document.getElementById('socio-id').value = '';
+            document.getElementById('modal-titulo').innerText = 'Registrar Nuevo Socio';
+            
+            // Sugerir el siguiente número disponible
+            const maxNum = socios.reduce((max, s) => s.numero > max ? s.numero : max, 0);
+            document.getElementById('socio-num').value = maxNum + 1;
+
+            const modal = document.getElementById('modal-socio');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function cerrarModal() {
+            const modal = document.getElementById('modal-socio');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        // Guardar o Actualizar Socio
+        function guardarSocio(e) {
+            e.preventDefault();
+            
+            const id = document.getElementById('socio-id').value;
+            const numero = parseInt(document.getElementById('socio-num').value);
+            const nombre = document.getElementById('socio-nombre').value;
+            const telefono = document.getElementById('socio-telefono').value;
+            const cuota = parseFloat(document.getElementById('socio-cuota').value);
+            const estado = document.getElementById('socio-estado').value;
+
+            if (id) {
+                // Editar existente
+                const index = socios.findIndex(s => s.id == id);
+                socios[index] = { id: parseInt(id), numero, nombre, telefono, cuota, estado };
+            } else {
+                // Crear nuevo
+                const nuevoSocio = {
+                    id: Date.now(),
+                    numero,
+                    nombre,
+                    telefono,
+                    cuota,
+                    estado
+                };
+                socios.push(nuevoSocio);
+            }
+
+            guardarDatos();
+            cerrarModal();
+            filtrarTabla();
+        }
+
+        // Cargar datos en el modal para editar
+        function editarSocio(id) {
+            const socio = socios.find(s => s.id === id);
+            if (!socio) return;
+
+            document.getElementById('socio-id').value = socio.id;
+            document.getElementById('socio-num').value = socio.numero;
+            document.getElementById('socio-nombre').value = socio.nombre;
+            document.getElementById('socio-telefono').value = socio.telefono;
+            document.getElementById('socio-cuota').value = socio.cuota;
+            document.getElementById('socio-estado').value = socio.estado;
+
+            document.getElementById('modal-titulo').innerText = 'Editar Socio';
+            
+            const modal = document.getElementById('modal-socio');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        // Rotar estados de pago con un solo clic
+        function cambiarEstadoRapido(id) {
+            const socio = socios.find(s => s.id === id);
+            if (!socio) return;
+
+            if (socio.estado === 'Pendiente') socio.estado = 'Pagado';
+            else if (socio.estado === 'Pagado') socio.estado = 'Atrasado';
+            else socio.estado = 'Pendiente';
+
+            guardarDatos();
+            filtrarTabla();
+        }
+
+        // Eliminar socio
+        function eliminarSocio(id) {
+            if (confirm('¿Estás seguro de que quieres eliminar a este socio?')) {
+                socios = socios.filter(s => s.id !== id);
+                guardarDatos();
+                filtrarTabla();
+            }
+        }
+
+        // Persistencia local en el navegador
+        function guardarDatos() {
+            localStorage.setItem('caseta_socios', JSON.stringify(socios));
+        }
+    </script>
+</body>
+</html>
