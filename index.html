@@ -17,7 +17,7 @@
         }
     </style>
 </head>
-<body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col">
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
 
     <!-- Navegación Superior -->
     <header class="bg-red-950 text-white shadow-xl border-b-4 border-amber-400 sticky top-0 z-40">
@@ -62,18 +62,35 @@
             </div>
         </section>
 
-        <!-- Listado Oficial de Socios (Con fotos adaptables en la portada pública) -->
-        <section class="max-w-7xl mx-auto px-4 py-10 w-full flex-1">
+        <!-- SECCIÓN DE EVENTOS Y PROGRAMACIÓN -->
+        <section class="max-w-7xl mx-auto px-4 py-10 w-full">
             <div class="text-center mb-8">
-                <span class="text-xs uppercase font-extrabold text-red-700 tracking-widest">Convivencia 2026</span>
-                <h3 class="text-2xl sm:text-3xl font-black text-slate-800 mt-1">Listado Oficial de Socios</h3>
-                <p class="text-slate-500 text-sm mt-1">Componentes de la Caseta Los Manolos y Cia.</p>
+                <span class="text-xs uppercase font-extrabold text-red-700 tracking-widest">Feria 2026</span>
+                <h3 class="text-2xl sm:text-3xl font-black text-slate-800 mt-1">Próximos Eventos y Actuaciones</h3>
+                <p class="text-slate-500 text-sm mt-1">No te pierdas ninguna de nuestras actividades programadas.</p>
                 <div class="w-16 h-1 bg-amber-400 mx-auto mt-3 rounded-full"></div>
             </div>
 
-            <!-- Grid de Socios -->
-            <div id="grid-socios-publico" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                <!-- Se rellena dinámicamente -->
+            <!-- Grid de Eventos -->
+            <div id="grid-eventos-publico" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Se llena dinámicamente -->
+            </div>
+        </section>
+
+        <!-- LISTADO OFICIAL DE SOCIOS (TARJETAS ELEGANTES CON FOTO) -->
+        <section class="bg-slate-100 py-12 border-t border-slate-200">
+            <div class="max-w-7xl mx-auto px-4 w-full">
+                <div class="text-center mb-10">
+                    <span class="text-xs uppercase font-extrabold text-red-700 tracking-widest">Convivencia 2026</span>
+                    <h3 class="text-2xl sm:text-3xl font-black text-slate-800 mt-1">Listado Oficial de Socios</h3>
+                    <p class="text-slate-500 text-sm mt-1">Componentes de la Caseta Los Manolos y Cia.</p>
+                    <div class="w-16 h-1 bg-amber-400 mx-auto mt-3 rounded-full"></div>
+                </div>
+
+                <!-- Grid Elegante de Socios -->
+                <div id="grid-socios-publico" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    <!-- Se llena dinámicamente -->
+                </div>
             </div>
         </section>
 
@@ -88,17 +105,20 @@
             <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
                 <div class="flex overflow-x-auto">
                     <button id="tab-btn-balance" onclick="cambiarPestanaAdmin('balance')" class="px-5 py-3 font-bold text-sm text-slate-300 hover:text-white flex items-center gap-2">
-                        <i class="fa-solid fa-scale-balanced"></i> Balance y Caja
+                        <i class="fa-solid fa-scale-balanced"></i> Balance
                     </button>
                     <button id="tab-btn-socios" onclick="cambiarPestanaAdmin('socios')" class="px-5 py-3 font-bold text-sm border-b-2 border-amber-400 text-amber-400 flex items-center gap-2">
-                        <i class="fa-solid fa-users"></i> Control de Cuotas (400€)
+                        <i class="fa-solid fa-users"></i> Cuotas y Socios
+                    </button>
+                    <button id="tab-btn-eventos" onclick="cambiarPestanaAdmin('eventos')" class="px-5 py-3 font-bold text-sm text-slate-300 hover:text-white flex items-center gap-2">
+                        <i class="fa-solid fa-calendar-days"></i> Eventos Portada
                     </button>
                     <button id="tab-btn-gastos" onclick="cambiarPestanaAdmin('gastos')" class="px-5 py-3 font-bold text-sm text-slate-300 hover:text-white flex items-center gap-2">
-                        <i class="fa-solid fa-receipt"></i> Facturas y Gastos
+                        <i class="fa-solid fa-receipt"></i> Facturas
                     </button>
                 </div>
                 <button onclick="cerrarSesionAdmin()" class="text-xs bg-red-800 hover:bg-red-700 text-white px-3 py-1.5 rounded font-bold transition my-2">
-                    <i class="fa-solid fa-right-from-bracket mr-1"></i> Salir Admin
+                    <i class="fa-solid fa-right-from-bracket mr-1"></i> Salir
                 </button>
             </div>
         </div>
@@ -152,7 +172,7 @@
                         <p class="text-xs text-slate-500">Haz clic en el icono del lápiz <i class="fa-solid fa-pen-to-square"></i> para añadir teléfono, foto o registrar cobro.</p>
                     </div>
                     <button onclick="abrirModalSocio()" class="bg-red-800 hover:bg-red-700 text-white font-bold px-3 py-2 rounded-lg text-xs shadow flex items-center gap-1">
-                        <i class="fa-solid fa-user-plus"></i> + Añadir Otro Socio
+                        <i class="fa-solid fa-user-plus"></i> + Añadir Socio
                     </button>
                 </div>
                 <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
@@ -177,7 +197,23 @@
                 </div>
             </div>
 
-            <!-- Pestaña 3: Facturas y Gastos (Solo Administración) -->
+            <!-- Pestaña 3: Gestión de Eventos -->
+            <div id="pestana-eventos" class="hidden space-y-4">
+                <div class="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                    <div>
+                        <h3 class="font-bold text-slate-800">Gestión de Eventos y Actuaciones</h3>
+                        <p class="text-xs text-slate-500">Publica los eventos que se verán en la página principal.</p>
+                    </div>
+                    <button onclick="abrirModalEvento()" class="bg-amber-500 hover:bg-amber-400 text-red-950 font-bold px-4 py-2 rounded-lg text-xs shadow flex items-center gap-1">
+                        <i class="fa-solid fa-calendar-plus"></i> + Crear Evento
+                    </button>
+                </div>
+                <div id="contenedor-eventos-admin" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Cards de eventos admin -->
+                </div>
+            </div>
+
+            <!-- Pestaña 4: Facturas y Gastos -->
             <div id="pestana-gastos" class="hidden space-y-4">
                 <div class="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-slate-200">
                     <h3 class="font-bold text-slate-800">Facturas, Proveedores y Gastos Generales</h3>
@@ -221,6 +257,45 @@
                 <div class="flex gap-2">
                     <button type="button" onclick="cerrarModalLogin()" class="w-1/2 py-2.5 border text-slate-600 rounded-xl font-bold text-sm">Cancelar</button>
                     <button type="submit" class="w-1/2 py-2.5 bg-red-800 text-white rounded-xl font-bold text-sm shadow">Entrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL REGISTRO DE EVENTO -->
+    <div id="modal-evento" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
+            <div class="bg-amber-500 px-6 py-4 text-red-950 flex justify-between items-center">
+                <h3 class="font-black">Crear / Editar Evento</h3>
+                <button onclick="cerrarModalEvento()" class="text-red-950 hover:text-white text-xl font-bold">&times;</button>
+            </div>
+            <form id="form-evento" onsubmit="guardarEvento(event)" class="p-6 space-y-4">
+                <input type="hidden" id="evento-id">
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Título del Evento</label>
+                    <input type="text" id="evento-titulo" required placeholder="Ej. Gran Almuerzo de Convivencia" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Fecha</label>
+                        <input type="date" id="evento-fecha" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Hora</label>
+                        <input type="time" id="evento-hora" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">URL de la Imagen (Opcional)</label>
+                    <input type="url" id="evento-imagen" placeholder="https://ejemplo.com/cartel.jpg" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none text-xs">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Descripción</label>
+                    <textarea id="evento-descripcion" rows="3" placeholder="Detalles de la actuación o comida..." class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none text-sm"></textarea>
+                </div>
+                <div class="flex justify-end gap-3 pt-4 border-t">
+                    <button type="button" onclick="cerrarModalEvento()" class="px-4 py-2 border text-slate-600 rounded-lg text-sm font-semibold">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 bg-amber-500 text-red-950 rounded-lg text-sm font-bold shadow">Guardar Evento</button>
                 </div>
             </form>
         </div>
@@ -288,7 +363,6 @@
                 <div>
                     <label class="block text-xs font-bold uppercase text-slate-600 mb-1">URL Foto / Imagen del Socio</label>
                     <input type="url" id="socio-foto" placeholder="https://ejemplo.com/foto.jpg" class="w-full px-3 py-2 border rounded-lg outline-none focus:ring-2 focus:ring-red-800 text-xs">
-                    <p class="text-[10px] text-slate-400 mt-0.5">Pega el enlace de la imagen del socio para mostrarla en la portada pública.</p>
                 </div>
                 <div>
                     <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Teléfono Móvil (WhatsApp)</label>
@@ -341,11 +415,13 @@
 
         const sociosRef = ref(db, 'socios');
         const gastosRef = ref(db, 'gastos');
+        const eventosRef = ref(db, 'eventos');
 
         const ADMIN_PASSWORD = "manolos2026";
-        const FOTO_DEFAULT = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80";
+        const FOTO_DEFAULT = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop&q=80";
+        const EVENTO_DEFAULT = "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&auto=format&fit=crop&q=80";
 
-        // LISTADO OFICIAL REGISTRADO (TODOS PENDIENTES DE PAGADO Y TELÉFONO)
+        // LISTADO OFICIAL REGISTRADO
         const listaOficialInicial = [
             { num: 1, nombre: "Ramón y Almudena", foto: "" },
             { num: 2, nombre: "Manuel y Lorena", foto: "" },
@@ -370,12 +446,12 @@
 
         let socios = [];
         let gastos = [];
+        let eventos = [];
 
-        // Cargar/Sincronizar Socios
+        // Cargar Socios
         onValue(sociosRef, (snapshot) => {
             const data = snapshot.val();
             if (!data) {
-                // Si la BD está limpia, inicializamos los 19 socios
                 listaOficialInicial.forEach((item) => {
                     push(sociosRef, {
                         numero: item.num,
@@ -402,7 +478,15 @@
             actualizarBalance();
         });
 
-        // VISTA PÚBLICA (Muestra la foto del socio)
+        // Cargar Eventos
+        onValue(eventosRef, (snapshot) => {
+            const data = snapshot.val();
+            eventos = data ? Object.keys(data).map(k => ({ id: k, ...data[k] })) : [];
+            renderizarEventosPublico();
+            renderizarEventosAdmin();
+        });
+
+        // VISTA PÚBLICA SOCIOS (Súper Elegante estilo tarjeta)
         function renderizarSociosPublico() {
             const container = document.getElementById('grid-socios-publico');
             container.innerHTML = '';
@@ -413,24 +497,174 @@
                 const fotoUrl = s.foto && s.foto.trim() !== "" ? s.foto : FOTO_DEFAULT;
 
                 const div = document.createElement('div');
-                div.className = "bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between hover:shadow-md transition";
+                div.className = "bg-white rounded-2xl shadow-md hover:shadow-xl transition duration-300 overflow-hidden border border-slate-200/80 flex flex-col group";
                 div.innerHTML = `
-                    <div class="flex items-center space-x-3">
-                        <div class="w-12 h-12 rounded-full overflow-hidden border-2 border-amber-400 bg-slate-100 shrink-0 shadow-sm">
-                            <img src="${fotoUrl}" alt="${s.nombre}" class="w-full h-full object-cover" onerror="this.src='${FOTO_DEFAULT}'">
-                        </div>
-                        <div>
-                            <p class="font-bold text-slate-800 text-sm">${s.nombre}</p>
-                            <p class="text-[11px] text-slate-400 font-semibold">Socio Componente 2026</p>
+                    <div class="relative h-48 w-full bg-slate-200 overflow-hidden">
+                        <img src="${fotoUrl}" alt="${s.nombre}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='${FOTO_DEFAULT}'">
+                        <div class="absolute top-3 right-3">
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold text-white shadow-md backdrop-blur-md ${estaAlDia ? 'bg-emerald-600/90' : 'bg-amber-500/90'}">
+                                <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
+                                ${estaAlDia ? 'Cuota Completa' : 'Al Día'}
+                            </span>
                         </div>
                     </div>
-                    <span title="${estaAlDia ? 'Cuota Completa' : 'Pendiente'}" class="w-3 h-3 rounded-full ${estaAlDia ? 'bg-green-500' : 'bg-amber-400'} shrink-0"></span>
+                    <div class="p-5 flex-1 flex flex-col justify-between">
+                        <div>
+                            <h4 class="font-black text-slate-800 text-base leading-snug group-hover:text-red-800 transition">${s.nombre}</h4>
+                            <p class="text-xs text-slate-400 font-semibold mt-1">Socio Componente 2026</p>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-slate-100 flex justify-between items-center text-xs font-bold text-slate-500">
+                            <span>Caseta Los Manolos</span>
+                            <i class="fa-solid fa-heart text-red-700"></i>
+                        </div>
+                    </div>
                 `;
                 container.appendChild(div);
             });
         }
 
-        // VISTA PÚBLICA / ADMIN
+        // VISTA PÚBLICA EVENTOS
+        function renderizarEventosPublico() {
+            const container = document.getElementById('grid-eventos-publico');
+            container.innerHTML = '';
+
+            if (eventos.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full bg-white p-8 rounded-2xl text-center border border-slate-200 text-slate-400">
+                        <i class="fa-solid fa-calendar-xmark text-4xl mb-2 text-slate-300"></i>
+                        <p class="text-sm font-semibold">Próximamente publicaremos el programa de actividades y actuaciones.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            eventos.sort((a,b) => new Date(a.fecha) - new Date(b.fecha)).forEach(ev => {
+                const imgUrl = ev.imagen && ev.imagen.trim() !== "" ? ev.imagen : EVENTO_DEFAULT;
+                const fechaFmt = new Date(ev.fecha).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
+
+                const div = document.createElement('div');
+                div.className = "bg-white rounded-2xl shadow-md overflow-hidden border border-slate-200 flex flex-col hover:shadow-lg transition";
+                div.innerHTML = `
+                    <div class="h-44 w-full bg-slate-200 relative overflow-hidden">
+                        <img src="${imgUrl}" class="w-full h-full object-cover" onerror="this.src='${EVENTO_DEFAULT}'">
+                        <div class="absolute bottom-3 left-3 bg-red-950/90 text-amber-300 text-xs font-black px-3 py-1 rounded-lg backdrop-blur-sm">
+                            <i class="fa-regular fa-clock mr-1"></i> ${ev.hora || 'Todo el día'}
+                        </div>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col justify-between space-y-3">
+                        <div>
+                            <span class="text-[11px] font-bold text-red-700 uppercase tracking-wider">${fechaFmt}</span>
+                            <h4 class="text-lg font-black text-slate-800 mt-0.5">${ev.titulo}</h4>
+                            <p class="text-slate-600 text-xs mt-2 line-clamp-3">${ev.descripcion || 'Sin descripción adicional.'}</p>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // ADMIN: EVENTOS
+        function renderizarEventosAdmin() {
+            const container = document.getElementById('contenedor-eventos-admin');
+            container.innerHTML = '';
+            if (eventos.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-400 italic col-span-full">No hay eventos añadidos.</p>`;
+                return;
+            }
+            eventos.forEach(ev => {
+                const div = document.createElement('div');
+                div.className = "bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex justify-between items-center";
+                div.innerHTML = `
+                    <div>
+                        <h4 class="font-bold text-slate-800 text-sm">${ev.titulo}</h4>
+                        <p class="text-xs text-slate-500">${ev.fecha} — ${ev.hora || 'Sin hora'}</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="editarEvento('${ev.id}')" class="p-2 bg-slate-100 text-blue-600 rounded"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button onclick="eliminarEvento('${ev.id}')" class="p-2 bg-slate-100 text-red-600 rounded"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // CONTROL PESTAÑAS ADMIN
+        window.cambiarPestanaAdmin = function(pestana) {
+            document.getElementById('pestana-balance').classList.add('hidden');
+            document.getElementById('pestana-socios').classList.add('hidden');
+            document.getElementById('pestana-eventos').classList.add('hidden');
+            document.getElementById('pestana-gastos').classList.add('hidden');
+
+            document.getElementById('tab-btn-balance').className = "px-5 py-3 font-bold text-sm text-slate-300 hover:text-white flex items-center gap-2";
+            document.getElementById('tab-btn-socios').className = "px-5 py-3 font-bold text-sm text-slate-300 hover:text-white flex items-center gap-2";
+            document.getElementById('tab-btn-eventos').className = "px-5 py-3 font-bold text-sm text-slate-300 hover:text-white flex items-center gap-2";
+            document.getElementById('tab-btn-gastos').className = "px-5 py-3 font-bold text-sm text-slate-300 hover:text-white flex items-center gap-2";
+
+            if (pestana === 'balance') {
+                document.getElementById('pestana-balance').classList.remove('hidden');
+                document.getElementById('tab-btn-balance').className = "px-5 py-3 font-bold text-sm border-b-2 border-amber-400 text-amber-400 flex items-center gap-2";
+            } else if (pestana === 'socios') {
+                document.getElementById('pestana-socios').classList.remove('hidden');
+                document.getElementById('tab-btn-socios').className = "px-5 py-3 font-bold text-sm border-b-2 border-amber-400 text-amber-400 flex items-center gap-2";
+            } else if (pestana === 'eventos') {
+                document.getElementById('pestana-eventos').classList.remove('hidden');
+                document.getElementById('tab-btn-eventos').className = "px-5 py-3 font-bold text-sm border-b-2 border-amber-400 text-amber-400 flex items-center gap-2";
+            } else if (pestana === 'gastos') {
+                document.getElementById('pestana-gastos').classList.remove('hidden');
+                document.getElementById('tab-btn-gastos').className = "px-5 py-3 font-bold text-sm border-b-2 border-amber-400 text-amber-400 flex items-center gap-2";
+            }
+        };
+
+        // ACCIONES EVENTO
+        window.guardarEvento = async function(e) {
+            e.preventDefault();
+            const id = document.getElementById('evento-id').value;
+            const titulo = document.getElementById('evento-titulo').value;
+            const fecha = document.getElementById('evento-fecha').value;
+            const hora = document.getElementById('evento-hora').value;
+            const imagen = document.getElementById('evento-imagen').value;
+            const descripcion = document.getElementById('evento-descripcion').value;
+
+            const datos = { titulo, fecha, hora, imagen, descripcion };
+
+            if (id) {
+                await update(ref(db, `eventos/${id}`), datos);
+            } else {
+                await set(push(eventosRef), datos);
+            }
+            cerrarModalEvento();
+        };
+
+        window.editarEvento = function(id) {
+            const ev = eventos.find(item => item.id === id);
+            if (!ev) return;
+            document.getElementById('evento-id').value = ev.id;
+            document.getElementById('evento-titulo').value = ev.titulo;
+            document.getElementById('evento-fecha').value = ev.fecha;
+            document.getElementById('evento-hora').value = ev.hora || '';
+            document.getElementById('evento-imagen').value = ev.imagen || '';
+            document.getElementById('evento-descripcion').value = ev.descripcion || '';
+            document.getElementById('modal-evento').classList.remove('hidden');
+            document.getElementById('modal-evento').classList.add('flex');
+        };
+
+        window.eliminarEvento = async function(id) {
+            if (confirm('¿Eliminar este evento?')) await remove(ref(db, `eventos/${id}`));
+        };
+
+        window.abrirModalEvento = function() {
+            document.getElementById('form-evento').reset();
+            document.getElementById('evento-id').value = '';
+            document.getElementById('modal-evento').classList.remove('hidden');
+            document.getElementById('modal-evento').classList.add('flex');
+        };
+
+        window.cerrarModalEvento = function() {
+            document.getElementById('modal-evento').classList.add('hidden');
+            document.getElementById('modal-evento').classList.remove('flex');
+        };
+
+        // ACCIONES DE SOCIO Y OTRAS VISTAS (EXISTENTES)
         window.mostrarSeccion = function(seccion) {
             if (seccion === 'publico') {
                 document.getElementById('seccion-publica').classList.remove('hidden');
@@ -453,8 +687,7 @@
 
         window.verificarPassword = function(e) {
             e.preventDefault();
-            const inputPass = document.getElementById('input-admin-pass').value;
-            if (inputPass === ADMIN_PASSWORD) {
+            if (document.getElementById('input-admin-pass').value === ADMIN_PASSWORD) {
                 cerrarModalLogin();
                 mostrarSeccion('admin');
                 document.getElementById('input-admin-pass').value = '';
@@ -467,34 +700,10 @@
             mostrarSeccion('publico');
         };
 
-        // PESTAÑAS ADMIN
-        window.cambiarPestanaAdmin = function(pestana) {
-            document.getElementById('pestana-balance').classList.add('hidden');
-            document.getElementById('pestana-socios').classList.add('hidden');
-            document.getElementById('pestana-gastos').classList.add('hidden');
-
-            document.getElementById('tab-btn-balance').className = "px-5 py-3 font-bold text-sm text-slate-300 hover:text-white flex items-center gap-2";
-            document.getElementById('tab-btn-socios').className = "px-5 py-3 font-bold text-sm text-slate-300 hover:text-white flex items-center gap-2";
-            document.getElementById('tab-btn-gastos').className = "px-5 py-3 font-bold text-sm text-slate-300 hover:text-white flex items-center gap-2";
-
-            if (pestana === 'balance') {
-                document.getElementById('pestana-balance').classList.remove('hidden');
-                document.getElementById('tab-btn-balance').className = "px-5 py-3 font-bold text-sm border-b-2 border-amber-400 text-amber-400 flex items-center gap-2";
-            } else if (pestana === 'socios') {
-                document.getElementById('pestana-socios').classList.remove('hidden');
-                document.getElementById('tab-btn-socios').className = "px-5 py-3 font-bold text-sm border-b-2 border-amber-400 text-amber-400 flex items-center gap-2";
-            } else if (pestana === 'gastos') {
-                document.getElementById('pestana-gastos').classList.remove('hidden');
-                document.getElementById('tab-btn-gastos').className = "px-5 py-3 font-bold text-sm border-b-2 border-amber-400 text-amber-400 flex items-center gap-2";
-            }
-        };
-
-        // CÁLCULOS DE BALANCE
         function actualizarBalance() {
             const totalIngresos = socios.reduce((sum, s) => sum + (parseFloat(s.pagado) || 0), 0);
             const totalCuotasEsperadas = socios.reduce((sum, s) => sum + (parseFloat(s.cuotaTotal) || 400), 0);
             const totalPendiente = totalCuotasEsperadas - totalIngresos;
-
             const totalGastos = gastos.reduce((sum, g) => sum + (parseFloat(g.importe) || 0), 0);
             const neto = totalIngresos - totalGastos;
 
@@ -515,7 +724,6 @@
             document.getElementById('resumen-potencial-total').innerText = `${totalCuotasEsperadas.toFixed(2)} €`;
         }
 
-        // TABLA CONTROL DE CUOTAS EN PANEL ADMIN
         function renderizarSociosAdmin() {
             const tbody = document.getElementById('tabla-socios-admin');
             tbody.innerHTML = '';
@@ -525,21 +733,8 @@
                 const pendiente = total - pagado;
                 const fotoUrl = s.foto && s.foto.trim() !== "" ? s.foto : FOTO_DEFAULT;
 
-                let estadoTxt = "";
-                let badgeClass = "";
-
-                if (pagado >= total) {
-                    estadoTxt = "Completo (400€)";
-                    badgeClass = "bg-green-100 text-green-800 border-green-200";
-                } else if (pagado > 0) {
-                    estadoTxt = "Pago Parcial";
-                    badgeClass = "bg-amber-100 text-amber-800 border-amber-200";
-                } else {
-                    estadoTxt = "Pendiente (0€)";
-                    badgeClass = "bg-red-100 text-red-800 border-red-200";
-                }
-
-                const telTxt = s.telefono ? s.telefono : '<span class="text-amber-600 italic">Pendiente añadir</span>';
+                let estadoTxt = pagado >= total ? "Completo (400€)" : (pagado > 0 ? "Pago Parcial" : "Pendiente (0€)");
+                let badgeClass = pagado >= total ? "bg-green-100 text-green-800 border-green-200" : (pagado > 0 ? "bg-amber-100 text-amber-800 border-amber-200" : "bg-red-100 text-red-800 border-red-200");
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
@@ -548,14 +743,14 @@
                         <img src="${fotoUrl}" class="w-8 h-8 rounded-full object-cover border border-slate-300" onerror="this.src='${FOTO_DEFAULT}'">
                         <span>${s.nombre}</span>
                     </td>
-                    <td class="p-4 text-xs font-medium text-slate-500">${telTxt}</td>
+                    <td class="p-4 text-xs font-medium text-slate-500">${s.telefono || '<span class="text-amber-600 italic">Pendiente</span>'}</td>
                     <td class="p-4 font-bold text-green-600">${pagado.toFixed(2)} €</td>
                     <td class="p-4 font-bold text-red-600">${pendiente.toFixed(2)} €</td>
                     <td class="p-4"><span class="px-2.5 py-1 text-xs font-bold rounded-full border ${badgeClass}">${estadoTxt}</span></td>
                     <td class="p-4 text-center">
                         <div class="flex justify-center gap-1.5">
-                            <button onclick="enviarWhatsAppPago('${s.nombre}', '${s.telefono}', ${pagado}, ${pendiente})" title="Enviar WhatsApp" class="p-2 bg-green-50 text-green-600 rounded hover:bg-green-100"><i class="fa-brands fa-whatsapp font-bold text-base"></i></button>
-                            <button onclick="editarSocio('${s.id}')" title="Editar Foto / Teléfono / Registrar Pago" class="p-2 bg-slate-100 text-blue-600 rounded hover:bg-blue-50"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button onclick="enviarWhatsAppPago('${s.nombre}', '${s.telefono}', ${pagado}, ${pendiente})" title="WhatsApp" class="p-2 bg-green-50 text-green-600 rounded hover:bg-green-100"><i class="fa-brands fa-whatsapp font-bold text-base"></i></button>
+                            <button onclick="editarSocio('${s.id}')" title="Editar" class="p-2 bg-slate-100 text-blue-600 rounded hover:bg-blue-50"><i class="fa-solid fa-pen-to-square"></i></button>
                             <button onclick="eliminarSocio('${s.id}')" title="Eliminar" class="p-2 bg-slate-100 text-red-600 rounded hover:bg-red-50"><i class="fa-solid fa-trash"></i></button>
                         </div>
                     </td>
@@ -564,7 +759,6 @@
             });
         }
 
-        // TABLA GASTOS
         function renderizarGastosAdmin() {
             const tbody = document.getElementById('tabla-gastos-admin');
             tbody.innerHTML = '';
@@ -587,7 +781,6 @@
             });
         }
 
-        // ACCIONES DE SOCIO
         window.guardarSocio = async function(e) {
             e.preventDefault();
             const id = document.getElementById('socio-id').value;
@@ -622,24 +815,19 @@
 
         window.enviarWhatsAppPago = function(nombre, telefono, pagado, pendiente) {
             if(!telefono){
-                alert('Aún no has registrado un número de teléfono para este socio. Haz clic en el icono del lápiz para agregarlo.');
+                alert('Aún no has registrado un número de teléfono para este socio.');
                 return;
             }
             let msg = `Hola *${nombre}*, te informamos desde la caseta *Los Manolos y Cia.*:\n\n`;
             msg += `• *Importe Pagado:* ${pagado.toFixed(2)}€\n`;
-            
             if (pendiente > 0) {
-                msg += `• *Pendiente de Pago:* ${pendiente.toFixed(2)}€ (Cuota total: 400€)\n\n`;
-                msg += `Recuerda que puedes realizar el pago restante antes del comienzo de la feria. 🎪💃`;
+                msg += `• *Pendiente de Pago:* ${pendiente.toFixed(2)}€ (Cuota total: 400€)\n\nRecuerda que puedes realizar el pago restante antes del comienzo de la feria. 🎪💃`;
             } else {
-                msg += `• *Estado:* ¡CUOTA COMPLETADA (400€)!\n\n`;
-                msg += `¡Muchas gracias, nos vemos en la Feria! 🎪💃`;
+                msg += `• *Estado:* ¡CUOTA COMPLETADA (400€)!\n\n¡Muchas gracias, nos vemos en la Feria! 🎪💃`;
             }
-
             window.open(`https://wa.me/${telefono}?text=${encodeURIComponent(msg)}`, '_blank');
         };
 
-        // GASTOS
         window.guardarGasto = async function(e) {
             e.preventDefault();
             const concepto = document.getElementById('gasto-concepto').value;
@@ -655,7 +843,6 @@
             if (confirm('¿Eliminar esta factura o gasto?')) await remove(ref(db, `gastos/${id}`));
         };
 
-        // MANEJO DE MODALES
         window.abrirModalGastoAdmin = function() {
             document.getElementById('form-gasto').reset();
             document.getElementById('gasto-fecha').valueAsDate = new Date();
