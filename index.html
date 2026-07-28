@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Caseta Los Manolos y Cía. — Feria 2026</title>
+    <title>Caseta Los Manolos y Cía. —</title>
     
     <!-- Meta etiquetas PWA -->
     <meta name="theme-color" content="#0f172a">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Los Manolos y Cía.">
+    <meta name="apple-mobile-web-app-title" content="Los Manolos">
     <link rel="apple-touch-icon" href="logo.png">
 
     <!-- Tailwind CSS -->
@@ -49,7 +49,7 @@
             border-color: rgba(234, 179, 8, 0.4);
             box-shadow: 0 0 20px rgba(234, 179, 8, 0.1);
         }
-        button, a, input, select {
+        button, a, input, select, textarea {
             touch-action: manipulation;
         }
     </style>
@@ -71,16 +71,30 @@
                 </div>
                 <div>
                     <h1 class="text-base sm:text-xl font-serif font-bold text-amber-400 tracking-wide flex items-center gap-1.5">
-                        Los Manolos y Cía <span class="text-[10px] font-sans font-semibold px-1.5 py-0.5 rounded-full bg-red-950/80 text-red-300 border border-red-800/50">Nº 28</span>
+                        Los Manolos <span class="text-[10px] font-sans font-semibold px-1.5 py-0.5 rounded-full bg-red-950/80 text-red-300 border border-red-800/50">Nº 28</span>
                     </h1>
-                    <p class="text-[9px] sm:text-[10px] text-slate-400 uppercase tracking-widest font-semibold">Caseta Privada de Feria • 2026</p>
+                    <p class="text-[9px] sm:text-[10px] text-slate-400 uppercase tracking-widest font-semibold">
+                        Caseta Privada • <span id="header-ejercicio-actual" class="text-amber-400 font-bold">2026</span>
+                    </p>
                 </div>
             </div>
 
             <div class="flex items-center gap-2">
+                <!-- SELECTOR DE AÑO / EJERCICIO -->
+                <div class="flex items-center gap-1.5 bg-slate-900 border border-amber-500/30 px-2.5 py-1.5 rounded-xl">
+                    <i class="fa-solid fa-calendar text-amber-400 text-xs"></i>
+                    <select id="select-ejercicio-global" onchange="cambiarEjercicio(this.value)" class="bg-transparent text-amber-300 font-bold text-xs outline-none cursor-pointer">
+                        <option value="2026" class="bg-slate-900 text-white">2026</option>
+                        <option value="2027" class="bg-slate-900 text-white">2027</option>
+                        <option value="2028" class="bg-slate-900 text-white">2028</option>
+                        <option value="2029" class="bg-slate-900 text-white">2029</option>
+                        <option value="2030" class="bg-slate-900 text-white">2030</option>
+                    </select>
+                </div>
+
                 <button id="btn-install-app" onclick="instalarApp()" class="hidden px-3 py-1.5 rounded-xl text-xs font-bold text-amber-400 bg-amber-500/10 border border-amber-500/30 hover:bg-amber-500/20 transition flex items-center gap-1.5">
                     <i class="fa-solid fa-download"></i>
-                    <span class="hidden sm:inline">Instalar App</span>
+                    <span class="hidden sm:inline">Instalar</span>
                 </button>
 
                 <button id="btn-admin" onclick="solicitarAccesoAdmin()" class="px-3.5 py-2 rounded-xl text-xs font-bold text-slate-950 bg-amber-400 hover:bg-amber-300 shadow-md shadow-amber-500/20 transition flex items-center gap-1.5">
@@ -95,51 +109,43 @@
     <div id="seccion-publica" class="flex-1 pb-12">
         
         <!-- HERO BANNER -->
-        <section class="relative bg-hero-pattern py-16 sm:py-24 px-4 overflow-hidden border-b border-amber-500/20">
+        <section class="relative bg-hero-pattern py-16 sm:py-20 px-4 overflow-hidden border-b border-amber-500/20">
             <div class="absolute inset-0 bg-gradient-to-b from-slate-950/70 via-transparent to-slate-950"></div>
-            <div class="max-w-4xl mx-auto text-center relative z-10 space-y-4 sm:space-y-6">
+            <div class="max-w-4xl mx-auto text-center relative z-10 space-y-4">
                 <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-bold uppercase tracking-wider backdrop-blur-md">
-                    <i class="fa-solid fa-location-dot text-amber-400"></i> Real de la Feria 2026 Guillena
+                    <i class="fa-solid fa-location-dot text-amber-400"></i> Real de la Feria • Ejercicio <span id="hero-ano-display">2026</span>
                 </div>
                 <h2 class="text-3xl sm:text-6xl font-serif font-extrabold text-white tracking-tight leading-tight">
                     Tradición, Familia y <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-amber-400 to-amber-600">Convivencia</span>
                 </h2>
                 <p class="text-sm sm:text-base text-slate-300 max-w-xl mx-auto font-light leading-relaxed">
-                    Portal informativo y corporativo exclusivo para socios de la Caseta Los Manolos y Cía.
+                    Portal de la Caseta Los Manolos y Cía.
                 </p>
             </div>
         </section>
 
-        <!-- TARJETAS DE INFORMACIÓN RÁPIDA -->
-        <section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-20">
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div class="glass-panel glass-panel-hover p-6 rounded-2xl flex items-center gap-4 cursor-pointer transition" onclick="irASeccion('sec-socios')">
-                    <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 text-xl flex-shrink-0">
-                        <i class="fa-solid fa-users"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-white text-base font-serif">Comunidad de Socios</h4>
-                        <p class="text-xs text-slate-400 mt-0.5">Espacio reservado e identidades registradas</p>
-                    </div>
+        <!-- SECCIÓN HISTORIA Y DETALLES FUNDACIONALES -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 relative z-20">
+            <div class="glass-panel p-6 rounded-3xl border border-amber-500/30 space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                    <h3 class="font-serif text-lg sm:text-xl font-bold text-amber-400 flex items-center gap-2">
+                        <i class="fa-solid fa-landmark text-amber-500"></i> Historia y Detalles de Nuestra Caseta
+                    </h3>
+                    <span id="badge-fecha-fundacion" class="text-xs font-bold px-3 py-1 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/20">
+                        Adquisición: Septiembre de 2017
+                    </span>
                 </div>
-
-                <div class="glass-panel glass-panel-hover p-6 rounded-2xl flex items-center gap-4 cursor-pointer transition" onclick="irASeccion('sec-eventos')">
-                    <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 text-xl flex-shrink-0">
-                        <i class="fa-solid fa-calendar-check"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-white text-base font-serif">Agenda de Actos</h4>
-                        <p class="text-xs text-slate-400 mt-0.5">Programación de actuaciones y cenas de gala</p>
-                    </div>
+                <div id="public-detalles-historia" class="text-slate-300 text-xs sm:text-sm leading-relaxed whitespace-pre-line">
+                    Nuestra caseta fue adquirida oficialmente en septiembre de 2017. Desde entonces, hemos mantenido la tradición y el espíritu de convivencia familiar en cada edición de la feria.
                 </div>
             </div>
         </section>
 
         <!-- AGENDA DE ACTOS -->
-        <section id="sec-eventos" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-6">
+        <section id="sec-eventos" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-6">
             <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-6 gap-2">
                 <div>
-                    <span class="text-amber-400 text-xs font-bold uppercase tracking-widest">Programación Oficial</span>
+                    <span class="text-amber-400 text-xs font-bold uppercase tracking-widest">Programación <span id="label-ano-eventos">2026</span></span>
                     <h3 class="text-2xl sm:text-3xl font-serif font-bold text-white mt-0.5">Agenda de Actos y Eventos</h3>
                 </div>
             </div>
@@ -151,7 +157,7 @@
             <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-6 gap-2">
                 <div>
                     <span class="text-amber-400 text-xs font-bold uppercase tracking-widest">Listado Oficial</span>
-                    <h3 class="text-2xl sm:text-3xl font-serif font-bold text-white mt-0.5">Socios Componentes</h3>
+                    <h3 class="text-2xl sm:text-3xl font-serif font-bold text-white mt-0.5">Socios Componentes (<span id="total-socios-count-public">0</span>)</h3>
                 </div>
             </div>
             <div id="grid-socios-publico" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"></div>
@@ -165,11 +171,14 @@
             <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
                 <div class="flex items-center gap-2">
                     <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span class="text-xs font-bold uppercase tracking-wider text-slate-300">Panel Directivo Autenticado</span>
+                    <span class="text-xs font-bold uppercase tracking-wider text-slate-300">Panel Directivo</span>
                 </div>
                 <div class="w-full md:w-auto overflow-x-auto flex space-x-1 p-1 bg-slate-900 rounded-xl border border-slate-800">
                     <button id="tab-balance" onclick="cambiarPestana('balance')" class="px-3 py-1.5 rounded-lg text-xs font-bold text-amber-400 bg-slate-800 whitespace-nowrap">
                         <i class="fa-solid fa-chart-pie mr-1"></i> Balance
+                    </button>
+                    <button id="tab-ingresos" onclick="cambiarPestana('ingresos')" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400 whitespace-nowrap">
+                        <i class="fa-solid fa-wallet mr-1"></i> Ingresos Extra
                     </button>
                     <button id="tab-socios" onclick="cambiarPestana('socios')" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400 whitespace-nowrap">
                         <i class="fa-solid fa-users mr-1"></i> Socios
@@ -180,6 +189,9 @@
                     <button id="tab-gastos" onclick="cambiarPestana('gastos')" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400 whitespace-nowrap">
                         <i class="fa-solid fa-receipt mr-1"></i> Contabilidad
                     </button>
+                    <button id="tab-ajustes" onclick="cambiarPestana('ajustes')" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400 whitespace-nowrap">
+                        <i class="fa-solid fa-sliders mr-1"></i> Info/Ajustes
+                    </button>
                 </div>
                 <button onclick="cerrarSesionAdmin()" class="px-3 py-1.5 rounded-lg text-xs font-bold text-red-400 border border-red-900/50 hover:bg-red-950/50 transition">
                     <i class="fa-solid fa-power-off mr-1"></i> Salir
@@ -189,29 +201,91 @@
 
         <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
             
-            <!-- VISTA BALANCE -->
+            <!-- VISTA BALANCE MEJORADO -->
             <div id="view-balance" class="space-y-6">
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                
+                <!-- RESUMEN NUMÉRICO Y CÁLCULO INTELIGENTE -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="glass-panel p-5 rounded-2xl border-l-4 border-cyan-500">
+                        <span class="text-xs font-bold uppercase text-slate-400">Fondos Anteriores / Extras</span>
+                        <div id="bal-extras" class="text-2xl font-extrabold text-cyan-400 mt-1">0,00 €</div>
+                        <span class="text-[10px] text-slate-500">Remanentes e Ingresos Adicionales</span>
+                    </div>
                     <div class="glass-panel p-5 rounded-2xl border-l-4 border-emerald-500">
-                        <span class="text-xs font-bold uppercase text-slate-400">Total Recaudado</span>
-                        <div id="bal-ingresos" class="text-2xl sm:text-3xl font-extrabold text-emerald-400 mt-1">0,00 €</div>
+                        <span class="text-xs font-bold uppercase text-slate-400">Recaudado Cuotas</span>
+                        <div id="bal-ingresos" class="text-2xl font-extrabold text-emerald-400 mt-1">0,00 €</div>
+                        <span id="bal-sub-cuotas" class="text-[10px] text-slate-400">0 € de presupuesto cuotas</span>
                     </div>
                     <div class="glass-panel p-5 rounded-2xl border-l-4 border-red-500">
-                        <span class="text-xs font-bold uppercase text-slate-400">Gastos Registrados</span>
-                        <div id="bal-gastos" class="text-2xl sm:text-3xl font-extrabold text-red-400 mt-1">0,00 €</div>
+                        <span class="text-xs font-bold uppercase text-slate-400">Gastos Totales</span>
+                        <div id="bal-gastos" class="text-2xl font-extrabold text-red-400 mt-1">0,00 €</div>
+                        <span class="text-[10px] text-slate-500">Proveedores y Facturas</span>
                     </div>
                     <div class="glass-panel p-5 rounded-2xl border-l-4 border-amber-500">
-                        <span class="text-xs font-bold uppercase text-slate-400">Líquido Disponible</span>
-                        <div id="bal-neto" class="text-2xl sm:text-3xl font-extrabold text-amber-400 mt-1">0,00 €</div>
+                        <span class="text-xs font-bold uppercase text-slate-400">Líquido En Caja</span>
+                        <div id="bal-neto" class="text-2xl font-extrabold text-amber-400 mt-1">0,00 €</div>
+                        <span class="text-[10px] text-slate-400">Total Ingresos - Gastos</span>
                     </div>
                 </div>
 
-                <div class="glass-panel p-5 rounded-2xl space-y-3">
-                    <h4 class="font-bold text-sm text-white flex items-center gap-2">
-                        <i class="fa-solid fa-bullseye text-amber-400"></i> Estado de Recaudación por Cuotas
+                <!-- DESGLOSE DE PRESUPUESTO POR SOCIOS -->
+                <div class="glass-panel p-6 rounded-2xl space-y-4">
+                    <h4 class="font-bold text-sm text-white flex items-center justify-between border-b border-slate-800 pb-2">
+                        <span class="flex items-center gap-2"><i class="fa-solid fa-calculator text-amber-400"></i> Desglose de Cobro de Cuotas</span>
+                        <span id="bal-socios-resumen" class="text-xs font-normal text-amber-300">19 socios x 400,00 € = 7.600,00 €</span>
                     </h4>
-                    <div class="w-full bg-slate-800 rounded-full h-3.5 overflow-hidden p-0.5 border border-slate-700">
-                        <div id="progreso-bar" class="bg-gradient-to-r from-amber-500 to-emerald-500 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                        <div class="bg-slate-900/80 p-3.5 rounded-xl border border-slate-800">
+                            <span class="text-slate-400 block mb-1">Presupuesto Teórico Cuotas:</span>
+                            <span id="calc-teorico" class="text-base font-bold text-white">0,00 €</span>
+                        </div>
+                        <div class="bg-slate-900/80 p-3.5 rounded-xl border border-slate-800">
+                            <span class="text-slate-400 block mb-1">Cobrado Efectivo Cuotas:</span>
+                            <span id="calc-cobrado" class="text-base font-bold text-emerald-400">0,00 €</span>
+                        </div>
+                        <div class="bg-slate-900/80 p-3.5 rounded-xl border border-slate-800">
+                            <span class="text-slate-400 block mb-1">Pendiente de Cobrar:</span>
+                            <span id="calc-pendiente" class="text-base font-bold text-red-400">0,00 €</span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-1.5 pt-2">
+                        <div class="flex justify-between text-xs font-bold">
+                            <span class="text-slate-400">Progreso Recaudación Cuotas</span>
+                            <span id="progreso-texto" class="text-amber-400">0%</span>
+                        </div>
+                        <div class="w-full bg-slate-900 rounded-full h-3 overflow-hidden p-0.5 border border-slate-800">
+                            <div id="progreso-bar" class="bg-gradient-to-r from-amber-500 to-emerald-500 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VISTA INGRESOS EXTRA / REMANENTES -->
+            <div id="view-ingresos" class="hidden space-y-4">
+                <div class="flex justify-between items-center glass-panel p-4 rounded-2xl">
+                    <div>
+                        <h3 class="font-bold text-white text-sm sm:text-base">Otros Ingresos y Saldos Anteriores</h3>
+                        <p class="text-xs text-slate-400">Remanente de años pasados, barras, aportaciones extraordinarias...</p>
+                    </div>
+                    <button onclick="abrirModalIngreso()" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-amber-400 text-slate-950 hover:bg-amber-300 transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-plus"></i> Añadir Ingreso
+                    </button>
+                </div>
+                <div class="glass-panel rounded-2xl overflow-hidden border border-slate-800">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs sm:text-sm">
+                            <thead class="bg-slate-950 font-bold text-slate-400 uppercase border-b border-slate-800">
+                                <tr>
+                                    <th class="p-3">Concepto</th>
+                                    <th class="p-3">Fecha / Origen</th>
+                                    <th class="p-3">Importe</th>
+                                    <th class="p-3 text-center">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-ingresos-admin" class="divide-y divide-slate-800/80"></tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -219,7 +293,7 @@
             <!-- VISTA SOCIOS -->
             <div id="view-socios" class="hidden space-y-4">
                 <div class="flex justify-between items-center glass-panel p-4 rounded-2xl">
-                    <h3 class="font-bold text-white text-sm sm:text-base">Gestión de Socios y Cargos</h3>
+                    <h3 class="font-bold text-white text-sm sm:text-base">Gestión de Socios y Cuotas</h3>
                     <button onclick="abrirModalSocio()" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-amber-400 text-slate-950 hover:bg-amber-300 transition flex items-center gap-1.5">
                         <i class="fa-solid fa-plus"></i> Nuevo Socio
                     </button>
@@ -233,6 +307,7 @@
                                     <th class="p-3">Nº</th>
                                     <th class="p-3">Socio</th>
                                     <th class="p-3">Cargo / Etiqueta</th>
+                                    <th class="p-3">Cuota Total</th>
                                     <th class="p-3">Abonado</th>
                                     <th class="p-3">Pendiente</th>
                                     <th class="p-3 text-center">Acciones</th>
@@ -296,13 +371,35 @@
                 </div>
             </div>
 
+            <!-- VISTA HISTORIA Y DETALLES DEL LOCAL -->
+            <div id="view-ajustes" class="hidden space-y-4">
+                <div class="glass-panel p-6 rounded-2xl space-y-4 border border-slate-800">
+                    <h3 class="font-bold text-white text-base flex items-center gap-2">
+                        <i class="fa-solid fa-pen-to-square text-amber-400"></i> Editar Historia y Detalles Generales
+                    </h3>
+                    <form onsubmit="guardarAjustes(event)" class="space-y-4 text-xs">
+                        <div>
+                            <label class="block font-bold text-slate-400 uppercase mb-1">Fecha de Adquisición / Hito</label>
+                            <input type="text" id="ajuste-fecha" placeholder="Ej: Septiembre de 2017" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white outline-none focus:border-amber-400">
+                        </div>
+                        <div>
+                            <label class="block font-bold text-slate-400 uppercase mb-1">Detalles e Historia de la Caseta</label>
+                            <textarea id="ajuste-historia" rows="5" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white outline-none focus:border-amber-400" placeholder="Escribe aquí los detalles históricos..."></textarea>
+                        </div>
+                        <button type="submit" class="px-4 py-2 bg-amber-400 text-slate-950 font-bold rounded-xl hover:bg-amber-300 transition">
+                            Guardar Cambios
+                        </button>
+                    </form>
+                </div>
+            </div>
+
         </main>
     </div>
 
-    <!-- MODAL IMAGEN AMPLIALA (LIGHTBOX) -->
+    <!-- MODAL LIGHTBOX -->
     <div id="modal-lightbox" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md hidden items-center justify-center p-4 z-50 transition-opacity" onclick="cerrarLightbox()">
         <div class="relative max-w-xl w-full flex flex-col items-center" onclick="event.stopPropagation()">
-            <button onclick="cerrarLightbox()" class="absolute -top-12 right-0 text-white hover:text-amber-400 text-3xl font-bold transition focus:outline-none">
+            <button onclick="cerrarLightbox()" class="absolute -top-12 right-0 text-white hover:text-amber-400 text-3xl font-bold transition">
                 <i class="fa-solid fa-xmark"></i>
             </button>
             <img id="lightbox-img" src="" alt="Foto Socio" class="max-h-[80vh] w-auto object-contain rounded-2xl border-2 border-amber-500/50 shadow-2xl">
@@ -350,8 +447,8 @@
                     </div>
                 </div>
                 <div>
-                    <label class="block font-bold text-slate-400 uppercase mb-1">Cargo / Etiqueta (Ej: Presidente, Directiva)</label>
-                    <input type="text" id="socio-cargo" placeholder="Dejar en blanco si es socio normal" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-amber-300 font-semibold outline-none focus:border-amber-400">
+                    <label class="block font-bold text-slate-400 uppercase mb-1">Cargo / Etiqueta</label>
+                    <input type="text" id="socio-cargo" placeholder="Presidente, Directiva..." class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-amber-300 font-semibold outline-none focus:border-amber-400">
                 </div>
                 <div>
                     <label class="block font-bold text-slate-400 uppercase mb-1">URL Fotografía</label>
@@ -360,7 +457,7 @@
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block font-bold text-slate-400 uppercase mb-1">Cuota Fijada (€)</label>
-                        <input type="number" id="socio-cuota-total" value="400" readonly class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-slate-400 font-bold">
+                        <input type="number" step="0.01" id="socio-cuota-total" value="400" required class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white font-bold outline-none focus:border-amber-400">
                     </div>
                     <div>
                         <label class="block font-bold text-slate-400 uppercase mb-1">Importe Abonado (€)</label>
@@ -369,6 +466,36 @@
                 </div>
                 <div class="flex justify-end gap-2 pt-3 border-t border-slate-800">
                     <button type="button" onclick="cerrarModalSocio()" class="px-3.5 py-2 bg-slate-800 text-slate-300 rounded-xl font-bold">Cancelar</button>
+                    <button type="submit" class="px-3.5 py-2 bg-amber-400 text-slate-950 rounded-xl font-bold">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL INGRESOS EXTRA -->
+    <div id="modal-ingreso" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4 z-50">
+        <div class="glass-panel rounded-3xl w-full max-w-md overflow-hidden border border-slate-700">
+            <div class="bg-slate-900 px-5 py-3.5 border-b border-slate-800 flex justify-between items-center">
+                <h3 class="font-bold text-white text-sm">Registrar Ingreso / Remanente</h3>
+                <button onclick="cerrarModalIngreso()" class="text-slate-400 hover:text-white text-lg">&times;</button>
+            </div>
+            <form id="form-ingreso" onsubmit="guardarIngreso(event)" class="p-5 space-y-4 text-xs">
+                <div>
+                    <label class="block font-bold text-slate-400 uppercase mb-1">Concepto</label>
+                    <input type="text" id="ingreso-concepto" placeholder="Ej: Remanente año 2025, Barra, Subvención..." required class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white outline-none focus:border-amber-400">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-400 uppercase mb-1">Origen / Detalles</label>
+                        <input type="text" id="ingreso-origen" placeholder="Ej: Cierre ejercicio anterior" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white outline-none focus:border-amber-400">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-400 uppercase mb-1">Importe (€)</label>
+                        <input type="number" step="0.01" id="ingreso-importe" required class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-cyan-400 font-bold outline-none focus:border-amber-400">
+                    </div>
+                </div>
+                <div class="flex justify-end gap-2 pt-3 border-t border-slate-800">
+                    <button type="button" onclick="cerrarModalIngreso()" class="px-3.5 py-2 bg-slate-800 text-slate-300 rounded-xl font-bold">Cancelar</button>
                     <button type="submit" class="px-3.5 py-2 bg-amber-400 text-slate-950 rounded-xl font-bold">Guardar</button>
                 </div>
             </form>
@@ -449,10 +576,10 @@
         </div>
     </div>
 
-    <!-- SCRIPT CONTROLADOR FIREBASE Y NAVEGACIÓN -->
+    <!-- SCRIPT CONTROLADOR FIREBASE Y MULTI-AÑO -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, push, set, update, remove, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, push, set, update, remove, onValue, off } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB6_1m_Cpx4PowfpNq1nXwpLHm2RAOvy8w",
@@ -470,12 +597,12 @@
         const CLAVE_ADMIN = "losmanolos2026";
         const FOTO_DEFAULT = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop&q=80";
 
-        let socios = [], gastos = [], eventos = [];
-        const sociosRef = ref(db, 'socios');
-        const gastosRef = ref(db, 'gastos');
-        const eventosRef = ref(db, 'eventos');
+        let anoActual = '2026';
+        let socios = [], gastos = [], eventos = [], ingresos = [];
+        
+        let sociosRef, gastosRef, eventosRef, ingresosRef, ajustesRef;
 
-        // PWA INSTALACIÓN
+        // PWA
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
@@ -495,15 +622,79 @@
             }
         };
 
-        // VISOR DE IMAGEN AMPLIALA (LIGHTBOX)
+        // GESTIÓN AÑO Y LISTENERS
+        window.cambiarEjercicio = function(ano) {
+            anoActual = ano;
+            document.getElementById('header-ejercicio-actual').textContent = ano;
+            document.getElementById('hero-ano-display').textContent = ano;
+            document.getElementById('label-ano-eventos').textContent = ano;
+            
+            // Re-suscribir a la rama del año seleccionado
+            conectarBaseDatos();
+        };
+
+        function conectarBaseDatos() {
+            // Desconectar oyentes previos si existen
+            if (sociosRef) off(sociosRef);
+            if (gastosRef) off(gastosRef);
+            if (eventosRef) off(eventosRef);
+            if (ingresosRef) off(ingresosRef);
+
+            const prefix = `ejercicios/${anoActual}`;
+            sociosRef = ref(db, `${prefix}/socios`);
+            gastosRef = ref(db, `${prefix}/gastos`);
+            eventosRef = ref(db, `${prefix}/eventos`);
+            ingresosRef = ref(db, `${prefix}/ingresos`);
+            ajustesRef = ref(db, `general/ajustes`);
+
+            onValue(sociosRef, (s) => {
+                const data = s.val();
+                socios = data ? Object.keys(data).map(k => ({ id: k, ...data[k] })) : [];
+                renderizarSociosPublico();
+                renderizarSociosAdmin();
+                actualizarBalance();
+            });
+
+            onValue(gastosRef, (s) => {
+                const data = s.val();
+                gastos = data ? Object.keys(data).map(k => ({ id: k, ...data[k] })) : [];
+                renderizarGastosAdmin();
+                actualizarBalance();
+            });
+
+            onValue(eventosRef, (s) => {
+                const data = s.val();
+                eventos = data ? Object.keys(data).map(k => ({ id: k, ...data[k] })) : [];
+                renderizarEventosPublico();
+                renderizarEventosAdmin();
+            });
+
+            onValue(ingresosRef, (s) => {
+                const data = s.val();
+                ingresos = data ? Object.keys(data).map(k => ({ id: k, ...data[k] })) : [];
+                renderizarIngresosAdmin();
+                actualizarBalance();
+            });
+
+            onValue(ajustesRef, (s) => {
+                const data = s.val();
+                if (data) {
+                    if (data.fecha) document.getElementById('badge-fecha-fundacion').textContent = `Adquisición: ${data.fecha}`;
+                    if (data.historia) document.getElementById('public-detalles-historia').textContent = data.historia;
+                    
+                    document.getElementById('ajuste-fecha').value = data.fecha || 'Septiembre de 2017';
+                    document.getElementById('ajuste-historia').value = data.historia || '';
+                }
+            });
+        }
+
+        // VISOR
         window.ampliarImagen = function(url, nombre) {
             const modal = document.getElementById('modal-lightbox');
             const img = document.getElementById('lightbox-img');
             const txt = document.getElementById('lightbox-nombre');
-            
             img.src = url || FOTO_DEFAULT;
             txt.textContent = nombre || '';
-            
             modal.classList.remove('hidden');
             modal.classList.add('flex');
         };
@@ -514,11 +705,10 @@
             modal.classList.remove('flex');
         };
 
-        // NAVEGACIÓN Y VISTAS
+        // VISTAS
         window.mostrarSeccion = function(tipo) {
             const secPublica = document.getElementById('seccion-publica');
             const secAdmin = document.getElementById('seccion-admin');
-            
             if (tipo === 'admin') {
                 secPublica.classList.add('hidden');
                 secAdmin.classList.remove('hidden');
@@ -543,7 +733,6 @@
         window.verificarPassword = function(e) {
             e.preventDefault();
             const inputVal = document.getElementById('input-admin-pass').value.trim();
-
             if (inputVal === CLAVE_ADMIN) {
                 cerrarModalLogin();
                 mostrarSeccion('admin');
@@ -557,13 +746,8 @@
             mostrarSeccion('publico');
         };
 
-        window.irASeccion = function(id) {
-            const el = document.getElementById(id);
-            if(el) el.scrollIntoView({ behavior: 'smooth' });
-        };
-
         window.cambiarPestana = function(pestana) {
-            ['balance', 'socios', 'eventos', 'gastos'].forEach(p => {
+            ['balance', 'ingresos', 'socios', 'eventos', 'gastos', 'ajustes'].forEach(p => {
                 const view = document.getElementById(`view-${p}`);
                 const tab = document.getElementById(`tab-${p}`);
                 if (p === pestana) {
@@ -578,23 +762,41 @@
             });
         };
 
-        // BALANCE Y TABLAS
+        // BALANCE MATEMÁTICO REAL
         function actualizarBalance() {
-            const totalRecaudado = socios.reduce((sum, s) => sum + (parseFloat(s.pagado) || 0), 0);
+            const numSocios = socios.length;
+            const cobradoCuotas = socios.reduce((sum, s) => sum + (parseFloat(s.pagado) || 0), 0);
+            const acumuladoCuotaTeorica = socios.reduce((sum, s) => sum + (parseFloat(s.cuotaTotal) || 400), 0);
+            const pendienteCuotas = Math.max(0, acumuladoCuotaTeorica - cobradoCuotas);
+
+            const totalIngresosExtras = ingresos.reduce((sum, i) => sum + (parseFloat(i.importe) || 0), 0);
             const totalGastos = gastos.reduce((sum, g) => sum + (parseFloat(g.importe) || 0), 0);
-            const liquido = totalRecaudado - totalGastos;
+            
+            const totalEfectivoIngresado = cobradoCuotas + totalIngresosExtras;
+            const liquidoEnCaja = totalEfectivoIngresado - totalGastos;
 
-            const totalCuotasEsperadas = socios.length * 400;
-            const porcentaje = totalCuotasEsperadas > 0 ? Math.min(100, Math.round((totalRecaudado / totalCuotasEsperadas) * 100)) : 0;
+            const porcentaje = acumuladoCuotaTeorica > 0 ? Math.min(100, Math.round((cobradoCuotas / acumuladoCuotaTeorica) * 100)) : 0;
 
-            document.getElementById('bal-ingresos').textContent = `${totalRecaudado.toFixed(2)} €`;
+            // DOM Updates
+            document.getElementById('bal-extras').textContent = `${totalIngresosExtras.toFixed(2)} €`;
+            document.getElementById('bal-ingresos').textContent = `${cobradoCuotas.toFixed(2)} €`;
+            document.getElementById('bal-sub-cuotas').textContent = `de ${acumuladoCuotaTeorica.toFixed(2)} € presupuestados`;
             document.getElementById('bal-gastos').textContent = `${totalGastos.toFixed(2)} €`;
-            document.getElementById('bal-neto').textContent = `${liquido.toFixed(2)} €`;
+            document.getElementById('bal-neto').textContent = `${liquidoEnCaja.toFixed(2)} €`;
+
+            document.getElementById('bal-socios-resumen').textContent = `${numSocios} socios (Tot. Cuotas: ${acumuladoCuotaTeorica.toFixed(2)} €)`;
+            document.getElementById('calc-teorico').textContent = `${acumuladoCuotaTeorica.toFixed(2)} €`;
+            document.getElementById('calc-cobrado').textContent = `${cobradoCuotas.toFixed(2)} €`;
+            document.getElementById('calc-pendiente').textContent = `${pendienteCuotas.toFixed(2)} €`;
+
             document.getElementById('progreso-bar').style.width = `${porcentaje}%`;
+            document.getElementById('progreso-texto').textContent = `${porcentaje}% (${cobradoCuotas.toFixed(0)}€ / ${acumuladoCuotaTeorica.toFixed(0)}€)`;
         }
 
+        // RENDERS
         function renderizarSociosPublico() {
             const container = document.getElementById('grid-socios-publico');
+            document.getElementById('total-socios-count-public').textContent = socios.length;
             if (!container) return;
             container.innerHTML = socios.map(s => {
                 const fotoUrl = s.foto || FOTO_DEFAULT;
@@ -613,17 +815,20 @@
             const container = document.getElementById('tabla-socios-admin');
             if (!container) return;
             container.innerHTML = socios.map(s => {
-                const pendiente = 400 - (parseFloat(s.pagado) || 0);
+                const cuotaTotal = parseFloat(s.cuotaTotal) || 400;
+                const abonado = parseFloat(s.pagado) || 0;
+                const pendiente = cuotaTotal - abonado;
                 const fotoUrl = s.foto || FOTO_DEFAULT;
                 return `
                     <tr class="hover:bg-slate-800/40">
                         <td class="p-3">
-                            <img src="${fotoUrl}" onclick="ampliarImagen('${fotoUrl}', '${s.nombre}')" class="w-8 h-8 rounded-full object-cover border border-amber-500/40 cursor-pointer hover:scale-110 transition-transform">
+                            <img src="${fotoUrl}" onclick="ampliarImagen('${fotoUrl}', '${s.nombre}')" class="w-8 h-8 rounded-full object-cover border border-amber-500/40 cursor-pointer">
                         </td>
                         <td class="p-3 font-bold text-amber-400">#${s.num}</td>
                         <td class="p-3 font-medium text-white">${s.nombre}</td>
                         <td class="p-3 text-slate-400">${s.cargo || '—'}</td>
-                        <td class="p-3 text-emerald-400 font-bold">${parseFloat(s.pagado || 0).toFixed(2)} €</td>
+                        <td class="p-3 text-slate-300 font-bold">${cuotaTotal.toFixed(2)} €</td>
+                        <td class="p-3 text-emerald-400 font-bold">${abonado.toFixed(2)} €</td>
                         <td class="p-3 text-amber-500 font-bold">${pendiente.toFixed(2)} €</td>
                         <td class="p-3 text-center space-x-2">
                             <button onclick="editarSocio('${s.id}')" class="text-amber-400 hover:text-amber-300"><i class="fa-solid fa-pen"></i></button>
@@ -632,6 +837,21 @@
                     </tr>
                 `;
             }).join('');
+        }
+
+        function renderizarIngresosAdmin() {
+            const container = document.getElementById('tabla-ingresos-admin');
+            if (!container) return;
+            container.innerHTML = ingresos.map(i => `
+                <tr class="hover:bg-slate-800/40">
+                    <td class="p-3 text-white font-bold">${i.concepto}</td>
+                    <td class="p-3 text-slate-400">${i.origen || '—'}</td>
+                    <td class="p-3 text-cyan-400 font-bold">${parseFloat(i.importe || 0).toFixed(2)} €</td>
+                    <td class="p-3 text-center">
+                        <button onclick="eliminarIngreso('${i.id}')" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
         }
 
         function renderizarEventosPublico() {
@@ -681,18 +901,17 @@
             `).join('');
         }
 
-        // FUNCIONES MODALES Y CRUD
+        // CRUD SOCIOS
         window.abrirModalSocio = function() {
             document.getElementById('form-socio').reset();
             document.getElementById('socio-id').value = '';
+            document.getElementById('socio-cuota-total').value = 400;
             const modal = document.getElementById('modal-socio');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
+            modal.classList.remove('hidden'); modal.classList.add('flex');
         };
         window.cerrarModalSocio = function() {
             const modal = document.getElementById('modal-socio');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
+            modal.classList.add('hidden'); modal.classList.remove('flex');
         };
         window.guardarSocio = function(e) {
             e.preventDefault();
@@ -702,13 +921,11 @@
                 nombre: document.getElementById('socio-nombre').value,
                 cargo: document.getElementById('socio-cargo').value,
                 foto: document.getElementById('socio-foto').value,
+                cuotaTotal: parseFloat(document.getElementById('socio-cuota-total').value) || 400,
                 pagado: parseFloat(document.getElementById('socio-pagado').value) || 0
             };
-            if (id) {
-                update(ref(db, `socios/${id}`), payload);
-            } else {
-                push(sociosRef, payload);
-            }
+            if (id) update(ref(db, `ejercicios/${anoActual}/socios/${id}`), payload);
+            else push(sociosRef, payload);
             cerrarModalSocio();
         };
         window.editarSocio = function(id) {
@@ -719,26 +936,49 @@
             document.getElementById('socio-nombre').value = s.nombre;
             document.getElementById('socio-cargo').value = s.cargo || '';
             document.getElementById('socio-foto').value = s.foto || '';
+            document.getElementById('socio-cuota-total').value = s.cuotaTotal || 400;
             document.getElementById('socio-pagado').value = s.pagado || 0;
             const modal = document.getElementById('modal-socio');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
+            modal.classList.remove('hidden'); modal.classList.add('flex');
         };
         window.eliminarSocio = function(id) {
-            if (confirm('¿Desea eliminar este socio?')) remove(ref(db, `socios/${id}`));
+            if (confirm('¿Desea eliminar este socio?')) remove(ref(db, `ejercicios/${anoActual}/socios/${id}`));
         };
 
+        // CRUD INGRESOS
+        window.abrirModalIngreso = function() {
+            document.getElementById('form-ingreso').reset();
+            const modal = document.getElementById('modal-ingreso');
+            modal.classList.remove('hidden'); modal.classList.add('flex');
+        };
+        window.cerrarModalIngreso = function() {
+            const modal = document.getElementById('modal-ingreso');
+            modal.classList.add('hidden'); modal.classList.remove('flex');
+        };
+        window.guardarIngreso = function(e) {
+            e.preventDefault();
+            const payload = {
+                concepto: document.getElementById('ingreso-concepto').value,
+                origen: document.getElementById('ingreso-origen').value,
+                importe: parseFloat(document.getElementById('ingreso-importe').value) || 0
+            };
+            push(ingresosRef, payload);
+            cerrarModalIngreso();
+        };
+        window.eliminarIngreso = function(id) {
+            if (confirm('¿Desea eliminar este ingreso?')) remove(ref(db, `ejercicios/${anoActual}/ingresos/${id}`));
+        };
+
+        // CRUD EVENTOS
         window.abrirModalEvento = function() {
             document.getElementById('form-evento').reset();
             document.getElementById('evento-id').value = '';
             const modal = document.getElementById('modal-evento');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
+            modal.classList.remove('hidden'); modal.classList.add('flex');
         };
         window.cerrarModalEvento = function() {
             const modal = document.getElementById('modal-evento');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
+            modal.classList.add('hidden'); modal.classList.remove('flex');
         };
         window.guardarEvento = function(e) {
             e.preventDefault();
@@ -748,11 +988,8 @@
                 fecha: document.getElementById('evento-fecha').value,
                 descripcion: document.getElementById('evento-descripcion').value
             };
-            if (id) {
-                update(ref(db, `eventos/${id}`), payload);
-            } else {
-                push(eventosRef, payload);
-            }
+            if (id) update(ref(db, `ejercicios/${anoActual}/eventos/${id}`), payload);
+            else push(eventosRef, payload);
             cerrarModalEvento();
         };
         window.editarEvento = function(id) {
@@ -763,23 +1000,21 @@
             document.getElementById('evento-fecha').value = ev.fecha;
             document.getElementById('evento-descripcion').value = ev.descripcion || '';
             const modal = document.getElementById('modal-evento');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
+            modal.classList.remove('hidden'); modal.classList.add('flex');
         };
         window.eliminarEvento = function(id) {
-            if (confirm('¿Desea eliminar este evento?')) remove(ref(db, `eventos/${id}`));
+            if (confirm('¿Desea eliminar este evento?')) remove(ref(db, `ejercicios/${anoActual}/eventos/${id}`));
         };
 
+        // CRUD GASTOS
         window.abrirModalGasto = function() {
             document.getElementById('form-gasto').reset();
             const modal = document.getElementById('modal-gasto');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
+            modal.classList.remove('hidden'); modal.classList.add('flex');
         };
         window.cerrarModalGasto = function() {
             const modal = document.getElementById('modal-gasto');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
+            modal.classList.add('hidden'); modal.classList.remove('flex');
         };
         window.guardarGasto = function(e) {
             e.preventDefault();
@@ -794,31 +1029,22 @@
             cerrarModalGasto();
         };
         window.eliminarGasto = function(id) {
-            if (confirm('¿Desea eliminar este gasto?')) remove(ref(db, `gastos/${id}`));
+            if (confirm('¿Desea eliminar este gasto?')) remove(ref(db, `ejercicios/${anoActual}/gastos/${id}`));
         };
 
-        // LISTENERS REALTIME FIREBASE
-        onValue(sociosRef, (s) => {
-            const data = s.val();
-            socios = data ? Object.keys(data).map(k => ({ id: k, ...data[k] })) : [];
-            renderizarSociosPublico();
-            renderizarSociosAdmin();
-            actualizarBalance();
-        });
+        // AJUSTES HISTORIA
+        window.guardarAjustes = function(e) {
+            e.preventDefault();
+            const payload = {
+                fecha: document.getElementById('ajuste-fecha').value,
+                historia: document.getElementById('ajuste-historia').value
+            };
+            set(ajustesRef, payload);
+            alert('Información histórica actualizada con éxito.');
+        };
 
-        onValue(gastosRef, (s) => {
-            const data = s.val();
-            gastos = data ? Object.keys(data).map(k => ({ id: k, ...data[k] })) : [];
-            renderizarGastosAdmin();
-            actualizarBalance();
-        });
-
-        onValue(eventosRef, (s) => {
-            const data = s.val();
-            eventos = data ? Object.keys(data).map(k => ({ id: k, ...data[k] })) : [];
-            renderizarEventosPublico();
-            renderizarEventosAdmin();
-        });
+        // INICIALIZACIÓN
+        conectarBaseDatos();
     </script>
 </body>
 </html>
