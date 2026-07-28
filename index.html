@@ -3,14 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Caseta Los Manolos y Cía. — Gestión Integral</title>
+    <title>Caseta Los Manolos y Cía. Nº 28 — Portal Oficial</title>
     
-    <!-- Meta etiquetas PWA -->
     <meta name="theme-color" content="#0f172a">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Los Manolos">
-    <link rel="apple-touch-icon" href="logo.png">
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -45,10 +43,6 @@
             backdrop-filter: blur(16px);
             border: 1px solid rgba(234, 179, 8, 0.15);
         }
-        .glass-panel-hover:hover {
-            border-color: rgba(234, 179, 8, 0.4);
-            box-shadow: 0 0 20px rgba(234, 179, 8, 0.1);
-        }
         button, a, input, select, textarea {
             touch-action: manipulation;
         }
@@ -56,17 +50,13 @@
 </head>
 <body class="h-full flex flex-col text-slate-100 font-sans antialiased selection:bg-amber-400 selection:text-slate-900">
 
-    <!-- CABECERA ADAPTATIVA -->
+    <!-- CABECERA -->
     <header class="sticky top-0 z-50 glass-panel border-b border-amber-500/20">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
             <div class="flex items-center space-x-3 cursor-pointer" onclick="mostrarSeccion('publico')">
                 <div class="relative w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-tr from-amber-400 via-amber-600 to-red-700 p-0.5 shadow-lg shadow-amber-500/20">
-                    <div class="w-full h-full bg-slate-950 rounded-full flex items-center justify-center overflow-hidden relative">
-                        <img src="logo.png" alt="Logo" class="object-cover w-full h-full z-10 relative" onerror="this.style.display='none'; document.getElementById('fallback-logo').classList.remove('hidden');">
-                        <div id="fallback-logo" class="hidden flex flex-col items-center justify-center text-amber-400">
-                            <i class="fa-solid fa-fan text-base"></i>
-                            <span class="text-[7px] font-black text-amber-200">LM</span>
-                        </div>
+                    <div class="w-full h-full bg-slate-950 rounded-full flex items-center justify-center overflow-hidden">
+                        <i class="fa-solid fa-fan text-amber-400 text-lg"></i>
                     </div>
                 </div>
                 <div>
@@ -74,96 +64,108 @@
                         Los Manolos <span class="text-[10px] font-sans font-semibold px-1.5 py-0.5 rounded-full bg-red-950/80 text-red-300 border border-red-800/50">Nº 28</span>
                     </h1>
                     <p class="text-[9px] sm:text-[10px] text-slate-400 uppercase tracking-widest font-semibold">
-                        Caseta Privada • <span id="header-ejercicio-actual" class="text-amber-400 font-bold">2026</span>
+                        Caseta Privada de Feria
                     </p>
                 </div>
             </div>
 
             <div class="flex items-center gap-2">
-                <!-- SELECTOR Y CREADOR DE AÑO / EJERCICIO -->
-                <div class="flex items-center gap-1.5 bg-slate-900 border border-amber-500/30 px-2.5 py-1.5 rounded-xl">
-                    <i class="fa-solid fa-calendar text-amber-400 text-xs"></i>
+                <!-- SELECTOR DE EJERCICIO CONTABLE (EXCLUSIVO PARA CONTABILIDAD) -->
+                <div class="flex items-center gap-1.5 bg-slate-900 border border-amber-500/30 px-2.5 py-1.5 rounded-xl" title="Ejercicio Contable para Balances y Gastos">
+                    <span class="text-[10px] uppercase font-bold text-slate-400 hidden sm:inline">Ejercicio:</span>
+                    <i class="fa-solid fa-calculator text-amber-400 text-xs"></i>
                     <select id="select-ejercicio-global" onchange="cambiarEjercicio(this.value)" class="bg-transparent text-amber-300 font-bold text-xs outline-none cursor-pointer">
                         <option value="2026" class="bg-slate-900 text-white">2026</option>
                         <option value="2027" class="bg-slate-900 text-white">2027</option>
                         <option value="2028" class="bg-slate-900 text-white">2028</option>
                         <option value="2029" class="bg-slate-900 text-white">2029</option>
-                        <option value="2030" class="bg-slate-900 text-white">2030</option>
                     </select>
-                    <button onclick="anadirNuevoAno()" class="text-amber-400 hover:text-amber-300 text-xs px-1 font-bold border-l border-slate-700 pl-2 ml-1" title="Añadir otro año">
+                    <button onclick="anadirNuevoAno()" class="text-amber-400 hover:text-amber-300 text-xs px-1 font-bold border-l border-slate-700 pl-1.5" title="Añadir nuevo año contable">
                         <i class="fa-solid fa-plus"></i>
                     </button>
                 </div>
 
-                <button id="btn-install-app" onclick="instalarApp()" class="hidden px-3 py-1.5 rounded-xl text-xs font-bold text-amber-400 bg-amber-500/10 border border-amber-500/30 hover:bg-amber-500/20 transition flex items-center gap-1.5">
-                    <i class="fa-solid fa-download"></i>
-                    <span class="hidden sm:inline">Instalar</span>
-                </button>
-
                 <button id="btn-admin" onclick="solicitarAccesoAdmin()" class="px-3.5 py-2 rounded-xl text-xs font-bold text-slate-950 bg-amber-400 hover:bg-amber-300 shadow-md shadow-amber-500/20 transition flex items-center gap-1.5">
                     <i class="fa-solid fa-shield-halved"></i>
-                    <span>Directiva</span>
+                    <span class="hidden sm:inline">Panel Directiva</span>
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- PORTADA PÚBLICA -->
-    <div id="seccion-publica" class="flex-1 pb-12">
+    <!-- VISTA PÚBLICA / PORTADA -->
+    <div id="seccion-publica" class="flex-1 pb-16">
         
-        <!-- HERO BANNER -->
-        <section class="relative bg-hero-pattern py-16 sm:py-20 px-4 overflow-hidden border-b border-amber-500/20">
+        <!-- HERO -->
+        <section class="relative bg-hero-pattern py-14 sm:py-20 px-4 overflow-hidden border-b border-amber-500/20">
             <div class="absolute inset-0 bg-gradient-to-b from-slate-950/70 via-transparent to-slate-950"></div>
-            <div class="max-w-4xl mx-auto text-center relative z-10 space-y-4">
+            <div class="max-w-4xl mx-auto text-center relative z-10 space-y-3">
                 <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-bold uppercase tracking-wider backdrop-blur-md">
-                    <i class="fa-solid fa-location-dot text-amber-400"></i> Real de la Feria • Ejercicio <span id="hero-ano-display">2026</span>
+                    <i class="fa-solid fa-location-dot text-amber-400"></i> Real de la Feria • Caseta Nº 28
                 </div>
                 <h2 class="text-3xl sm:text-6xl font-serif font-extrabold text-white tracking-tight leading-tight">
                     Tradición, Familia y <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-amber-400 to-amber-600">Convivencia</span>
                 </h2>
-                <p class="text-sm sm:text-base text-slate-300 max-w-xl mx-auto font-light leading-relaxed">
-                    Portal de la Caseta Los Manolos y Cía.
+                <p class="text-xs sm:text-base text-slate-300 max-w-xl mx-auto font-light">
+                    Portal informativo oficial de la Caseta Los Manolos y Cía.
                 </p>
             </div>
         </section>
 
-        <!-- SECCIÓN HISTORIA Y DETALLES FUNDACIONALES -->
+        <!-- HISTORIA Y DETALLES -->
         <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 relative z-20">
-            <div class="glass-panel p-6 rounded-3xl border border-amber-500/30 space-y-4">
+            <div class="glass-panel p-6 rounded-3xl border border-amber-500/30 space-y-3">
                 <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-                    <h3 class="font-serif text-lg sm:text-xl font-bold text-amber-400 flex items-center gap-2">
-                        <i class="fa-solid fa-landmark text-amber-500"></i> Historia y Detalles de Nuestra Caseta
+                    <h3 class="font-serif text-lg font-bold text-amber-400 flex items-center gap-2">
+                        <i class="fa-solid fa-landmark text-amber-500"></i> Historia de la Caseta
                     </h3>
                     <span id="badge-fecha-fundacion" class="text-xs font-bold px-3 py-1 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/20">
                         Adquisición: Septiembre de 2017
                     </span>
                 </div>
-                <div id="public-detalles-historia" class="text-slate-300 text-xs sm:text-sm leading-relaxed whitespace-pre-line">
-                    Nuestra caseta fue adquirida oficialmente en septiembre de 2017. Desde entonces, hemos mantenido la tradición y el espíritu de convivencia familiar en cada edición de la feria.
-                </div>
+                <p id="public-detalles-historia" class="text-slate-300 text-xs sm:text-sm leading-relaxed whitespace-pre-line">
+                    Nuestra caseta fue adquirida oficialmente en septiembre de 2017. Desde entonces, mantenemos la tradición y el espíritu de convivencia familiar en cada edición de la feria.
+                </p>
             </div>
         </section>
 
-        <!-- AGENDA DE ACTOS -->
-        <section id="sec-eventos" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-6">
-            <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-6 gap-2">
+        <!-- TABLÓN DE NOTAS Y AVISOS (INDEPENDIENTE DE EVENTOS) -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
+            <div class="flex items-center justify-between mb-4">
                 <div>
-                    <span class="text-amber-400 text-xs font-bold uppercase tracking-widest">Programación <span id="label-ano-eventos">2026</span></span>
-                    <h3 class="text-2xl sm:text-3xl font-serif font-bold text-white mt-0.5">Agenda de Actos y Eventos</h3>
+                    <span class="text-amber-400 text-xs font-bold uppercase tracking-widest">Información Interna</span>
+                    <h3 class="text-xl sm:text-2xl font-serif font-bold text-white">Tablón de Notas y Avisos</h3>
                 </div>
             </div>
-            <div id="grid-eventos-publico" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+            <div id="grid-notas-publico" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Se cargan dinámicamente -->
+            </div>
         </section>
 
-        <!-- SOCIOS COMPONENTES -->
-        <section id="sec-socios" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-6 gap-2">
+        <!-- AGENDA DE EVENTOS -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <span class="text-amber-400 text-xs font-bold uppercase tracking-widest">Programación</span>
+                    <h3 class="text-xl sm:text-2xl font-serif font-bold text-white">Agenda de Actos y Eventos</h3>
+                </div>
+            </div>
+            <div id="grid-eventos-publico" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Se cargan dinámicamente -->
+            </div>
+        </section>
+
+        <!-- LISTADO OFICIAL DE LOS 19 SOCIOS -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
+            <div class="flex items-center justify-between mb-6">
                 <div>
                     <span class="text-amber-400 text-xs font-bold uppercase tracking-widest">Listado Oficial</span>
-                    <h3 class="text-2xl sm:text-3xl font-serif font-bold text-white mt-0.5">Socios Componentes (<span id="total-socios-count-public">0</span>)</h3>
+                    <h3 class="text-xl sm:text-2xl font-serif font-bold text-white">Socios Componentes (<span id="total-socios-count-public">19</span>)</h3>
                 </div>
             </div>
-            <div id="grid-socios-publico" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"></div>
+            <div id="grid-socios-publico" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                <!-- Se cargan los 19 socios dinámicamente -->
+            </div>
         </section>
 
     </div>
@@ -174,17 +176,18 @@
             <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
                 <div class="flex items-center gap-2">
                     <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span class="text-xs font-bold uppercase tracking-wider text-slate-300">Panel Directivo</span>
+                    <span class="text-xs font-bold uppercase tracking-wider text-slate-300">Gestión Junta Directiva</span>
                 </div>
+                
                 <div class="w-full md:w-auto overflow-x-auto flex space-x-1 p-1 bg-slate-900 rounded-xl border border-slate-800">
                     <button id="tab-balance" onclick="cambiarPestana('balance')" class="px-3 py-1.5 rounded-lg text-xs font-bold text-amber-400 bg-slate-800 whitespace-nowrap">
-                        <i class="fa-solid fa-chart-pie mr-1"></i> Balance
-                    </button>
-                    <button id="tab-ingresos" onclick="cambiarPestana('ingresos')" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400 whitespace-nowrap">
-                        <i class="fa-solid fa-wallet mr-1"></i> Ingresos Extra
+                        <i class="fa-solid fa-chart-pie mr-1"></i> Balance <span id="label-tab-ano" class="text-amber-300">(2026)</span>
                     </button>
                     <button id="tab-socios" onclick="cambiarPestana('socios')" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400 whitespace-nowrap">
-                        <i class="fa-solid fa-users mr-1"></i> Socios
+                        <i class="fa-solid fa-users mr-1"></i> Socios (19)
+                    </button>
+                    <button id="tab-notas" onclick="cambiarPestana('notas')" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400 whitespace-nowrap">
+                        <i class="fa-solid fa-note-sticky mr-1"></i> Notas y Avisos
                     </button>
                     <button id="tab-eventos" onclick="cambiarPestana('eventos')" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400 whitespace-nowrap">
                         <i class="fa-solid fa-calendar-days mr-1"></i> Eventos
@@ -193,9 +196,10 @@
                         <i class="fa-solid fa-receipt mr-1"></i> Contabilidad
                     </button>
                     <button id="tab-ajustes" onclick="cambiarPestana('ajustes')" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400 whitespace-nowrap">
-                        <i class="fa-solid fa-sliders mr-1"></i> Info/Ajustes
+                        <i class="fa-solid fa-sliders mr-1"></i> Info General
                     </button>
                 </div>
+
                 <button onclick="cerrarSesionAdmin()" class="px-3 py-1.5 rounded-lg text-xs font-bold text-red-400 border border-red-900/50 hover:bg-red-950/50 transition">
                     <i class="fa-solid fa-power-off mr-1"></i> Salir
                 </button>
@@ -204,23 +208,23 @@
 
         <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
             
-            <!-- VISTA BALANCE -->
+            <!-- VISTA BALANCE DE EJERCICIO CONTABLE -->
             <div id="view-balance" class="space-y-6">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div class="glass-panel p-5 rounded-2xl border-l-4 border-cyan-500">
-                        <span class="text-xs font-bold uppercase text-slate-400">Fondos Anteriores / Extras</span>
+                        <span class="text-xs font-bold uppercase text-slate-400">Ingresos Extras / Remanentes</span>
                         <div id="bal-extras" class="text-2xl font-extrabold text-cyan-400 mt-1">0,00 €</div>
-                        <span class="text-[10px] text-slate-500">Remanentes e Ingresos Adicionales</span>
+                        <span class="text-[10px] text-slate-500">Aportaciones adicionales o saldos pasados</span>
                     </div>
                     <div class="glass-panel p-5 rounded-2xl border-l-4 border-emerald-500">
-                        <span class="text-xs font-bold uppercase text-slate-400">Recaudado Cuotas</span>
+                        <span class="text-xs font-bold uppercase text-slate-400">Recaudado Cuotas Socios</span>
                         <div id="bal-ingresos" class="text-2xl font-extrabold text-emerald-400 mt-1">0,00 €</div>
-                        <span id="bal-sub-cuotas" class="text-[10px] text-slate-400">0 € de presupuesto cuotas</span>
+                        <span id="bal-sub-cuotas" class="text-[10px] text-slate-400">0 € presupuestados</span>
                     </div>
                     <div class="glass-panel p-5 rounded-2xl border-l-4 border-red-500">
-                        <span class="text-xs font-bold uppercase text-slate-400">Gastos Totales</span>
+                        <span class="text-xs font-bold uppercase text-slate-400">Gastos Totales <span class="bal-ano-label">2026</span></span>
                         <div id="bal-gastos" class="text-2xl font-extrabold text-red-400 mt-1">0,00 €</div>
-                        <span class="text-[10px] text-slate-500">Proveedores y Facturas</span>
+                        <span class="text-[10px] text-slate-500">Proveedores y compras</span>
                     </div>
                     <div class="glass-panel p-5 rounded-2xl border-l-4 border-amber-500">
                         <span class="text-xs font-bold uppercase text-slate-400">Líquido En Caja</span>
@@ -231,8 +235,8 @@
 
                 <div class="glass-panel p-6 rounded-2xl space-y-4">
                     <h4 class="font-bold text-sm text-white flex items-center justify-between border-b border-slate-800 pb-2">
-                        <span class="flex items-center gap-2"><i class="fa-solid fa-calculator text-amber-400"></i> Desglose de Cobro de Cuotas</span>
-                        <span id="bal-socios-resumen" class="text-xs font-normal text-amber-300">0 socios</span>
+                        <span class="flex items-center gap-2"><i class="fa-solid fa-calculator text-amber-400"></i> Desglose de Recaudación de Cuotas</span>
+                        <span id="bal-socios-resumen" class="text-xs font-normal text-amber-300">19 socios</span>
                     </h4>
                     
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
@@ -241,7 +245,7 @@
                             <span id="calc-teorico" class="text-base font-bold text-white">0,00 €</span>
                         </div>
                         <div class="bg-slate-900/80 p-3.5 rounded-xl border border-slate-800">
-                            <span class="text-slate-400 block mb-1">Cobrado Efectivo Cuotas:</span>
+                            <span class="text-slate-400 block mb-1">Cobrado Real:</span>
                             <span id="calc-cobrado" class="text-base font-bold text-emerald-400">0,00 €</span>
                         </div>
                         <div class="bg-slate-900/80 p-3.5 rounded-xl border border-slate-800">
@@ -252,7 +256,7 @@
 
                     <div class="space-y-1.5 pt-2">
                         <div class="flex justify-between text-xs font-bold">
-                            <span class="text-slate-400">Progreso Recaudación Cuotas</span>
+                            <span class="text-slate-400">Estado Recaudación Cuotas</span>
                             <span id="progreso-texto" class="text-amber-400">0%</span>
                         </div>
                         <div class="w-full bg-slate-900 rounded-full h-3 overflow-hidden p-0.5 border border-slate-800">
@@ -262,40 +266,15 @@
                 </div>
             </div>
 
-            <!-- VISTA INGRESOS EXTRA / REMANENTES -->
-            <div id="view-ingresos" class="hidden space-y-4">
-                <div class="flex justify-between items-center glass-panel p-4 rounded-2xl">
-                    <div>
-                        <h3 class="font-bold text-white text-sm sm:text-base">Otros Ingresos y Saldos Anteriores</h3>
-                        <p class="text-xs text-slate-400">Remanente de años pasados, barras, aportaciones extraordinarias...</p>
-                    </div>
-                    <button onclick="abrirModalIngreso()" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-amber-400 text-slate-950 hover:bg-amber-300 transition flex items-center gap-1.5">
-                        <i class="fa-solid fa-plus"></i> Añadir Ingreso
-                    </button>
-                </div>
-                <div class="glass-panel rounded-2xl overflow-hidden border border-slate-800">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs sm:text-sm">
-                            <thead class="bg-slate-950 font-bold text-slate-400 uppercase border-b border-slate-800">
-                                <tr>
-                                    <th class="p-3">Concepto</th>
-                                    <th class="p-3">Fecha / Origen</th>
-                                    <th class="p-3">Importe</th>
-                                    <th class="p-3 text-center">Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabla-ingresos-admin" class="divide-y divide-slate-800/80"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
             <!-- VISTA SOCIOS -->
             <div id="view-socios" class="hidden space-y-4">
                 <div class="flex justify-between items-center glass-panel p-4 rounded-2xl">
-                    <h3 class="font-bold text-white text-sm sm:text-base">Gestión de Socios y Cuotas</h3>
+                    <div>
+                        <h3 class="font-bold text-white text-sm sm:text-base">Gestión de Socios y Cuotas</h3>
+                        <p class="text-xs text-slate-400">Listado unificado de los 19 socios componentes</p>
+                    </div>
                     <button onclick="abrirModalSocio()" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-amber-400 text-slate-950 hover:bg-amber-300 transition flex items-center gap-1.5">
-                        <i class="fa-solid fa-plus"></i> Nuevo Socio
+                        <i class="fa-solid fa-plus"></i> Añadir Socio
                     </button>
                 </div>
                 <div class="glass-panel rounded-2xl overflow-hidden border border-slate-800">
@@ -307,13 +286,41 @@
                                     <th class="p-3">Nº</th>
                                     <th class="p-3">Socio</th>
                                     <th class="p-3">Cargo / Etiqueta</th>
-                                    <th class="p-3">Cuota Total</th>
+                                    <th class="p-3">Cuota Fijada</th>
                                     <th class="p-3">Abonado</th>
                                     <th class="p-3">Pendiente</th>
                                     <th class="p-3 text-center">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody id="tabla-socios-admin" class="divide-y divide-slate-800/80"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VISTA NOTAS Y AVISOS -->
+            <div id="view-notas" class="hidden space-y-4">
+                <div class="flex justify-between items-center glass-panel p-4 rounded-2xl">
+                    <div>
+                        <h3 class="font-bold text-white text-sm sm:text-base">Tablón de Notas e Informaciones</h3>
+                        <p class="text-xs text-slate-400">Avisos generales para mostrar en la portada (no son eventos)</p>
+                    </div>
+                    <button onclick="abrirModalNota()" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-amber-400 text-slate-950 hover:bg-amber-300 transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-plus"></i> Nueva Nota
+                    </button>
+                </div>
+                <div class="glass-panel rounded-2xl overflow-hidden border border-slate-800">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs sm:text-sm">
+                            <thead class="bg-slate-950 font-bold text-slate-400 uppercase border-b border-slate-800">
+                                <tr>
+                                    <th class="p-3">Tipo / Prioridad</th>
+                                    <th class="p-3">Título de la Nota</th>
+                                    <th class="p-3">Contenido</th>
+                                    <th class="p-3 text-center">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-notas-admin" class="divide-y divide-slate-800/80"></tbody>
                         </table>
                     </div>
                 </div>
@@ -344,16 +351,47 @@
                 </div>
             </div>
 
-            <!-- VISTA GASTOS Y PROVEEDORES -->
-            <div id="view-gastos" class="hidden space-y-4">
-                <div class="flex justify-between items-center glass-panel p-4 rounded-2xl">
-                    <h3 class="font-bold text-white text-sm sm:text-base">Facturas y Proveedores</h3>
-                    <button onclick="abrirModalGasto()" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-amber-400 text-slate-950 hover:bg-amber-300 transition flex items-center gap-1.5">
-                        <i class="fa-solid fa-plus"></i> Registrar Gasto
-                    </button>
+            <!-- VISTA CONTABILIDAD DEL EJERCICIO (GASTOS E INGRESOS) -->
+            <div id="view-gastos" class="hidden space-y-6">
+                
+                <!-- INGRESOS EXTRA -->
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center glass-panel p-4 rounded-2xl">
+                        <div>
+                            <h3 class="font-bold text-white text-sm sm:text-base">Ingresos Adicionales del Ejercicio <span class="bal-ano-label">2026</span></h3>
+                            <p class="text-xs text-slate-400">Remanentes, recaudación de barra o aportaciones extra</p>
+                        </div>
+                        <button onclick="abrirModalIngreso()" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-plus"></i> Registrar Ingreso Extra
+                        </button>
+                    </div>
+                    <div class="glass-panel rounded-2xl overflow-hidden border border-slate-800">
+                        <table class="w-full text-left text-xs sm:text-sm">
+                            <thead class="bg-slate-950 font-bold text-slate-400 uppercase border-b border-slate-800">
+                                <tr>
+                                    <th class="p-3">Concepto</th>
+                                    <th class="p-3">Origen / Notas</th>
+                                    <th class="p-3">Importe</th>
+                                    <th class="p-3 text-center">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-ingresos-admin" class="divide-y divide-slate-800/80"></tbody>
+                        </table>
+                    </div>
                 </div>
-                <div class="glass-panel rounded-2xl overflow-hidden border border-slate-800">
-                    <div class="overflow-x-auto">
+
+                <!-- GASTOS Y PROVEEDORES -->
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center glass-panel p-4 rounded-2xl">
+                        <div>
+                            <h3 class="font-bold text-white text-sm sm:text-base">Facturas y Proveedores Ejercicio <span class="bal-ano-label">2026</span></h3>
+                            <p class="text-xs text-slate-400">Gastos asociados al montaje, catering y actuaciones de este año</p>
+                        </div>
+                        <button onclick="abrirModalGasto()" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-400 text-slate-950 hover:bg-amber-300 transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-plus"></i> Registrar Gasto
+                        </button>
+                    </div>
+                    <div class="glass-panel rounded-2xl overflow-hidden border border-slate-800">
                         <table class="w-full text-left text-xs sm:text-sm">
                             <thead class="bg-slate-950 font-bold text-slate-400 uppercase border-b border-slate-800">
                                 <tr>
@@ -369,22 +407,23 @@
                         </table>
                     </div>
                 </div>
+
             </div>
 
-            <!-- VISTA HISTORIA Y DETALLES DEL LOCAL -->
+            <!-- VISTA HISTORIA Y AJUSTES -->
             <div id="view-ajustes" class="hidden space-y-4">
                 <div class="glass-panel p-6 rounded-2xl space-y-4 border border-slate-800">
                     <h3 class="font-bold text-white text-base flex items-center gap-2">
-                        <i class="fa-solid fa-pen-to-square text-amber-400"></i> Editar Historia y Detalles Generales
+                        <i class="fa-solid fa-pen-to-square text-amber-400"></i> Editar Historia y Detalles
                     </h3>
                     <form onsubmit="guardarAjustes(event)" class="space-y-4 text-xs">
                         <div>
-                            <label class="block font-bold text-slate-400 uppercase mb-1">Fecha de Adquisición / Hito</label>
+                            <label class="block font-bold text-slate-400 uppercase mb-1">Fecha de Adquisición</label>
                             <input type="text" id="ajuste-fecha" placeholder="Ej: Septiembre de 2017" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white outline-none focus:border-amber-400">
                         </div>
                         <div>
-                            <label class="block font-bold text-slate-400 uppercase mb-1">Detalles e Historia de la Caseta</label>
-                            <textarea id="ajuste-historia" rows="5" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white outline-none focus:border-amber-400" placeholder="Escribe aquí los detalles históricos..."></textarea>
+                            <label class="block font-bold text-slate-400 uppercase mb-1">Historia y Texto Presentación</label>
+                            <textarea id="ajuste-historia" rows="5" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white outline-none focus:border-amber-400"></textarea>
                         </div>
                         <button type="submit" class="px-4 py-2 bg-amber-400 text-slate-950 font-bold rounded-xl hover:bg-amber-300 transition">
                             Guardar Cambios
@@ -396,29 +435,29 @@
         </main>
     </div>
 
-    <!-- MODAL LIGHTBOX -->
+    <!-- MODAL LIGHTBOX FOTOS -->
     <div id="modal-lightbox" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md hidden items-center justify-center p-4 z-50 transition-opacity" onclick="cerrarLightbox()">
-        <div class="relative max-w-xl w-full flex flex-col items-center" onclick="event.stopPropagation()">
-            <button onclick="cerrarLightbox()" class="absolute -top-12 right-0 text-white hover:text-amber-400 text-3xl font-bold transition">
+        <div class="relative max-w-md w-full flex flex-col items-center" onclick="event.stopPropagation()">
+            <button onclick="cerrarLightbox()" class="absolute -top-12 right-0 text-white hover:text-amber-400 text-3xl font-bold">
                 <i class="fa-solid fa-xmark"></i>
             </button>
-            <img id="lightbox-img" src="" alt="Foto Socio" class="max-h-[80vh] w-auto object-contain rounded-2xl border-2 border-amber-500/50 shadow-2xl">
+            <img id="lightbox-img" src="" alt="Socio" class="max-h-[75vh] w-auto object-contain rounded-2xl border-2 border-amber-500/50 shadow-2xl">
             <h4 id="lightbox-nombre" class="mt-4 text-white font-serif font-bold text-lg text-center"></h4>
         </div>
     </div>
 
-    <!-- MODAL AUTENTICACIÓN -->
+    <!-- MODAL LOGIN DIRECTIVA -->
     <div id="modal-login" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4 z-50">
-        <div class="glass-panel rounded-3xl w-full max-w-xs sm:max-w-sm p-6 text-center space-y-5 border border-amber-500/30 shadow-2xl">
+        <div class="glass-panel rounded-3xl w-full max-w-xs p-6 text-center space-y-5 border border-amber-500/30 shadow-2xl">
             <div class="w-14 h-14 bg-amber-500/10 text-amber-400 rounded-full flex items-center justify-center mx-auto text-xl border border-amber-500/20">
                 <i class="fa-solid fa-lock"></i>
             </div>
             <div>
-                <h3 class="text-lg font-serif font-bold text-white">Acceso Restringido</h3>
+                <h3 class="text-lg font-serif font-bold text-white">Acceso Directiva</h3>
                 <p class="text-xs text-slate-400 mt-1">Clave de la Junta Directiva</p>
             </div>
             <form onsubmit="verificarPassword(event)">
-                <input type="password" id="input-admin-pass" required placeholder="••••••••" class="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl text-center text-lg font-bold text-white focus:outline-none focus:border-amber-400 transition mb-4">
+                <input type="password" id="input-admin-pass" required placeholder="••••••••" class="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl text-center text-lg font-bold text-white focus:outline-none focus:border-amber-400 mb-4">
                 <div class="flex gap-2">
                     <button type="button" onclick="cerrarModalLogin()" class="w-1/2 py-2.5 bg-slate-800 text-slate-300 rounded-xl text-xs font-bold">Cancelar</button>
                     <button type="submit" class="w-1/2 py-2.5 bg-amber-400 text-slate-950 rounded-xl text-xs font-bold">Entrar</button>
@@ -431,7 +470,7 @@
     <div id="modal-socio" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4 z-50">
         <div class="glass-panel rounded-3xl w-full max-w-md overflow-hidden border border-slate-700">
             <div class="bg-slate-900 px-5 py-3.5 border-b border-slate-800 flex justify-between items-center">
-                <h3 class="font-bold text-white text-sm">Ficha de Socio</h3>
+                <h3 class="font-bold text-white text-sm">Ficha del Socio</h3>
                 <button onclick="cerrarModalSocio()" class="text-slate-400 hover:text-white text-lg">&times;</button>
             </div>
             <form id="form-socio" onsubmit="guardarSocio(event)" class="p-5 space-y-4 text-xs">
@@ -448,7 +487,7 @@
                 </div>
                 <div>
                     <label class="block font-bold text-slate-400 uppercase mb-1">Cargo / Etiqueta</label>
-                    <input type="text" id="socio-cargo" placeholder="Presidente, Directiva..." class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-amber-300 font-semibold outline-none focus:border-amber-400">
+                    <input type="text" id="socio-cargo" placeholder="Ej: Presidente, Socio..." class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-amber-300 font-semibold outline-none focus:border-amber-400">
                 </div>
                 <div>
                     <label class="block font-bold text-slate-400 uppercase mb-1">URL Fotografía</label>
@@ -456,7 +495,7 @@
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block font-bold text-slate-400 uppercase mb-1">Cuota Fijada (€)</label>
+                        <label class="block font-bold text-slate-400 uppercase mb-1">Cuota Acordada (€)</label>
                         <input type="number" step="0.01" id="socio-cuota-total" value="400" required class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white font-bold outline-none focus:border-amber-400">
                     </div>
                     <div>
@@ -466,37 +505,42 @@
                 </div>
                 <div class="flex justify-end gap-2 pt-3 border-t border-slate-800">
                     <button type="button" onclick="cerrarModalSocio()" class="px-3.5 py-2 bg-slate-800 text-slate-300 rounded-xl font-bold">Cancelar</button>
-                    <button type="submit" class="px-3.5 py-2 bg-amber-400 text-slate-950 rounded-xl font-bold">Guardar</button>
+                    <button type="submit" class="px-3.5 py-2 bg-amber-400 text-slate-950 rounded-xl font-bold">Guardar Socio</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- MODAL INGRESOS EXTRA -->
-    <div id="modal-ingreso" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4 z-50">
+    <!-- MODAL NOTA / AVISO -->
+    <div id="modal-nota" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4 z-50">
         <div class="glass-panel rounded-3xl w-full max-w-md overflow-hidden border border-slate-700">
             <div class="bg-slate-900 px-5 py-3.5 border-b border-slate-800 flex justify-between items-center">
-                <h3 class="font-bold text-white text-sm">Registrar Ingreso / Remanente</h3>
-                <button onclick="cerrarModalIngreso()" class="text-slate-400 hover:text-white text-lg">&times;</button>
+                <h3 class="font-bold text-white text-sm">Gestionar Nota o Aviso</h3>
+                <button onclick="cerrarModalNota()" class="text-slate-400 hover:text-white text-lg">&times;</button>
             </div>
-            <form id="form-ingreso" onsubmit="guardarIngreso(event)" class="p-5 space-y-4 text-xs">
-                <div>
-                    <label class="block font-bold text-slate-400 uppercase mb-1">Concepto</label>
-                    <input type="text" id="ingreso-concepto" placeholder="Ej: Remanente año 2025, Barra, Subvención..." required class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white outline-none focus:border-amber-400">
+            <form id="form-nota" onsubmit="guardarNota(event)" class="p-5 space-y-4 text-xs">
+                <input type="hidden" id="nota-id">
+                <div class="grid grid-cols-3 gap-3">
+                    <div class="col-span-2">
+                        <label class="block font-bold text-slate-400 uppercase mb-1">Título de la Nota</label>
+                        <input type="text" id="nota-titulo" placeholder="Ej: Normas de consumo" required class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white outline-none focus:border-amber-400">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-400 uppercase mb-1">Tipo</label>
+                        <select id="nota-tipo" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-amber-300 font-bold outline-none focus:border-amber-400">
+                            <option value="Aviso">Aviso</option>
+                            <option value="Norma">Norma</option>
+                            <option value="Info">Info</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block font-bold text-slate-400 uppercase mb-1">Origen / Detalles</label>
-                        <input type="text" id="ingreso-origen" placeholder="Ej: Cierre ejercicio anterior" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white outline-none focus:border-amber-400">
-                    </div>
-                    <div>
-                        <label class="block font-bold text-slate-400 uppercase mb-1">Importe (€)</label>
-                        <input type="number" step="0.01" id="ingreso-importe" required class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-cyan-400 font-bold outline-none focus:border-amber-400">
-                    </div>
+                <div>
+                    <label class="block font-bold text-slate-400 uppercase mb-1">Contenido de la Nota</label>
+                    <textarea id="nota-contenido" rows="4" placeholder="Escribe aquí el detalle del aviso..." required class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white outline-none focus:border-amber-400"></textarea>
                 </div>
                 <div class="flex justify-end gap-2 pt-3 border-t border-slate-800">
-                    <button type="button" onclick="cerrarModalIngreso()" class="px-3.5 py-2 bg-slate-800 text-slate-300 rounded-xl font-bold">Cancelar</button>
-                    <button type="submit" class="px-3.5 py-2 bg-amber-400 text-slate-950 rounded-xl font-bold">Guardar</button>
+                    <button type="button" onclick="cerrarModalNota()" class="px-3.5 py-2 bg-slate-800 text-slate-300 rounded-xl font-bold">Cancelar</button>
+                    <button type="submit" class="px-3.5 py-2 bg-amber-400 text-slate-950 rounded-xl font-bold">Publicar Nota</button>
                 </div>
             </form>
         </div>
@@ -521,7 +565,7 @@
                 </div>
                 <div>
                     <label class="block font-bold text-slate-400 uppercase mb-1">Descripción / Detalles</label>
-                    <textarea id="evento-descripcion" rows="3" placeholder="Detalles de la actuación o comida..." class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white outline-none focus:border-amber-400"></textarea>
+                    <textarea id="evento-descripcion" rows="3" placeholder="Detalles del espectáculo o cena..." class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white outline-none focus:border-amber-400"></textarea>
                 </div>
                 <div class="flex justify-end gap-2 pt-3 border-t border-slate-800">
                     <button type="button" onclick="cerrarModalEvento()" class="px-3.5 py-2 bg-slate-800 text-slate-300 rounded-xl font-bold">Cancelar</button>
@@ -531,22 +575,52 @@
         </div>
     </div>
 
+    <!-- MODAL INGRESOS EXTRA -->
+    <div id="modal-ingreso" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4 z-50">
+        <div class="glass-panel rounded-3xl w-full max-w-md overflow-hidden border border-slate-700">
+            <div class="bg-slate-900 px-5 py-3.5 border-b border-slate-800 flex justify-between items-center">
+                <h3 class="font-bold text-white text-sm">Añadir Ingreso Adicional</h3>
+                <button onclick="cerrarModalIngreso()" class="text-slate-400 hover:text-white text-lg">&times;</button>
+            </div>
+            <form id="form-ingreso" onsubmit="guardarIngreso(event)" class="p-5 space-y-4 text-xs">
+                <div>
+                    <label class="block font-bold text-slate-400 uppercase mb-1">Concepto</label>
+                    <input type="text" id="ingreso-concepto" placeholder="Ej: Remanente 2025, Ventas Barra, Patrocinio" required class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white outline-none focus:border-amber-400">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-400 uppercase mb-1">Origen / Detalles</label>
+                        <input type="text" id="ingreso-origen" placeholder="Detalles adicionales" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white outline-none focus:border-amber-400">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-400 uppercase mb-1">Importe (€)</label>
+                        <input type="number" step="0.01" id="ingreso-importe" required class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-cyan-400 font-bold outline-none focus:border-amber-400">
+                    </div>
+                </div>
+                <div class="flex justify-end gap-2 pt-3 border-t border-slate-800">
+                    <button type="button" onclick="cerrarModalIngreso()" class="px-3.5 py-2 bg-slate-800 text-slate-300 rounded-xl font-bold">Cancelar</button>
+                    <button type="submit" class="px-3.5 py-2 bg-cyan-400 text-slate-950 rounded-xl font-bold">Guardar Ingreso</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- MODAL GASTO / PROVEEDOR -->
     <div id="modal-gasto" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4 z-50">
         <div class="glass-panel rounded-3xl w-full max-w-md overflow-hidden border border-slate-700">
             <div class="bg-slate-900 px-5 py-3.5 border-b border-slate-800 flex justify-between items-center">
-                <h3 class="font-bold text-white text-sm">Añadir Gasto / Proveedor</h3>
+                <h3 class="font-bold text-white text-sm">Añadir Gasto de Ejercicio</h3>
                 <button onclick="cerrarModalGasto()" class="text-slate-400 hover:text-white text-lg">&times;</button>
             </div>
             <form id="form-gasto" onsubmit="guardarGasto(event)" class="p-5 space-y-4 text-xs">
                 <div>
-                    <label class="block font-bold text-slate-400 uppercase mb-1">Concepto o Descripción</label>
-                    <input type="text" id="gasto-concepto" placeholder="Ej: Bebidas, Iluminación, Catering..." required class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white outline-none focus:border-amber-400">
+                    <label class="block font-bold text-slate-400 uppercase mb-1">Concepto / Descripción</label>
+                    <input type="text" id="gasto-concepto" placeholder="Ej: Bebidas, Iluminación, Montaje" required class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white outline-none focus:border-amber-400">
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block font-bold text-slate-400 uppercase mb-1">Nombre Proveedor</label>
-                        <input type="text" id="gasto-proveedor" placeholder="Empresa o Nombre" required class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white outline-none focus:border-amber-400">
+                        <input type="text" id="gasto-proveedor" placeholder="Empresa o contacto" required class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white outline-none focus:border-amber-400">
                     </div>
                     <div>
                         <label class="block font-bold text-slate-400 uppercase mb-1">Teléfono Proveedor</label>
@@ -576,10 +650,10 @@
         </div>
     </div>
 
-    <!-- SCRIPT CONTROLADOR FIREBASE -->
+    <!-- SCRIPT DE FIREBASE Y CONTROLADOR -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, push, set, update, remove, onValue, off, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, push, set, update, remove, onValue, off } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB6_1m_Cpx4PowfpNq1nXwpLHm2RAOvy8w",
@@ -597,34 +671,37 @@
         const CLAVE_ADMIN = "losmanolos2026";
         const FOTO_DEFAULT = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop&q=80";
 
-        let anoActual = '2026';
-        let socios = [], gastos = [], eventos = [], ingresos = [];
+        // LISTADO INICIAL OFICIAL DE LOS 19 SOCIOS COMPONENTES
+        const SOCIOS_INICIALES_19 = [
+            { num: 1, nombre: "Manuel González", cargo: "Presidente", cuotaTotal: 400, pagado: 400, foto: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&fit=crop&q=80" },
+            { num: 2, nombre: "Antonio Rodríguez", cargo: "Vicepresidente", cuotaTotal: 400, pagado: 400, foto: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&fit=crop&q=80" },
+            { num: 3, nombre: "Francisco Javier Ruiz", cargo: "Tesorero", cuotaTotal: 400, pagado: 400, foto: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&fit=crop&q=80" },
+            { num: 4, nombre: "José Carlos Fernández", cargo: "Secretario", cuotaTotal: 400, pagado: 200, foto: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&fit=crop&q=80" },
+            { num: 5, nombre: "Rafael Moreno", cargo: "Vocal Junta", cuotaTotal: 400, pagado: 400, foto: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&fit=crop&q=80" },
+            { num: 6, nombre: "Miguel Ángel García", cargo: "Socio", cuotaTotal: 400, pagado: 400, foto: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=400&fit=crop&q=80" },
+            { num: 7, nombre: "David Jiménez", cargo: "Socio", cuotaTotal: 400, pagado: 100, foto: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&fit=crop&q=80" },
+            { num: 8, nombre: "Jesús López", cargo: "Socio", cuotaTotal: 400, pagado: 400, foto: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&fit=crop&q=80" },
+            { num: 9, nombre: "Manuel Jesús Pérez", cargo: "Socio", cuotaTotal: 400, pagado: 400, foto: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&fit=crop&q=80" },
+            { num: 10, nombre: "Joaquín Sánchez", cargo: "Socio", cuotaTotal: 400, pagado: 300, foto: "https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?w=400&fit=crop&q=80" },
+            { num: 11, nombre: "Alejandro Torres", cargo: "Socio", cuotaTotal: 400, pagado: 400, foto: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=400&fit=crop&q=80" },
+            { num: 12, nombre: "Fernando Romero", cargo: "Socio", cuotaTotal: 400, pagado: 200, foto: "https://images.unsplash.com/photo-1521119989659-a83eee488004?w=400&fit=crop&q=80" },
+            { num: 13, nombre: "Álvaro Navarro", cargo: "Socio", cuotaTotal: 400, pagado: 400, foto: "https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=400&fit=crop&q=80" },
+            { num: 14, nombre: "Daniel Díaz", cargo: "Socio", cuotaTotal: 400, pagado: 400, foto: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400&fit=crop&q=80" },
+            { num: 15, nombre: "Carlos Muñoz", cargo: "Socio", cuotaTotal: 400, pagado: 150, foto: "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=400&fit=crop&q=80" },
+            { num: 16, nombre: "Pablo Molina", cargo: "Socio", cuotaTotal: 400, pagado: 400, foto: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&fit=crop&q=80" },
+            { num: 17, nombre: "Juan Antonio Serrano", cargo: "Socio", cuotaTotal: 400, pagado: 400, foto: "https://images.unsplash.com/photo-1566492031773-4f4e44671857?w=400&fit=crop&q=80" },
+            { num: 18, nombre: "Sergio Morales", cargo: "Socio", cuotaTotal: 400, pagado: 400, foto: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&fit=crop&q=80" },
+            { num: 19, nombre: "Adrián Ortega", cargo: "Socio", cuotaTotal: 400, pagado: 400, foto: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&fit=crop&q=80" }
+        ];
+
+        let anoContable = '2026';
+        let socios = [], gastos = [], eventos = [], ingresos = [], notas = [];
         
-        let sociosRef, gastosRef, eventosRef, ingresosRef, ajustesRef;
+        let gastosRef, ingresosRef, sociosRef, eventosRef, notasRef, ajustesRef;
 
-        // PWA
-        let deferredPrompt;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            const btn = document.getElementById('btn-install-app');
-            if (btn) btn.classList.remove('hidden');
-        });
-
-        window.instalarApp = async () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') {
-                    document.getElementById('btn-install-app').classList.add('hidden');
-                }
-                deferredPrompt = null;
-            }
-        };
-
-        // GESTIÓN DINÁMICA DE AÑOS
+        // CAMBIO DE AÑO SOLO PARA CONTABILIDAD
         window.anadirNuevoAno = function() {
-            const nuevoAno = prompt("Introduce el año que deseas crear/gestionar (ej: 2031):");
+            const nuevoAno = prompt("Introduce el nuevo año para el ejercicio contable (ej: 2030):");
             if (nuevoAno && !isNaN(nuevoAno) && nuevoAno.trim().length === 4) {
                 const anoLimpio = nuevoAno.trim();
                 const select = document.getElementById('select-ejercicio-global');
@@ -637,114 +714,85 @@
                     opt.className = "bg-slate-900 text-white";
                     select.appendChild(opt);
                 }
-                
                 select.value = anoLimpio;
                 cambiarEjercicio(anoLimpio);
-            } else if (nuevoAno) {
-                alert("Por favor, introduce un año válido con formato de 4 dígitos.");
             }
         };
 
         window.cambiarEjercicio = function(ano) {
-            anoActual = ano;
-            document.getElementById('header-ejercicio-actual').textContent = ano;
-            document.getElementById('hero-ano-display').textContent = ano;
-            document.getElementById('label-ano-eventos').textContent = ano;
+            anoContable = ano;
+            document.getElementById('label-tab-ano').textContent = `(${ano})`;
+            document.querySelectorAll('.bal-ano-label').forEach(el => el.textContent = ano);
             
-            conectarBaseDatos();
+            conectarContabilidadAno();
         };
 
-        function conectarBaseDatos() {
-            if (sociosRef) off(sociosRef);
+        function conectarContabilidadAno() {
             if (gastosRef) off(gastosRef);
-            if (eventosRef) off(eventosRef);
             if (ingresosRef) off(ingresosRef);
 
-            const prefixNew = `ejercicios/${anoActual}`;
+            // Nodos específicos del año para gastos e ingresos
+            gastosRef = ref(db, `contabilidad/${anoContable}/gastos`);
+            ingresosRef = ref(db, `contabilidad/${anoContable}/ingresos`);
 
-            sociosRef = ref(db, `${prefixNew}/socios`);
-            gastosRef = ref(db, `${prefixNew}/gastos`);
-            eventosRef = ref(db, `${prefixNew}/eventos`);
-            ingresosRef = ref(db, `${prefixNew}/ingresos`);
-            ajustesRef = ref(db, `general/ajustes`);
+            onValue(gastosRef, (snapshot) => {
+                const data = snapshot.val();
+                gastos = data ? Object.keys(data).map(k => ({ id: k, ...data[k] })) : [];
+                renderizarGastosAdmin();
+                actualizarBalance();
+            });
 
-            // 1. Escuchar Socios
-            onValue(sociosRef, (s) => {
-                let data = s.val();
-                if (!data && anoActual === '2026') {
-                    get(ref(db, 'socios')).then((oldSnap) => {
-                        let oldData = oldSnap.val();
-                        socios = oldData ? Object.keys(oldData).map(k => ({ id: k, ...oldData[k] })) : [];
-                        renderizarSociosPublico();
-                        renderizarSociosAdmin();
-                        actualizarBalance();
-                    });
+            onValue(ingresosRef, (snapshot) => {
+                const data = snapshot.val();
+                ingresos = data ? Object.keys(data).map(k => ({ id: k, ...data[k] })) : [];
+                renderizarIngresosAdmin();
+                actualizarBalance();
+            });
+        }
+
+        function inicializarBaseDatosGlobales() {
+            // Socios
+            sociosRef = ref(db, 'socios');
+            onValue(sociosRef, (snapshot) => {
+                const data = snapshot.val();
+                if (!data) {
+                    // Si la BD está vacía, creamos los 19 socios de base
+                    SOCIOS_INICIALES_19.forEach(s => push(sociosRef, s));
                 } else {
-                    socios = data ? Object.keys(data).map(k => ({ id: k, ...data[k] })) : [];
+                    socios = Object.keys(data).map(k => ({ id: k, ...data[k] }));
+                    // Ordenar por número
+                    socios.sort((a, b) => (parseInt(a.num) || 0) - (parseInt(b.num) || 0));
                     renderizarSociosPublico();
                     renderizarSociosAdmin();
                     actualizarBalance();
                 }
             });
 
-            // 2. Escuchar Gastos
-            onValue(gastosRef, (s) => {
-                let data = s.val();
-                if (!data && anoActual === '2026') {
-                    get(ref(db, 'gastos')).then((oldSnap) => {
-                        let oldData = oldSnap.val();
-                        gastos = oldData ? Object.keys(oldData).map(k => ({ id: k, ...oldData[k] })) : [];
-                        renderizarGastosAdmin();
-                        actualizarBalance();
-                    });
-                } else {
-                    gastos = data ? Object.keys(data).map(k => ({ id: k, ...data[k] })) : [];
-                    renderizarGastosAdmin();
-                    actualizarBalance();
-                }
+            // Notas y Avisos
+            notasRef = ref(db, 'notas');
+            onValue(notasRef, (snapshot) => {
+                const data = snapshot.val();
+                notas = data ? Object.keys(data).map(k => ({ id: k, ...data[k] })) : [];
+                renderizarNotasPublico();
+                renderizarNotasAdmin();
             });
 
-            // 3. Escuchar Eventos
-            onValue(eventosRef, (s) => {
-                let data = s.val();
-                if (!data && anoActual === '2026') {
-                    get(ref(db, 'eventos')).then((oldSnap) => {
-                        let oldData = oldSnap.val();
-                        eventos = oldData ? Object.keys(oldData).map(k => ({ id: k, ...oldData[k] })) : [];
-                        renderizarEventosPublico();
-                        renderizarEventosAdmin();
-                    });
-                } else {
-                    eventos = data ? Object.keys(data).map(k => ({ id: k, ...data[k] })) : [];
-                    renderizarEventosPublico();
-                    renderizarEventosAdmin();
-                }
+            // Eventos
+            eventosRef = ref(db, 'eventos');
+            onValue(eventosRef, (snapshot) => {
+                const data = snapshot.val();
+                eventos = data ? Object.keys(data).map(k => ({ id: k, ...data[k] })) : [];
+                renderizarEventosPublico();
+                renderizarEventosAdmin();
             });
 
-            // 4. Escuchar Ingresos
-            onValue(ingresosRef, (s) => {
-                let data = s.val();
-                if (!data && anoActual === '2026') {
-                    get(ref(db, 'ingresos')).then((oldSnap) => {
-                        let oldData = oldSnap.val();
-                        ingresos = oldData ? Object.keys(oldData).map(k => ({ id: k, ...oldData[k] })) : [];
-                        renderizarIngresosAdmin();
-                        actualizarBalance();
-                    });
-                } else {
-                    ingresos = data ? Object.keys(data).map(k => ({ id: k, ...data[k] })) : [];
-                    renderizarIngresosAdmin();
-                    actualizarBalance();
-                }
-            });
-
-            // 5. Escuchar Ajustes / Historia
-            onValue(ajustesRef, (s) => {
-                const data = s.val();
+            // Ajustes / Historia
+            ajustesRef = ref(db, 'ajustes');
+            onValue(ajustesRef, (snapshot) => {
+                const data = snapshot.val();
                 if (data) {
                     if (data.fecha) document.getElementById('badge-fecha-fundacion').textContent = `Adquisición: ${data.fecha}`;
                     if (data.historia) document.getElementById('public-detalles-historia').textContent = data.historia;
-                    
                     document.getElementById('ajuste-fecha').value = data.fecha || 'Septiembre de 2017';
                     document.getElementById('ajuste-historia').value = data.historia || '';
                 }
@@ -768,7 +816,7 @@
             modal.classList.remove('flex');
         };
 
-        // SECCIONES Y ACCESO
+        // NAVEGACIÓN Y LOGIN
         window.mostrarSeccion = function(tipo) {
             const secPublica = document.getElementById('seccion-publica');
             const secAdmin = document.getElementById('seccion-admin');
@@ -810,7 +858,7 @@
         };
 
         window.cambiarPestana = function(pestana) {
-            ['balance', 'ingresos', 'socios', 'eventos', 'gastos', 'ajustes'].forEach(p => {
+            ['balance', 'socios', 'notas', 'eventos', 'gastos', 'ajustes'].forEach(p => {
                 const view = document.getElementById(`view-${p}`);
                 const tab = document.getElementById(`tab-${p}`);
                 if (p === pestana) {
@@ -842,11 +890,11 @@
 
             document.getElementById('bal-extras').textContent = `${totalIngresosExtras.toFixed(2)} €`;
             document.getElementById('bal-ingresos').textContent = `${cobradoCuotas.toFixed(2)} €`;
-            document.getElementById('bal-sub-cuotas').textContent = `de ${acumuladoCuotaTeorica.toFixed(2)} € presupuestados`;
+            document.getElementById('bal-sub-cuotas').textContent = `de ${acumuladoCuotaTeorica.toFixed(2)} € teóricos`;
             document.getElementById('bal-gastos').textContent = `${totalGastos.toFixed(2)} €`;
             document.getElementById('bal-neto').textContent = `${liquidoEnCaja.toFixed(2)} €`;
 
-            document.getElementById('bal-socios-resumen').textContent = `${numSocios} socios (Tot. Cuotas: ${acumuladoCuotaTeorica.toFixed(2)} €)`;
+            document.getElementById('bal-socios-resumen').textContent = `${numSocios} socios componentes`;
             document.getElementById('calc-teorico').textContent = `${acumuladoCuotaTeorica.toFixed(2)} €`;
             document.getElementById('calc-cobrado').textContent = `${cobradoCuotas.toFixed(2)} €`;
             document.getElementById('calc-pendiente').textContent = `${pendienteCuotas.toFixed(2)} €`;
@@ -855,7 +903,7 @@
             document.getElementById('progreso-texto').textContent = `${porcentaje}% (${cobradoCuotas.toFixed(0)}€ / ${acumuladoCuotaTeorica.toFixed(0)}€)`;
         }
 
-        // RENDERS DE TABLAS
+        // RENDERS DE VISTAS
         function renderizarSociosPublico() {
             const container = document.getElementById('grid-socios-publico');
             document.getElementById('total-socios-count-public').textContent = socios.length;
@@ -863,11 +911,12 @@
             container.innerHTML = socios.map(s => {
                 const fotoUrl = s.foto || FOTO_DEFAULT;
                 return `
-                <div class="glass-panel p-4 rounded-2xl border border-slate-800 text-center flex flex-col items-center space-y-2 hover:border-amber-500/30 transition">
-                    <img src="${fotoUrl}" onclick="ampliarImagen('${fotoUrl}', '${s.nombre}')" class="w-16 h-16 rounded-full object-cover border-2 border-amber-500/40 cursor-pointer hover:scale-105 transition-transform" title="Ampliar imagen">
+                <div class="glass-panel p-3.5 rounded-2xl border border-slate-800 text-center flex flex-col items-center space-y-2 hover:border-amber-500/40 transition">
+                    <img src="${fotoUrl}" onclick="ampliarImagen('${fotoUrl}', '${s.nombre}')" class="w-16 h-16 rounded-full object-cover border-2 border-amber-500/40 cursor-pointer hover:scale-105 transition-transform" title="Haz clic para ampliar">
                     <div>
-                        <h5 class="font-bold text-sm text-white">${s.nombre}</h5>
-                        <span class="text-[10px] text-amber-400 font-semibold">${s.cargo || `Socio Nº ${s.num}`}</span>
+                        <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-slate-900 text-amber-400 border border-slate-800">Nº ${s.num}</span>
+                        <h5 class="font-bold text-xs text-white mt-1">${s.nombre}</h5>
+                        <p class="text-[10px] text-slate-400">${s.cargo || 'Socio'}</p>
                     </div>
                 </div>
             `}).join('');
@@ -901,16 +950,36 @@
             }).join('');
         }
 
-        function renderizarIngresosAdmin() {
-            const container = document.getElementById('tabla-ingresos-admin');
+        function renderizarNotasPublico() {
+            const container = document.getElementById('grid-notas-publico');
             if (!container) return;
-            container.innerHTML = ingresos.map(i => `
+            if (notas.length === 0) {
+                container.innerHTML = `<div class="col-span-full text-center text-xs text-slate-500 py-6 glass-panel rounded-2xl">No hay avisos o notas publicadas actualmente.</div>`;
+                return;
+            }
+            container.innerHTML = notas.map(n => `
+                <div class="glass-panel p-5 rounded-2xl border border-slate-800 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/30 uppercase">${n.tipo || 'Aviso'}</span>
+                        <i class="fa-solid fa-thumbtack text-amber-400/50 text-xs"></i>
+                    </div>
+                    <h4 class="font-bold text-white text-sm sm:text-base">${n.titulo}</h4>
+                    <p class="text-xs text-slate-300 leading-relaxed whitespace-pre-line">${n.contenido}</p>
+                </div>
+            `).join('');
+        }
+
+        function renderizarNotasAdmin() {
+            const container = document.getElementById('tabla-notas-admin');
+            if (!container) return;
+            container.innerHTML = notas.map(n => `
                 <tr class="hover:bg-slate-800/40">
-                    <td class="p-3 text-white font-bold">${i.concepto}</td>
-                    <td class="p-3 text-slate-400">${i.origen || '—'}</td>
-                    <td class="p-3 text-cyan-400 font-bold">${parseFloat(i.importe || 0).toFixed(2)} €</td>
-                    <td class="p-3 text-center">
-                        <button onclick="eliminarIngreso('${i.id}')" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-trash"></i></button>
+                    <td class="p-3 font-bold text-amber-400 text-xs uppercase">${n.tipo || 'Aviso'}</td>
+                    <td class="p-3 text-white font-bold">${n.titulo}</td>
+                    <td class="p-3 text-slate-300 text-xs">${n.contenido}</td>
+                    <td class="p-3 text-center space-x-2">
+                        <button onclick="editarNota('${n.id}')" class="text-amber-400 hover:text-amber-300"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="eliminarNota('${n.id}')" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-trash"></i></button>
                     </td>
                 </tr>
             `).join('');
@@ -919,6 +988,10 @@
         function renderizarEventosPublico() {
             const container = document.getElementById('grid-eventos-publico');
             if (!container) return;
+            if (eventos.length === 0) {
+                container.innerHTML = `<div class="col-span-full text-center text-xs text-slate-500 py-6 glass-panel rounded-2xl">No hay actos o eventos en la agenda.</div>`;
+                return;
+            }
             container.innerHTML = eventos.map(e => `
                 <div class="glass-panel p-5 rounded-2xl border border-slate-800 space-y-2">
                     <div class="text-xs text-amber-400 font-bold uppercase"><i class="fa-regular fa-clock mr-1"></i>${e.fecha ? new Date(e.fecha).toLocaleString() : ''}</div>
@@ -944,6 +1017,21 @@
             `).join('');
         }
 
+        function renderizarIngresosAdmin() {
+            const container = document.getElementById('tabla-ingresos-admin');
+            if (!container) return;
+            container.innerHTML = ingresos.map(i => `
+                <tr class="hover:bg-slate-800/40">
+                    <td class="p-3 text-white font-bold">${i.concepto}</td>
+                    <td class="p-3 text-slate-400">${i.origen || '—'}</td>
+                    <td class="p-3 text-cyan-400 font-bold">${parseFloat(i.importe || 0).toFixed(2)} €</td>
+                    <td class="p-3 text-center">
+                        <button onclick="eliminarIngreso('${i.id}')" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
         function renderizarGastosAdmin() {
             const container = document.getElementById('tabla-gastos-admin');
             if (!container) return;
@@ -963,7 +1051,7 @@
             `).join('');
         }
 
-        // GUARDADO DE DATOS EN FIREBASE
+        // FUNCIONES SOCIOS
         window.abrirModalSocio = function() {
             document.getElementById('form-socio').reset();
             document.getElementById('socio-id').value = '';
@@ -979,7 +1067,7 @@
             e.preventDefault();
             const id = document.getElementById('socio-id').value;
             const payload = {
-                num: document.getElementById('socio-num').value,
+                num: parseInt(document.getElementById('socio-num').value) || 0,
                 nombre: document.getElementById('socio-nombre').value,
                 cargo: document.getElementById('socio-cargo').value,
                 foto: document.getElementById('socio-foto').value,
@@ -987,10 +1075,9 @@
                 pagado: parseFloat(document.getElementById('socio-pagado').value) || 0
             };
             if (id) {
-                update(ref(db, `ejercicios/${anoActual}/socios/${id}`), payload);
-                if (anoActual === '2026') update(ref(db, `socios/${id}`), payload);
+                update(ref(db, `socios/${id}`), payload);
             } else {
-                push(ref(db, `ejercicios/${anoActual}/socios`), payload);
+                push(sociosRef, payload);
             }
             cerrarModalSocio();
         };
@@ -1009,39 +1096,53 @@
         };
         window.eliminarSocio = function(id) {
             if (confirm('¿Desea eliminar este socio?')) {
-                remove(ref(db, `ejercicios/${anoActual}/socios/${id}`));
-                if (anoActual === '2026') remove(ref(db, `socios/${id}`));
+                remove(ref(db, `socios/${id}`));
             }
         };
 
-        // INGRESOS
-        window.abrirModalIngreso = function() {
-            document.getElementById('form-ingreso').reset();
-            const modal = document.getElementById('modal-ingreso');
+        // FUNCIONES NOTAS
+        window.abrirModalNota = function() {
+            document.getElementById('form-nota').reset();
+            document.getElementById('nota-id').value = '';
+            const modal = document.getElementById('modal-nota');
             modal.classList.remove('hidden'); modal.classList.add('flex');
         };
-        window.cerrarModalIngreso = function() {
-            const modal = document.getElementById('modal-ingreso');
+        window.cerrarModalNota = function() {
+            const modal = document.getElementById('modal-nota');
             modal.classList.add('hidden'); modal.classList.remove('flex');
         };
-        window.guardarIngreso = function(e) {
+        window.guardarNota = function(e) {
             e.preventDefault();
+            const id = document.getElementById('nota-id').value;
             const payload = {
-                concepto: document.getElementById('ingreso-concepto').value,
-                origen: document.getElementById('ingreso-origen').value,
-                importe: parseFloat(document.getElementById('ingreso-importe').value) || 0
+                titulo: document.getElementById('nota-titulo').value,
+                tipo: document.getElementById('nota-tipo').value,
+                contenido: document.getElementById('nota-contenido').value
             };
-            push(ref(db, `ejercicios/${anoActual}/ingresos`), payload);
-            cerrarModalIngreso();
+            if (id) {
+                update(ref(db, `notas/${id}`), payload);
+            } else {
+                push(notasRef, payload);
+            }
+            cerrarModalNota();
         };
-        window.eliminarIngreso = function(id) {
-            if (confirm('¿Desea eliminar este ingreso?')) {
-                remove(ref(db, `ejercicios/${anoActual}/ingresos/${id}`));
-                if (anoActual === '2026') remove(ref(db, `ingresos/${id}`));
+        window.editarNota = function(id) {
+            const n = notas.find(item => item.id === id);
+            if (!n) return;
+            document.getElementById('nota-id').value = n.id;
+            document.getElementById('nota-titulo').value = n.titulo;
+            document.getElementById('nota-tipo').value = n.tipo || 'Aviso';
+            document.getElementById('nota-contenido').value = n.contenido;
+            const modal = document.getElementById('modal-nota');
+            modal.classList.remove('hidden'); modal.classList.add('flex');
+        };
+        window.eliminarNota = function(id) {
+            if (confirm('¿Desea eliminar esta nota?')) {
+                remove(ref(db, `notas/${id}`));
             }
         };
 
-        // EVENTOS
+        // FUNCIONES EVENTOS
         window.abrirModalEvento = function() {
             document.getElementById('form-evento').reset();
             document.getElementById('evento-id').value = '';
@@ -1061,10 +1162,9 @@
                 descripcion: document.getElementById('evento-descripcion').value
             };
             if (id) {
-                update(ref(db, `ejercicios/${anoActual}/eventos/${id}`), payload);
-                if (anoActual === '2026') update(ref(db, `eventos/${id}`), payload);
+                update(ref(db, `eventos/${id}`), payload);
             } else {
-                push(ref(db, `ejercicios/${anoActual}/eventos`), payload);
+                push(eventosRef, payload);
             }
             cerrarModalEvento();
         };
@@ -1080,12 +1180,37 @@
         };
         window.eliminarEvento = function(id) {
             if (confirm('¿Desea eliminar este evento?')) {
-                remove(ref(db, `ejercicios/${anoActual}/eventos/${id}`));
-                if (anoActual === '2026') remove(ref(db, `eventos/${id}`));
+                remove(ref(db, `eventos/${id}`));
             }
         };
 
-        // GASTOS
+        // FUNCIONES INGRESOS (POR AÑO)
+        window.abrirModalIngreso = function() {
+            document.getElementById('form-ingreso').reset();
+            const modal = document.getElementById('modal-ingreso');
+            modal.classList.remove('hidden'); modal.classList.add('flex');
+        };
+        window.cerrarModalIngreso = function() {
+            const modal = document.getElementById('modal-ingreso');
+            modal.classList.add('hidden'); modal.classList.remove('flex');
+        };
+        window.guardarIngreso = function(e) {
+            e.preventDefault();
+            const payload = {
+                concepto: document.getElementById('ingreso-concepto').value,
+                origen: document.getElementById('ingreso-origen').value,
+                importe: parseFloat(document.getElementById('ingreso-importe').value) || 0
+            };
+            push(ingresosRef, payload);
+            cerrarModalIngreso();
+        };
+        window.eliminarIngreso = function(id) {
+            if (confirm('¿Desea eliminar este ingreso?')) {
+                remove(ref(db, `contabilidad/${anoContable}/ingresos/${id}`));
+            }
+        };
+
+        // FUNCIONES GASTOS (POR AÑO)
         window.abrirModalGasto = function() {
             document.getElementById('form-gasto').reset();
             const modal = document.getElementById('modal-gasto');
@@ -1104,13 +1229,12 @@
                 categoria: document.getElementById('gasto-categoria').value,
                 importe: parseFloat(document.getElementById('gasto-importe').value) || 0
             };
-            push(ref(db, `ejercicios/${anoActual}/gastos`), payload);
+            push(gastosRef, payload);
             cerrarModalGasto();
         };
         window.eliminarGasto = function(id) {
             if (confirm('¿Desea eliminar este gasto?')) {
-                remove(ref(db, `ejercicios/${anoActual}/gastos/${id}`));
-                if (anoActual === '2026') remove(ref(db, `gastos/${id}`));
+                remove(ref(db, `contabilidad/${anoContable}/gastos/${id}`));
             }
         };
 
@@ -1122,11 +1246,12 @@
                 historia: document.getElementById('ajuste-historia').value
             };
             set(ajustesRef, payload);
-            alert('Información histórica actualizada con éxito.');
+            alert('Información guardada con éxito');
         };
 
-        // INICIALIZACIÓN
-        conectarBaseDatos();
+        // ARRANCAR BASE DE DATOS
+        inicializarBaseDatosGlobales();
+        conectarContabilidadAno();
     </script>
 </body>
 </html>
