@@ -566,30 +566,29 @@
             mostrarSeccion('publico');
         };
 
-        // ENVIAR WHATSAPP CUOTA SOCIO
+        // ENVIAR WHATSAPP CUOTA SOCIO (FORMATO SOLICITADO)
         window.enviarWhatsApp = function(num, nombre, pagado, total, telefono) {
             const cuotaTotal = parseFloat(total) || 400;
             const cuotaPagada = parseFloat(pagado) || 0;
             const pendiente = cuotaTotal - cuotaPagada;
 
-            let texto = `Hola *${nombre}*, te escribimos desde la *Caseta Los Manolos y Cía. (Feria 2026)*. 💃🎪\n\n`;
-            texto += `📌 *Estado de tu cuota (Socio Nº ${num}):*\n`;
-            texto += `• Cuota total fijada: *${cuotaTotal.toFixed(2)} €*\n`;
-            texto += `• Importe abonado: *${cuotaPagada.toFixed(2)} €*\n`;
+            let texto = `Hola ${nombre}, te informamos desde la caseta Los Manolos y Cia.:\n\n`;
+            texto += `* Importe Pagado: ${cuotaPagada.toFixed(2)}€\n`;
 
-            if (pendiente > 0) {
-                texto += `• *PENDIENTE DE PAGO:* ⚠️ *${pendiente.toFixed(2)} €*\n\n`;
-                texto += `Por favor, recuerda regularizar el importe pendiente lo antes posible. ¡Muchas gracias por tu colaboración! ✨`;
+            if (pendiente <= 0) {
+                texto += `* Estado: ¡CUOTA COMPLETADA (${cuotaTotal.toFixed(0)}€)!\n\n`;
             } else {
-                texto += `• *ESTADO:* ✅ *CUOTA AL DÍA (100% Abonado)*\n\n`;
-                texto += `¡Muchas gracias por tu compromiso y nos vemos en la Feria! 🍷💃`;
+                texto += `* Importe Pendiente: ${pendiente.toFixed(2)}€\n`;
+                texto += `* Estado: Pendiente de pago (${pendiente.toFixed(2)}€ restantes de ${cuotaTotal.toFixed(2)}€)\n\n`;
             }
+
+            texto += `¡Muchas gracias, nos vemos en la Feria! 🍷💃`;
 
             const mensajeURL = encodeURIComponent(texto);
             let urlWA = '';
 
             if (telefono && telefono.trim() !== '') {
-                // Limpiar caracteres no numéricos excepto el signo + al inicio
+                // Limpiar caracteres no numéricos
                 let telLimpio = telefono.replace(/[^\d+]/g, '');
                 if (!telLimpio.startsWith('+') && !telLimpio.startsWith('34')) {
                     telLimpio = '34' + telLimpio;
@@ -687,7 +686,7 @@
             const totalGastos = gastos.reduce((acc, g) => acc + (parseFloat(g.importe) || 0), 0);
             const liquido = totalIngresos - totalGastos;
             
-            // Total fijado teórico (ejemplo: 19 socios * 400€ = 7600€)
+            // Total fijado teórico
             const metaRecaudacion = socios.reduce((acc, s) => acc + (parseFloat(s.cuotaTotal) || 400), 0) || 1;
             const porcentaje = Math.min(100, Math.round((totalIngresos / metaRecaudacion) * 100));
 
