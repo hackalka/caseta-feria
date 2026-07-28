@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Caseta Los Manolos y Cía. —</title>
+    <title>Caseta Los Manolos y Cía. — Gestión Integral</title>
     
     <!-- Meta etiquetas PWA -->
     <meta name="theme-color" content="#0f172a">
@@ -80,7 +80,7 @@
             </div>
 
             <div class="flex items-center gap-2">
-                <!-- SELECTOR DE AÑO / EJERCICIO -->
+                <!-- SELECTOR Y CREADOR DE AÑO / EJERCICIO -->
                 <div class="flex items-center gap-1.5 bg-slate-900 border border-amber-500/30 px-2.5 py-1.5 rounded-xl">
                     <i class="fa-solid fa-calendar text-amber-400 text-xs"></i>
                     <select id="select-ejercicio-global" onchange="cambiarEjercicio(this.value)" class="bg-transparent text-amber-300 font-bold text-xs outline-none cursor-pointer">
@@ -90,6 +90,9 @@
                         <option value="2029" class="bg-slate-900 text-white">2029</option>
                         <option value="2030" class="bg-slate-900 text-white">2030</option>
                     </select>
+                    <button onclick="anadirNuevoAno()" class="text-amber-400 hover:text-amber-300 text-xs px-1 font-bold border-l border-slate-700 pl-2 ml-1" title="Añadir otro año">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
                 </div>
 
                 <button id="btn-install-app" onclick="instalarApp()" class="hidden px-3 py-1.5 rounded-xl text-xs font-bold text-amber-400 bg-amber-500/10 border border-amber-500/30 hover:bg-amber-500/20 transition flex items-center gap-1.5">
@@ -201,10 +204,8 @@
 
         <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
             
-            <!-- VISTA BALANCE MEJORADO -->
+            <!-- VISTA BALANCE -->
             <div id="view-balance" class="space-y-6">
-                
-                <!-- RESUMEN NUMÉRICO Y CÁLCULO INTELIGENTE -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div class="glass-panel p-5 rounded-2xl border-l-4 border-cyan-500">
                         <span class="text-xs font-bold uppercase text-slate-400">Fondos Anteriores / Extras</span>
@@ -228,11 +229,10 @@
                     </div>
                 </div>
 
-                <!-- DESGLOSE DE PRESUPUESTO POR SOCIOS -->
                 <div class="glass-panel p-6 rounded-2xl space-y-4">
                     <h4 class="font-bold text-sm text-white flex items-center justify-between border-b border-slate-800 pb-2">
                         <span class="flex items-center gap-2"><i class="fa-solid fa-calculator text-amber-400"></i> Desglose de Cobro de Cuotas</span>
-                        <span id="bal-socios-resumen" class="text-xs font-normal text-amber-300">19 socios x 400,00 € = 7.600,00 €</span>
+                        <span id="bal-socios-resumen" class="text-xs font-normal text-amber-300">0 socios</span>
                     </h4>
                     
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
@@ -576,10 +576,10 @@
         </div>
     </div>
 
-    <!-- SCRIPT CONTROLADOR FIREBASE Y MULTI-AÑO -->
+    <!-- SCRIPT CONTROLADOR FIREBASE -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, push, set, update, remove, onValue, off } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, push, set, update, remove, onValue, off, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB6_1m_Cpx4PowfpNq1nXwpLHm2RAOvy8w",
@@ -622,60 +622,123 @@
             }
         };
 
-        // GESTIÓN AÑO Y LISTENERS
+        // GESTIÓN DINÁMICA DE AÑOS
+        window.anadirNuevoAno = function() {
+            const nuevoAno = prompt("Introduce el año que deseas crear/gestionar (ej: 2031):");
+            if (nuevoAno && !isNaN(nuevoAno) && nuevoAno.trim().length === 4) {
+                const anoLimpio = nuevoAno.trim();
+                const select = document.getElementById('select-ejercicio-global');
+                
+                let existe = Array.from(select.options).some(opt => opt.value === anoLimpio);
+                if (!existe) {
+                    const opt = document.createElement('option');
+                    opt.value = anoLimpio;
+                    opt.textContent = anoLimpio;
+                    opt.className = "bg-slate-900 text-white";
+                    select.appendChild(opt);
+                }
+                
+                select.value = anoLimpio;
+                cambiarEjercicio(anoLimpio);
+            } else if (nuevoAno) {
+                alert("Por favor, introduce un año válido con formato de 4 dígitos.");
+            }
+        };
+
         window.cambiarEjercicio = function(ano) {
             anoActual = ano;
             document.getElementById('header-ejercicio-actual').textContent = ano;
             document.getElementById('hero-ano-display').textContent = ano;
             document.getElementById('label-ano-eventos').textContent = ano;
             
-            // Re-suscribir a la rama del año seleccionado
             conectarBaseDatos();
         };
 
         function conectarBaseDatos() {
-            // Desconectar oyentes previos si existen
             if (sociosRef) off(sociosRef);
             if (gastosRef) off(gastosRef);
             if (eventosRef) off(eventosRef);
             if (ingresosRef) off(ingresosRef);
 
-            const prefix = `ejercicios/${anoActual}`;
-            sociosRef = ref(db, `${prefix}/socios`);
-            gastosRef = ref(db, `${prefix}/gastos`);
-            eventosRef = ref(db, `${prefix}/eventos`);
-            ingresosRef = ref(db, `${prefix}/ingresos`);
+            const prefixNew = `ejercicios/${anoActual}`;
+
+            sociosRef = ref(db, `${prefixNew}/socios`);
+            gastosRef = ref(db, `${prefixNew}/gastos`);
+            eventosRef = ref(db, `${prefixNew}/eventos`);
+            ingresosRef = ref(db, `${prefixNew}/ingresos`);
             ajustesRef = ref(db, `general/ajustes`);
 
+            // 1. Escuchar Socios
             onValue(sociosRef, (s) => {
-                const data = s.val();
-                socios = data ? Object.keys(data).map(k => ({ id: k, ...data[k] })) : [];
-                renderizarSociosPublico();
-                renderizarSociosAdmin();
-                actualizarBalance();
+                let data = s.val();
+                if (!data && anoActual === '2026') {
+                    get(ref(db, 'socios')).then((oldSnap) => {
+                        let oldData = oldSnap.val();
+                        socios = oldData ? Object.keys(oldData).map(k => ({ id: k, ...oldData[k] })) : [];
+                        renderizarSociosPublico();
+                        renderizarSociosAdmin();
+                        actualizarBalance();
+                    });
+                } else {
+                    socios = data ? Object.keys(data).map(k => ({ id: k, ...data[k] })) : [];
+                    renderizarSociosPublico();
+                    renderizarSociosAdmin();
+                    actualizarBalance();
+                }
             });
 
+            // 2. Escuchar Gastos
             onValue(gastosRef, (s) => {
-                const data = s.val();
-                gastos = data ? Object.keys(data).map(k => ({ id: k, ...data[k] })) : [];
-                renderizarGastosAdmin();
-                actualizarBalance();
+                let data = s.val();
+                if (!data && anoActual === '2026') {
+                    get(ref(db, 'gastos')).then((oldSnap) => {
+                        let oldData = oldSnap.val();
+                        gastos = oldData ? Object.keys(oldData).map(k => ({ id: k, ...oldData[k] })) : [];
+                        renderizarGastosAdmin();
+                        actualizarBalance();
+                    });
+                } else {
+                    gastos = data ? Object.keys(data).map(k => ({ id: k, ...data[k] })) : [];
+                    renderizarGastosAdmin();
+                    actualizarBalance();
+                }
             });
 
+            // 3. Escuchar Eventos
             onValue(eventosRef, (s) => {
-                const data = s.val();
-                eventos = data ? Object.keys(data).map(k => ({ id: k, ...data[k] })) : [];
-                renderizarEventosPublico();
-                renderizarEventosAdmin();
+                let data = s.val();
+                if (!data && anoActual === '2026') {
+                    get(ref(db, 'eventos')).then((oldSnap) => {
+                        let oldData = oldSnap.val();
+                        eventos = oldData ? Object.keys(oldData).map(k => ({ id: k, ...oldData[k] })) : [];
+                        renderizarEventosPublico();
+                        renderizarEventosAdmin();
+                    });
+                } else {
+                    eventos = data ? Object.keys(data).map(k => ({ id: k, ...data[k] })) : [];
+                    renderizarEventosPublico();
+                    renderizarEventosAdmin();
+                }
             });
 
+            // 4. Escuchar Ingresos
             onValue(ingresosRef, (s) => {
-                const data = s.val();
-                ingresos = data ? Object.keys(data).map(k => ({ id: k, ...data[k] })) : [];
-                renderizarIngresosAdmin();
-                actualizarBalance();
+                let data = s.val();
+                if (!data && anoActual === '2026') {
+                    get(ref(db, 'ingresos')).then((oldSnap) => {
+                        let oldData = oldSnap.val();
+                        ingresos = oldData ? Object.keys(oldData).map(k => ({ id: k, ...oldData[k] })) : [];
+                        renderizarIngresosAdmin();
+                        actualizarBalance();
+                    });
+                } else {
+                    ingresos = data ? Object.keys(data).map(k => ({ id: k, ...data[k] })) : [];
+                    renderizarIngresosAdmin();
+                    actualizarBalance();
+                }
             });
 
+            // 5. Escuchar Ajustes / Historia
             onValue(ajustesRef, (s) => {
                 const data = s.val();
                 if (data) {
@@ -688,7 +751,7 @@
             });
         }
 
-        // VISOR
+        // VISOR IMAGEN
         window.ampliarImagen = function(url, nombre) {
             const modal = document.getElementById('modal-lightbox');
             const img = document.getElementById('lightbox-img');
@@ -705,7 +768,7 @@
             modal.classList.remove('flex');
         };
 
-        // VISTAS
+        // SECCIONES Y ACCESO
         window.mostrarSeccion = function(tipo) {
             const secPublica = document.getElementById('seccion-publica');
             const secAdmin = document.getElementById('seccion-admin');
@@ -762,7 +825,7 @@
             });
         };
 
-        // BALANCE MATEMÁTICO REAL
+        // BALANCE Y CÁLCULOS
         function actualizarBalance() {
             const numSocios = socios.length;
             const cobradoCuotas = socios.reduce((sum, s) => sum + (parseFloat(s.pagado) || 0), 0);
@@ -777,7 +840,6 @@
 
             const porcentaje = acumuladoCuotaTeorica > 0 ? Math.min(100, Math.round((cobradoCuotas / acumuladoCuotaTeorica) * 100)) : 0;
 
-            // DOM Updates
             document.getElementById('bal-extras').textContent = `${totalIngresosExtras.toFixed(2)} €`;
             document.getElementById('bal-ingresos').textContent = `${cobradoCuotas.toFixed(2)} €`;
             document.getElementById('bal-sub-cuotas').textContent = `de ${acumuladoCuotaTeorica.toFixed(2)} € presupuestados`;
@@ -793,7 +855,7 @@
             document.getElementById('progreso-texto').textContent = `${porcentaje}% (${cobradoCuotas.toFixed(0)}€ / ${acumuladoCuotaTeorica.toFixed(0)}€)`;
         }
 
-        // RENDERS
+        // RENDERS DE TABLAS
         function renderizarSociosPublico() {
             const container = document.getElementById('grid-socios-publico');
             document.getElementById('total-socios-count-public').textContent = socios.length;
@@ -901,7 +963,7 @@
             `).join('');
         }
 
-        // CRUD SOCIOS
+        // GUARDADO DE DATOS EN FIREBASE
         window.abrirModalSocio = function() {
             document.getElementById('form-socio').reset();
             document.getElementById('socio-id').value = '';
@@ -924,8 +986,12 @@
                 cuotaTotal: parseFloat(document.getElementById('socio-cuota-total').value) || 400,
                 pagado: parseFloat(document.getElementById('socio-pagado').value) || 0
             };
-            if (id) update(ref(db, `ejercicios/${anoActual}/socios/${id}`), payload);
-            else push(sociosRef, payload);
+            if (id) {
+                update(ref(db, `ejercicios/${anoActual}/socios/${id}`), payload);
+                if (anoActual === '2026') update(ref(db, `socios/${id}`), payload);
+            } else {
+                push(ref(db, `ejercicios/${anoActual}/socios`), payload);
+            }
             cerrarModalSocio();
         };
         window.editarSocio = function(id) {
@@ -942,10 +1008,13 @@
             modal.classList.remove('hidden'); modal.classList.add('flex');
         };
         window.eliminarSocio = function(id) {
-            if (confirm('¿Desea eliminar este socio?')) remove(ref(db, `ejercicios/${anoActual}/socios/${id}`));
+            if (confirm('¿Desea eliminar este socio?')) {
+                remove(ref(db, `ejercicios/${anoActual}/socios/${id}`));
+                if (anoActual === '2026') remove(ref(db, `socios/${id}`));
+            }
         };
 
-        // CRUD INGRESOS
+        // INGRESOS
         window.abrirModalIngreso = function() {
             document.getElementById('form-ingreso').reset();
             const modal = document.getElementById('modal-ingreso');
@@ -962,14 +1031,17 @@
                 origen: document.getElementById('ingreso-origen').value,
                 importe: parseFloat(document.getElementById('ingreso-importe').value) || 0
             };
-            push(ingresosRef, payload);
+            push(ref(db, `ejercicios/${anoActual}/ingresos`), payload);
             cerrarModalIngreso();
         };
         window.eliminarIngreso = function(id) {
-            if (confirm('¿Desea eliminar este ingreso?')) remove(ref(db, `ejercicios/${anoActual}/ingresos/${id}`));
+            if (confirm('¿Desea eliminar este ingreso?')) {
+                remove(ref(db, `ejercicios/${anoActual}/ingresos/${id}`));
+                if (anoActual === '2026') remove(ref(db, `ingresos/${id}`));
+            }
         };
 
-        // CRUD EVENTOS
+        // EVENTOS
         window.abrirModalEvento = function() {
             document.getElementById('form-evento').reset();
             document.getElementById('evento-id').value = '';
@@ -988,8 +1060,12 @@
                 fecha: document.getElementById('evento-fecha').value,
                 descripcion: document.getElementById('evento-descripcion').value
             };
-            if (id) update(ref(db, `ejercicios/${anoActual}/eventos/${id}`), payload);
-            else push(eventosRef, payload);
+            if (id) {
+                update(ref(db, `ejercicios/${anoActual}/eventos/${id}`), payload);
+                if (anoActual === '2026') update(ref(db, `eventos/${id}`), payload);
+            } else {
+                push(ref(db, `ejercicios/${anoActual}/eventos`), payload);
+            }
             cerrarModalEvento();
         };
         window.editarEvento = function(id) {
@@ -1003,10 +1079,13 @@
             modal.classList.remove('hidden'); modal.classList.add('flex');
         };
         window.eliminarEvento = function(id) {
-            if (confirm('¿Desea eliminar este evento?')) remove(ref(db, `ejercicios/${anoActual}/eventos/${id}`));
+            if (confirm('¿Desea eliminar este evento?')) {
+                remove(ref(db, `ejercicios/${anoActual}/eventos/${id}`));
+                if (anoActual === '2026') remove(ref(db, `eventos/${id}`));
+            }
         };
 
-        // CRUD GASTOS
+        // GASTOS
         window.abrirModalGasto = function() {
             document.getElementById('form-gasto').reset();
             const modal = document.getElementById('modal-gasto');
@@ -1025,11 +1104,14 @@
                 categoria: document.getElementById('gasto-categoria').value,
                 importe: parseFloat(document.getElementById('gasto-importe').value) || 0
             };
-            push(gastosRef, payload);
+            push(ref(db, `ejercicios/${anoActual}/gastos`), payload);
             cerrarModalGasto();
         };
         window.eliminarGasto = function(id) {
-            if (confirm('¿Desea eliminar este gasto?')) remove(ref(db, `ejercicios/${anoActual}/gastos/${id}`));
+            if (confirm('¿Desea eliminar este gasto?')) {
+                remove(ref(db, `ejercicios/${anoActual}/gastos/${id}`));
+                if (anoActual === '2026') remove(ref(db, `gastos/${id}`));
+            }
         };
 
         // AJUSTES HISTORIA
