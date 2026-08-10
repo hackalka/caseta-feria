@@ -1,8 +1,10 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { onValue, push, ref, set } from 'firebase/database';
+import { database } from '@/lib/firebase';
 
-type Movement = { id: number; date: string; concept: string; counterparty: string; category: string; amount: number; status: 'Cobrado' | 'Pagado' | 'Pendiente' };
+type Movement = { id: string | number; date: string; concept: string; counterparty: string; category: string; amount: number; status: 'Cobrado' | 'Pagado' | 'Pendiente' };
 type Section = 'inicio' | 'ingresos' | 'gastos' | 'socios' | 'cuentas' | 'informes';
 
 const initialMovements: Movement[] = [
@@ -34,6 +36,16 @@ export function ErpDashboard() {
   const [kind, setKind] = useState<'income' | 'expense'>('income');
   const [concept, setConcept] = useState('');
   const [amount, setAmount] = useState('');
+  const [syncStatus, setSyncStatus] = useState<'loading' | 'live' | 'error'>('loading');
+
+  useEffect(() => {
+    const transactionsRef = ref(database, 'erp/transactions');
+    return onValue(transactionsRef, snapshot => {
+      const stored = snapshot.val() as Record<string, Omit<Movement, 'id'>> | null;
+      if (stored) setMovements(Object.entries(stored).map(([id, value]) => ({ id, ...value })).sort((a, b) => b.date.localeCompare(a.date)));
+      setSyncStatus('live');
+    }, () => setSyncStatus('error'));
+  }, []);
 
   const metrics = useMemo(() => {
     const collected = movements.filter(m => m.amount > 0 && m.status === 'Cobrado').reduce((sum, m) => sum + m.amount, 0);
@@ -47,7 +59,9 @@ export function ErpDashboard() {
     event.preventDefault();
     const value = Number(amount.replace(',', '.'));
     if (!concept.trim() || !Number.isFinite(value) || value <= 0) return;
-    setMovements(current => [{ id: Date.now(), date: new Date().toISOString().slice(0, 10), concept, counterparty: 'Registro manual', category: kind === 'income' ? 'Otros ingresos' : 'Otros gastos', amount: kind === 'income' ? value : -value, status: kind === 'income' ? 'Cobrado' : 'Pagado' }, ...current]);
+    const movement = { date: new Date().toISOString().slice(0, 10), concept, counterparty: 'Registro manual', category: kind === 'income' ? 'Otros ingresos' : 'Otros gastos', amount: kind === 'income' ? value : -value, status: kind === 'income' ? 'Cobrado' as const : 'Pagado' as const };
+    const newMovementRef = push(ref(database, 'erp/transactions'));
+    void set(newMovementRef, movement).catch(() => setSyncStatus('error'));
     setConcept(''); setAmount(''); setShowForm(false);
   };
 
@@ -59,7 +73,7 @@ export function ErpDashboard() {
     </aside>
 
     <section className="min-w-0 flex-1 p-4 sm:p-6 lg:p-8">
-      <header className="mb-7 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"><div><p className="gold text-xs font-bold uppercase tracking-[.2em]">Panel directivo</p><h2 className="mt-1 font-display text-3xl font-bold text-white">{navigation.find(n => n.id === section)?.label}</h2></div><div className="flex gap-2"><select value={period} onChange={e => setPeriod(e.target.value)} className="rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-sm"><option>Este mes</option><option>Mes anterior</option><option>Trimestre</option><option>Año</option></select><button onClick={() => { setKind(section === 'gastos' ? 'expense' : 'income'); setShowForm(true); }} className="rounded-xl bg-amber-400 px-4 py-2 text-sm font-bold text-slate-950 hover:bg-amber-300">+ Registrar movimiento</button></div></header>
+      <header className="mb-7 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"><div><p className="gold text-xs font-bold uppercase tracking-[.2em]">Panel directivo</p><h2 className="mt-1 font-display text-3xl font-bold text-white">{navigation.find(n => n.id === section)?.label}</h2><p className={`mt-2 text-xs ${syncStatus === 'live' ? 'text-emerald-400' : syncStatus === 'error' ? 'text-rose-400' : 'text-slate-400'}`}>● {syncStatus === 'live' ? 'Firebase sincronizado en tiempo real' : syncStatus === 'error' ? 'No se ha podido sincronizar Firebase' : 'Conectando con Firebase...'}</p></div><div className="flex gap-2"><select value={period} onChange={e => setPeriod(e.target.value)} className="rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-sm"><option>Este mes</option><option>Mes anterior</option><option>Trimestre</option><option>Año</option></select><button onClick={() => { setKind(section === 'gastos' ? 'expense' : 'income'); setShowForm(true); }} className="rounded-xl bg-amber-400 px-4 py-2 text-sm font-bold text-slate-950 hover:bg-amber-300">+ Registrar movimiento</button></div></header>
       {section === 'inicio' ? <Overview metrics={metrics} movements={movements} period={period} /> : null}
       {section === 'ingresos' ? <Movements title="Ingresos y facturas" movements={movements.filter(m => m.amount > 0)} onCreate={() => { setKind('income'); setShowForm(true); }} /> : null}
       {section === 'gastos' ? <Movements title="Gastos, proveedores y compras" movements={movements.filter(m => m.amount < 0)} onCreate={() => { setKind('expense'); setShowForm(true); }} /> : null}
