@@ -191,29 +191,59 @@
             
             <!-- VISTA BALANCE -->
             <div id="view-balance" class="space-y-6">
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+                    <div>
+                        <span class="text-amber-400 text-xs font-bold uppercase tracking-widest">Control financiero</span>
+                        <h3 class="text-2xl font-serif font-bold text-white mt-0.5">Resumen económico</h3>
+                    </div>
+                    <span id="bal-actualizado" class="text-xs text-slate-400"><i class="fa-solid fa-arrows-rotate mr-1"></i>Datos actualizados al momento</span>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
                     <div class="glass-panel p-5 rounded-2xl border-l-4 border-emerald-500">
                         <span class="text-xs font-bold uppercase text-slate-400">Total Recaudado</span>
                         <div id="bal-ingresos" class="text-2xl sm:text-3xl font-extrabold text-emerald-400 mt-1">0,00 €</div>
+                        <p id="bal-cobrado-detalle" class="text-xs text-slate-400 mt-2">0 % de las cuotas previstas</p>
                     </div>
                     <div class="glass-panel p-5 rounded-2xl border-l-4 border-red-500">
                         <span class="text-xs font-bold uppercase text-slate-400">Gastos Registrados</span>
                         <div id="bal-gastos" class="text-2xl sm:text-3xl font-extrabold text-red-400 mt-1">0,00 €</div>
+                        <p id="bal-gastos-detalle" class="text-xs text-slate-400 mt-2">Sin gastos registrados</p>
                     </div>
                     <div class="glass-panel p-5 rounded-2xl border-l-4 border-amber-500">
-                        <span class="text-xs font-bold uppercase text-slate-400">Líquido Disponible</span>
+                        <span class="text-xs font-bold uppercase text-slate-400">Saldo Disponible</span>
                         <div id="bal-neto" class="text-2xl sm:text-3xl font-extrabold text-amber-400 mt-1">0,00 €</div>
+                        <p id="bal-neto-detalle" class="text-xs text-slate-400 mt-2">Ingresos menos gastos</p>
+                    </div>
+                    <div class="glass-panel p-5 rounded-2xl border-l-4 border-sky-500">
+                        <span class="text-xs font-bold uppercase text-slate-400">Pendiente de Cobro</span>
+                        <div id="bal-pendiente" class="text-2xl sm:text-3xl font-extrabold text-sky-400 mt-1">0,00 €</div>
+                        <p id="bal-pendiente-detalle" class="text-xs text-slate-400 mt-2">0 socios con saldo pendiente</p>
                     </div>
                 </div>
 
-                <div class="glass-panel p-5 rounded-2xl space-y-3">
-                    <h4 class="font-bold text-sm text-white flex items-center gap-2">
-                        <i class="fa-solid fa-bullseye text-amber-400"></i> Estado de Recaudación por Cuotas
-                    </h4>
-                    <div class="w-full bg-slate-800 rounded-full h-3.5 overflow-hidden p-0.5 border border-slate-700">
-                        <div id="progreso-bar" class="bg-gradient-to-r from-amber-500 to-emerald-500 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                <div class="grid grid-cols-1 lg:grid-cols-5 gap-4">
+                    <div class="glass-panel p-5 rounded-2xl space-y-3 lg:col-span-3">
+                        <div class="flex items-center justify-between gap-3">
+                            <h4 class="font-bold text-sm text-white flex items-center gap-2">
+                                <i class="fa-solid fa-bullseye text-amber-400"></i> Estado de recaudación
+                            </h4>
+                            <span id="bal-progreso-texto" class="text-xs font-bold text-amber-300">0,00 € de 0,00 €</span>
+                        </div>
+                        <div class="w-full bg-slate-800 rounded-full h-3.5 overflow-hidden p-0.5 border border-slate-700">
+                            <div id="progreso-bar" class="bg-gradient-to-r from-amber-500 to-emerald-500 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                        </div>
+                        <p id="bal-progreso-ayuda" class="text-xs text-slate-400">Registra los cobros para conocer el avance real.</p>
+                    </div>
+                    <div class="glass-panel p-5 rounded-2xl lg:col-span-2">
+                        <h4 class="font-bold text-sm text-white flex items-center gap-2 mb-3">
+                            <i class="fa-solid fa-chart-pie text-amber-400"></i> Gastos por categoría
+                        </h4>
+                        <div id="resumen-categorias" class="space-y-2 text-xs text-slate-400"></div>
                     </div>
                 </div>
+
+                <div id="bal-alerta" class="hidden rounded-2xl border px-4 py-3 text-sm"></div>
             </div>
 
             <!-- VISTA SOCIOS -->
@@ -282,6 +312,7 @@
                         <table class="w-full text-left text-xs sm:text-sm">
                             <thead class="bg-slate-950 font-bold text-slate-400 uppercase border-b border-slate-800">
                                 <tr>
+                                    <th class="p-3">Fecha</th>
                                     <th class="p-3">Concepto</th>
                                     <th class="p-3">Categoría</th>
                                     <th class="p-3">Importe</th>
@@ -347,7 +378,11 @@
                         <input type="text" id="socio-nombre" required class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white outline-none focus:border-amber-400">
                     </div>
                 </div>
-                <div class="grid grid-cols-2 gap-3">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-400 uppercase mb-1">Fecha</label>
+                        <input type="date" id="gasto-fecha" required class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white outline-none focus:border-amber-400">
+                    </div>
                     <div>
                         <label class="block font-bold text-slate-400 uppercase mb-1">Cargo / Etiqueta</label>
                         <input type="text" id="socio-cargo" placeholder="Ej: Directiva" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-amber-300 font-semibold outline-none focus:border-amber-400">
@@ -685,15 +720,44 @@
             const totalIngresos = socios.reduce((acc, s) => acc + (parseFloat(s.pagado) || 0), 0);
             const totalGastos = gastos.reduce((acc, g) => acc + (parseFloat(g.importe) || 0), 0);
             const liquido = totalIngresos - totalGastos;
-            
-            // Total fijado teórico
-            const metaRecaudacion = socios.reduce((acc, s) => acc + (parseFloat(s.cuotaTotal) || 400), 0) || 1;
-            const porcentaje = Math.min(100, Math.round((totalIngresos / metaRecaudacion) * 100));
+            const metaRecaudacion = socios.reduce((acc, s) => acc + (parseFloat(s.cuotaTotal) || 400), 0);
+            const pendienteCobro = Math.max(0, metaRecaudacion - totalIngresos);
+            const sociosPendientes = socios.filter(s => (parseFloat(s.cuotaTotal) || 400) - (parseFloat(s.pagado) || 0) > 0).length;
+            const porcentaje = metaRecaudacion ? Math.min(100, Math.round((totalIngresos / metaRecaudacion) * 100)) : 0;
+            const moneda = valor => new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(valor);
+            const porCategoria = gastos.reduce((acumulado, gasto) => {
+                const categoria = gasto.categoria || 'Sin categoría';
+                acumulado[categoria] = (acumulado[categoria] || 0) + (parseFloat(gasto.importe) || 0);
+                return acumulado;
+            }, {});
+            const categorias = Object.entries(porCategoria).sort((a, b) => b[1] - a[1]);
 
-            document.getElementById('bal-ingresos').textContent = `${totalIngresos.toFixed(2)} €`;
-            document.getElementById('bal-gastos').textContent = `${totalGastos.toFixed(2)} €`;
-            document.getElementById('bal-neto').textContent = `${liquido.toFixed(2)} €`;
+            document.getElementById('bal-ingresos').textContent = moneda(totalIngresos);
+            document.getElementById('bal-gastos').textContent = moneda(totalGastos);
+            document.getElementById('bal-neto').textContent = moneda(liquido);
+            document.getElementById('bal-pendiente').textContent = moneda(pendienteCobro);
+            document.getElementById('bal-cobrado-detalle').textContent = `${porcentaje} % de las cuotas previstas`;
+            document.getElementById('bal-gastos-detalle').textContent = gastos.length ? `${gastos.length} ${gastos.length === 1 ? 'movimiento registrado' : 'movimientos registrados'}` : 'Sin gastos registrados';
+            document.getElementById('bal-neto-detalle').textContent = liquido >= 0 ? 'Ingresos menos gastos' : 'Atención: los gastos superan los cobros';
+            document.getElementById('bal-pendiente-detalle').textContent = `${sociosPendientes} ${sociosPendientes === 1 ? 'socio con saldo pendiente' : 'socios con saldo pendiente'}`;
+            document.getElementById('bal-progreso-texto').textContent = `${moneda(totalIngresos)} de ${moneda(metaRecaudacion)}`;
+            document.getElementById('bal-progreso-ayuda').textContent = metaRecaudacion ? `Se ha cobrado el ${porcentaje} % de las cuotas comprometidas.` : 'Añade socios y sus cuotas para ver el avance.';
             document.getElementById('progreso-bar').style.width = `${porcentaje}%`;
+            document.getElementById('resumen-categorias').innerHTML = categorias.length
+                ? categorias.map(([categoria, importe]) => `<div class="flex items-center justify-between gap-3"><span class="truncate">${categoria}</span><span class="font-bold text-red-300 whitespace-nowrap">${moneda(importe)}</span></div>`).join('')
+                : '<p class="text-slate-500">Aún no hay gastos para clasificar.</p>';
+
+            const alerta = document.getElementById('bal-alerta');
+            if (liquido < 0) {
+                alerta.className = 'rounded-2xl border px-4 py-3 text-sm border-red-500/40 bg-red-500/10 text-red-200';
+                alerta.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-2"></i>El saldo es negativo: faltan ${moneda(Math.abs(liquido))} para cubrir los gastos registrados.`;
+            } else if (pendienteCobro > 0) {
+                alerta.className = 'rounded-2xl border px-4 py-3 text-sm border-sky-500/40 bg-sky-500/10 text-sky-100';
+                alerta.innerHTML = `<i class="fa-solid fa-circle-info mr-2"></i>Quedan ${moneda(pendienteCobro)} por recaudar. Puedes avisar a cada socio desde su ficha.`;
+            } else {
+                alerta.className = 'rounded-2xl border px-4 py-3 text-sm border-emerald-500/40 bg-emerald-500/10 text-emerald-100';
+                alerta.innerHTML = '<i class="fa-solid fa-circle-check mr-2"></i>Todas las cuotas registradas están cobradas.';
+            }
 
             // Tabla Socios Admin
             const tablaSocios = document.getElementById('tabla-socios-admin');
@@ -750,6 +814,7 @@
             if (tablaGastos) {
                 tablaGastos.innerHTML = gastos.map(g => `
                     <tr class="hover:bg-slate-800/40 transition">
+                        <td class="p-3 text-slate-400 whitespace-nowrap">${g.fecha ? new Date(`${g.fecha}T00:00:00`).toLocaleDateString('es-ES') : '<span class="text-slate-600">—</span>'}</td>
                         <td class="p-3 font-bold text-white">${g.concepto}</td>
                         <td class="p-3 text-slate-400"><span class="px-2 py-0.5 rounded-md bg-slate-800 text-amber-300 text-[10px] font-bold">${g.categoria}</span></td>
                         <td class="p-3 font-bold text-red-400">${parseFloat(g.importe).toFixed(2)} €</td>
@@ -759,7 +824,7 @@
                             </button>
                         </td>
                     </tr>
-                `).join('') || '<tr><td colspan="4" class="p-4 text-center text-slate-500">No hay gastos registrados.</td></tr>';
+                `).join('') || '<tr><td colspan="5" class="p-4 text-center text-slate-500">No hay gastos registrados.</td></tr>';
             }
         }
 
@@ -852,6 +917,7 @@
         // FUNCIONES MODALES GASTOS
         window.abrirModalGasto = function() {
             document.getElementById('form-gasto').reset();
+            document.getElementById('gasto-fecha').value = new Date().toISOString().slice(0, 10);
             document.getElementById('modal-gasto').classList.remove('hidden');
             document.getElementById('modal-gasto').classList.add('flex');
         };
@@ -864,6 +930,7 @@
         window.guardarGasto = function(e) {
             e.preventDefault();
             const data = {
+                fecha: document.getElementById('gasto-fecha').value,
                 concepto: document.getElementById('gasto-concepto').value,
                 categoria: document.getElementById('gasto-categoria').value,
                 importe: parseFloat(document.getElementById('gasto-importe').value) || 0

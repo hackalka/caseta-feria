@@ -1,0 +1,191 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  CONTABILIDAD
+  SOCIO
+}
+enum PartnerStatus {
+  ACTIVO
+  INACTIVO
+}
+enum PaymentStatus {
+  PENDIENTE
+  PARCIAL
+  COBRADO
+  PAGADO
+  VENCIDO
+}
+enum AccountType {
+  BANCO
+  CAJA
+  TARJETA
+  OTRA
+}
+enum TransactionType {
+  INGRESO
+  GASTO
+  TRANSFERENCIA_ENTRADA
+  TRANSFERENCIA_SALIDA
+}
+
+model User {
+  id String @id @default(cuid())
+  email String @unique
+  name String
+  role Role @default(SOCIO)
+  partner Partner?
+  auditLogs AuditLog[]
+  createdAt DateTime @default(now())
+}
+
+model Partner {
+  id String @id @default(cuid())
+  userId String? @unique
+  user User? @relation(fields: [userId], references: [id])
+  name String
+  taxId String? @unique
+  email String?
+  phone String?
+  ownership Decimal @db.Decimal(5,2)
+  capitalContributed Decimal @default(0) @db.Decimal(14,2)
+  additionalContributions Decimal @default(0) @db.Decimal(14,2)
+  withdrawals Decimal @default(0) @db.Decimal(14,2)
+  profitReceived Decimal @default(0) @db.Decimal(14,2)
+  joinedAt DateTime @default(now())
+  status PartnerStatus @default(ACTIVO)
+  distributions ProfitDistribution[]
+  createdAt DateTime @default(now())
+}
+
+model Customer {
+  id String @id @default(cuid())
+  name String
+  taxId String?
+  email String?
+  phone String?
+  address String?
+  incomes Income[]
+  createdAt DateTime @default(now())
+}
+model Supplier {
+  id String @id @default(cuid())
+  name String
+  taxId String?
+  email String?
+  phone String?
+  expenses Expense[]
+  purchases Purchase[]
+  createdAt DateTime @default(now())
+}
+
+model Account {
+  id String @id @default(cuid())
+  name String
+  type AccountType
+  openingBalance Decimal @default(0) @db.Decimal(14,2)
+  transactions Transaction[]
+  createdAt DateTime @default(now())
+}
+
+model Income {
+  id String @id @default(cuid())
+  date DateTime
+  dueDate DateTime?
+  invoiceNumber String? @unique
+  concept String
+  category String
+  baseAmount Decimal @db.Decimal(14,2)
+  vatRate Decimal @default(21) @db.Decimal(5,2)
+  vatAmount Decimal @db.Decimal(14,2)
+  total Decimal @db.Decimal(14,2)
+  paymentMethod String?
+  status PaymentStatus @default(PENDIENTE)
+  notes String?
+  customerId String?
+  customer Customer? @relation(fields: [customerId], references: [id])
+  transaction Transaction?
+  createdAt DateTime @default(now())
+}
+
+model Expense {
+  id String @id @default(cuid())
+  date DateTime
+  dueDate DateTime?
+  concept String
+  category String
+  baseAmount Decimal @db.Decimal(14,2)
+  vatRate Decimal @default(21) @db.Decimal(5,2)
+  vatAmount Decimal @db.Decimal(14,2)
+  total Decimal @db.Decimal(14,2)
+  paymentMethod String?
+  status PaymentStatus @default(PENDIENTE)
+  notes String?
+  supplierId String?
+  supplier Supplier? @relation(fields: [supplierId], references: [id])
+  transaction Transaction?
+  createdAt DateTime @default(now())
+}
+
+model Purchase {
+  id String @id @default(cuid())
+  date DateTime
+  invoiceNumber String?
+  products String
+  quantity Decimal @default(1) @db.Decimal(12,2)
+  unitPrice Decimal @db.Decimal(14,2)
+  discount Decimal @default(0) @db.Decimal(14,2)
+  vatRate Decimal @default(21) @db.Decimal(5,2)
+  total Decimal @db.Decimal(14,2)
+  status PaymentStatus @default(PENDIENTE)
+  supplierId String
+  supplier Supplier @relation(fields: [supplierId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model Transaction {
+  id String @id @default(cuid())
+  date DateTime
+  type TransactionType
+  concept String
+  amount Decimal @db.Decimal(14,2)
+  category String?
+  reference String?
+  accountId String
+  account Account @relation(fields: [accountId], references: [id])
+  incomeId String? @unique
+  income Income? @relation(fields: [incomeId], references: [id])
+  expenseId String? @unique
+  expense Expense? @relation(fields: [expenseId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model ProfitDistribution {
+  id String @id @default(cuid())
+  partnerId String
+  partner Partner @relation(fields: [partnerId], references: [id])
+  period String
+  grossProfit Decimal @db.Decimal(14,2)
+  amountDue Decimal @db.Decimal(14,2)
+  paidAmount Decimal @default(0) @db.Decimal(14,2)
+  status PaymentStatus @default(PENDIENTE)
+  createdAt DateTime @default(now())
+}
+model AuditLog {
+  id String @id @default(cuid())
+  userId String?
+  user User? @relation(fields: [userId], references: [id])
+  action String
+  entity String
+  entityId String?
+  before Json?
+  after Json?
+  createdAt DateTime @default(now())
+}
