@@ -10,4 +10,10 @@ ERP financiero para la gestión de socios, ingresos, gastos, compras, cuentas y 
 
 La interfaz incluye un dashboard inicial y módulos de ingresos, gastos, socios, caja/bancos e informes. Los nuevos movimientos se guardan bajo `erp/transactions` y se sincronizan en tiempo real con Firebase.
 
+## Publicación en GitHub Pages
+
+Cada cambio enviado a `main` activa el flujo de GitHub Actions y publica la web en `https://hackalka.github.io/caseta-feria/`.
+
+La primera vez, en GitHub abre **Settings → Pages** y selecciona **GitHub Actions** como origen de publicación.
+
 > Los cálculos fiscales son orientativos y deben revisarse con asesoría profesional.
