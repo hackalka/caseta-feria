@@ -8,3 +8,5 @@ body { margin: 0; min-height: 100vh; background: #080d1c; color: #e2e8f0; font-f
 button, input, select { font: inherit; }
 .panel { background: rgba(15, 23, 42, .85); border: 1px solid rgba(148, 163, 184, .16); box-shadow: 0 18px 45px rgba(0,0,0,.18); }
 .gold { color: #fbbf24; }
+.input { width: 100%; border: 1px solid #334155; border-radius: .75rem; background: #0f172a; color: #fff; padding: .7rem .8rem; outline: none; }
+.input:focus { border-color: #fbbf24; }
