@@ -340,66 +340,8 @@ function Reports({ metrics, movements, period }: { metrics: Metrics; movements: 
     const printWindow = window.open('', '', 'width=800,height=600');
     if (!printWindow) return;
     
-    const html = `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <title>Informe - Los Manolos</title>
-        <style>
-          body { font-family: Arial, sans-serif; margin: 20px; }
-          h1 { text-align: center; }
-          table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-          th, td { border: 1px solid #000; padding: 8px; text-align: left; }
-          th { background-color: #f0f0f0; font-weight: bold; }
-          .summary { margin: 20px 0; }
-          .total { font-weight: bold; background-color: #f0f0f0; }
-        </style>
-      </head>
-      <body>
-        <h1>Informe Financiero - Los Manolos</h1>
-        <p>Período: ${period}</p>
-        <p>Fecha de generación: ${new Date().toLocaleDateString('es-ES')}</p>
-        
-        <div class="summary">
-          <h3>Resumen</h3>
-          <p><strong>Ingresos totales:</strong> €${metrics.collected.toFixed(2)}</p>
-          <p><strong>Gastos totales:</strong> €${metrics.paid.toFixed(2)}</p>
-          <p><strong>Resultado:</strong> €${metrics.profit.toFixed(2)}</p>
-        </div>
-        
-        <h3>Detalle de ${filter === 'todos' ? 'Movimientos' : filter === 'ingresos' ? 'Ingresos' : 'Gastos'}</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Fecha</th>
-              <th>Concepto</th>
-              <th>Contrapartida</th>
-              <th>Categoría</th>
-              <th>Importe</th>
-              <th>Estado</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${filteredMovements.map(m => `
-              <tr>
-                <td>${m.date}</td>
-                <td>${m.concept}</td>
-                <td>${m.counterparty}</td>
-                <td>${m.category}</td>
-                <td style="text-align: right;">€${m.amount.toFixed(2)}</td>
-                <td>${m.status}</td>
-              </tr>
-            `).join('')}
-            <tr class="total">
-              <td colspan="4"></td>
-              <td style="text-align: right;">€${filteredMovements.reduce((sum, m) => sum + m.amount, 0).toFixed(2)}</td>
-              <td></td>
-            </tr>
-          </tbody>
-        </table>
-      </body>
-      </html>
-    `;
+    const filterLabel = filter === 'todos' ? 'Movimientos' : filter === 'ingresos' ? 'Ingresos' : 'Gastos';
+    const html = `<!DOCTYPE html><html><head><title>Informe - Los Manolos</title><style>body { font-family: Arial, sans-serif; margin: 20px; } h1 { text-align: center; } table { width: 100%; border-collapse: collapse; margin-top: 20px; } th, td { border: 1px solid #000; padding: 8px; text-align: left; } th { background-color: #f0f0f0; font-weight: bold; } .summary { margin: 20px 0; } .total { font-weight: bold; background-color: #f0f0f0; }</style></head><body><h1>Informe Financiero - Los Manolos</h1><p>Período: ${period}</p><p>Fecha: ${new Date().toLocaleDateString('es-ES')}</p><div class="summary"><h3>Resumen</h3><p>Ingresos: €${metrics.collected.toFixed(2)}</p><p>Gastos: €${metrics.paid.toFixed(2)}</p><p>Resultado: €${metrics.profit.toFixed(2)}</p></div><h3>Detalle de ${filterLabel}</h3><table><thead><tr><th>Fecha</th><th>Concepto</th><th>Contrapartida</th><th>Categoría</th><th>Importe</th><th>Estado</th></tr></thead><tbody>${filteredMovements.map(m => `<tr><td>${m.date}</td><td>${m.concept}</td><td>${m.counterparty}</td><td>${m.category}</td><td style="text-align: right;">€${m.amount.toFixed(2)}</td><td>${m.status}</td></tr>`).join('')}<tr class="total"><td colspan="4"></td><td style="text-align: right;">€${filteredMovements.reduce((sum, m) => sum + m.amount, 0).toFixed(2)}</td><td></td></tr></tbody></table></body></html>`;
     
     printWindow.document.write(html);
     printWindow.document.close();
@@ -419,27 +361,14 @@ function Reports({ metrics, movements, period }: { metrics: Metrics; movements: 
       <article className="panel rounded-2xl p-6">
         <h3 className="font-bold text-white">Exportar informe</h3>
         <div className="mt-4 space-y-3">
-          <div className="flex gap-2">
-            <label className="flex items-center gap-2 text-sm text-slate-300">
-              <input type="radio" name="filter" value="todos" checked={filter === 'todos'} onChange={(e) => setFilter(e.target.value as any)} className="cursor-pointer" />
-              Todos los movimientos
-            </label>
-          </div>
-          <div className="flex gap-2">
-            <label className="flex items-center gap-2 text-sm text-slate-300">
-              <input type="radio" name="filter" value="ingresos" checked={filter === 'ingresos'} onChange={(e) => setFilter(e.target.value as any)} className="cursor-pointer" />
-              Solo ingresos/cobros
-            </label>
-          </div>
-          <div className="flex gap-2">
-            <label className="flex items-center gap-2 text-sm text-slate-300">
-              <input type="radio" name="filter" value="gastos" checked={filter === 'gastos'} onChange={(e) => setFilter(e.target.value as any)} className="cursor-pointer" />
-              Solo gastos/pagos
-            </label>
+          <div className="grid grid-cols-3 gap-2">
+            <button onClick={() => setFilter('todos')} className={`rounded-lg px-3 py-2 text-sm font-bold transition ${filter === 'todos' ? 'bg-amber-500 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'}`}>Todos</button>
+            <button onClick={() => setFilter('ingresos')} className={`rounded-lg px-3 py-2 text-sm font-bold transition ${filter === 'ingresos' ? 'bg-emerald-500 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'}`}>Ingresos</button>
+            <button onClick={() => setFilter('gastos')} className={`rounded-lg px-3 py-2 text-sm font-bold transition ${filter === 'gastos' ? 'bg-rose-500 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'}`}>Gastos</button>
           </div>
           <div className="mt-4 flex gap-2">
-            <button onClick={exportToCSV} className="flex-1 rounded-lg bg-emerald-500 px-3 py-2 text-sm font-bold text-white hover:bg-emerald-600 transition">📥 Descargar CSV</button>
-            <button onClick={printReport} className="flex-1 rounded-lg bg-sky-500 px-3 py-2 text-sm font-bold text-white hover:bg-sky-600 transition">🖨️ Imprimir</button>
+            <button onClick={exportToCSV} className="flex-1 rounded-lg bg-emerald-500 px-3 py-2 text-sm font-bold text-white hover:bg-emerald-600 transition">Descargar CSV</button>
+            <button onClick={printReport} className="flex-1 rounded-lg bg-sky-500 px-3 py-2 text-sm font-bold text-white hover:bg-sky-600 transition">Imprimir</button>
           </div>
         </div>
       </article>
@@ -447,7 +376,7 @@ function Reports({ metrics, movements, period }: { metrics: Metrics; movements: 
     <article className="panel rounded-2xl p-6">
       <h3 className="font-bold text-white">Información importante</h3>
       <p className="mt-3 text-sm text-slate-400">Los cálculos fiscales son orientativos y requieren revisión profesional.</p>
-      <p className="mt-2 text-xs text-amber-300">Los datos descargados se generan según el período seleccionado y los filtros aplicados.</p>
+      <p className="mt-2 text-xs text-amber-300">Los datos se generan según el período y filtro seleccionados.</p>
     </article>
   </div>; 
 }
