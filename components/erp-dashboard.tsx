@@ -106,7 +106,7 @@ export function ErpDashboard() {
       {section === 'inicio' && <Overview metrics={metrics} movements={movements} period={period} onCreate={openMovement} onDelete={deleteRecord} />}
       {section === 'ingresos' && <Movements title="Ingresos y facturas" movements={movements.filter(m => m.amount > 0)} onCreate={() => openMovement('income')} onEdit={(m) => { setEditingMovement(m); setModal('editMovement'); }} onDelete={deleteRecord} />}
       {section === 'gastos' && <Movements title="Gastos, proveedores y compras" movements={movements.filter(m => m.amount < 0)} onCreate={() => openMovement('expense')} onEdit={(m) => { setEditingMovement(m); setModal('editMovement'); }} onDelete={deleteRecord} />}
-      {section === 'socios' && <Partners partners={partners} profit={0} onCreate={() => { setEditingPartner(null); setModal('partner'); }} onEdit={(p) => { setEditingPartner(p); setModal('editPartner'); }} onDelete={deleteRecord} />}
+      {section === 'socios' && <Partners partners={partners} profit={0} onCreate={() => { setEditingPartner(null); setModal('partner'); }} onEdit={(p) => { setEditingPartner(p); setModal('partner'); }} onEditPayment={(p) => { setEditingPartner(p); setModal('editPartner'); }} onDelete={deleteRecord} />}
       {section === 'proveedores' && <Suppliers suppliers={suppliers} onCreate={() => { setEditingSupplier(null); setModal('supplier'); }} onEdit={(s) => { setEditingSupplier(s); setModal('supplier'); }} onDelete={deleteRecord} />}
       {section === 'cuentas' && <Accounts metrics={metrics} movements={movements} onDelete={deleteRecord} />}
       {section === 'informes' && <Reports metrics={metrics} />}
@@ -201,7 +201,7 @@ function Movements({ title, movements, onCreate, onEdit, onDelete }: { title: st
   </article>;
 }
 
-function Partners({ partners, onCreate, onEdit, onDelete }: { partners: Partner[]; profit: number; onCreate: () => void; onEdit: (p: Partner) => void; onDelete: (path: string, label: string) => void }) { 
+function Partners({ partners, onCreate, onEdit, onEditPayment, onDelete }: { partners: Partner[]; profit: number; onCreate: () => void; onEdit: (p: Partner) => void; onEditPayment: (p: Partner) => void; onDelete: (path: string, label: string) => void }) { 
   const activeCount = partners.filter(p => p.status === 'Activo').length;
   const paidCount = partners.filter(p => p.paymentStatus === 'Pagado').length;
   return <div className="space-y-5">
@@ -215,11 +215,12 @@ function Partners({ partners, onCreate, onEdit, onDelete }: { partners: Partner[
         <p className="mt-2 text-2xl font-bold text-emerald-400">{paidCount} / {activeCount}</p>
       </article>
     </div>
-    <SociosList title="Directorio de socios" partners={partners} onCreate={onCreate} onEdit={onEdit} onDelete={onDelete} />
+    <SociosList title="Directorio de socios" partners={partners} onCreate={onCreate} onEdit={onEdit} onEditPayment={onEditPayment} onDelete={onDelete} />
   </div>; 
 }
+}
 
-function SociosList({ title, partners, onCreate, onEdit, onDelete }: { title: string; partners: Partner[]; onCreate: () => void; onEdit: (p: Partner) => void; onDelete: (path: string, label: string) => void }) { 
+function SociosList({ title, partners, onCreate, onEdit, onEditPayment, onDelete }: { title: string; partners: Partner[]; onCreate: () => void; onEdit: (p: Partner) => void; onEditPayment: (p: Partner) => void; onDelete: (path: string, label: string) => void }) { 
   return <article className="panel overflow-hidden rounded-2xl">
     <div className="flex items-center justify-between border-b border-slate-800 p-5">
       <div>
@@ -245,7 +246,7 @@ function SociosList({ title, partners, onCreate, onEdit, onDelete }: { title: st
             <td className="p-4 text-slate-400">{p.phone || '—'}</td>
             <td className="p-4 text-slate-400">{p.email || '—'}</td>
             <td className="p-4">
-              <button onClick={() => onEdit(p)} className={`rounded-full px-2 py-1 text-xs font-bold cursor-pointer transition ${p.paymentStatus === 'Pagado' ? 'bg-emerald-500/15 text-emerald-300 hover:bg-emerald-500/30' : 'bg-amber-500/15 text-amber-300 hover:bg-amber-500/30'}`}>
+              <button onClick={() => onEditPayment(p)} className={`rounded-full px-2 py-1 text-xs font-bold cursor-pointer transition ${p.paymentStatus === 'Pagado' ? 'bg-emerald-500/15 text-emerald-300 hover:bg-emerald-500/30' : 'bg-amber-500/15 text-amber-300 hover:bg-amber-500/30'}`}>
                 {p.paymentStatus || 'Pendiente'}
               </button>
             </td>
