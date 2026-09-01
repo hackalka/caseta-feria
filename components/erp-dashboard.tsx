@@ -143,7 +143,6 @@ function Overview({ metrics, movements, period, onCreate, onDelete }: { metrics:
         <h3 className="font-bold text-white">Alertas</h3>
         <div className="mt-4 space-y-3">
           <p className="rounded-xl border border-amber-500/20 bg-amber-500/10 p-3 text-sm text-amber-100">{euro(metrics.receivable)} pendiente de cobro.</p>
-          <p className="rounded-xl border border-sky-500/20 bg-sky-500/10 p-3 text-sm text-sky-100">Los datos se guardan en Firebase.</p>
         </div>
       </article>
     </div>
@@ -323,10 +322,10 @@ function Reports({ metrics, movements, period }: { metrics: Metrics; movements: 
   const filteredMovements = filter === 'todos' ? movements : filter === 'ingresos' ? movements.filter(m => m.amount > 0) : movements.filter(m => m.amount < 0);
   
   const exportToCSV = () => {
+    if (filteredMovements.length === 0) { alert('No hay datos para exportar'); return; }
     const headers = ['Fecha', 'Concepto', 'Contrapartida', 'Categoría', 'Importe', 'Estado'];
     const rows = filteredMovements.map(m => [m.date, m.concept, m.counterparty, m.category, m.amount.toFixed(2), m.status]);
     const csv = [headers, ...rows].map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')).join('\n');
-    
     const element = document.createElement('a');
     element.setAttribute('href', `data:text/csv;charset=utf-8,${encodeURIComponent(csv)}`);
     element.setAttribute('download', `informe-${filter}-${new Date().toISOString().slice(0, 10)}.csv`);
@@ -337,47 +336,53 @@ function Reports({ metrics, movements, period }: { metrics: Metrics; movements: 
   };
   
   const printReport = () => {
+    if (filteredMovements.length === 0) { alert('No hay datos para imprimir'); return; }
     const printWindow = window.open('', '', 'width=800,height=600');
     if (!printWindow) return;
-    
     const filterLabel = filter === 'todos' ? 'Movimientos' : filter === 'ingresos' ? 'Ingresos' : 'Gastos';
     const html = `<!DOCTYPE html><html><head><title>Informe - Los Manolos</title><style>body { font-family: Arial, sans-serif; margin: 20px; } h1 { text-align: center; } table { width: 100%; border-collapse: collapse; margin-top: 20px; } th, td { border: 1px solid #000; padding: 8px; text-align: left; } th { background-color: #f0f0f0; font-weight: bold; } .summary { margin: 20px 0; } .total { font-weight: bold; background-color: #f0f0f0; }</style></head><body><h1>Informe Financiero - Los Manolos</h1><p>Período: ${period}</p><p>Fecha: ${new Date().toLocaleDateString('es-ES')}</p><div class="summary"><h3>Resumen</h3><p>Ingresos: €${metrics.collected.toFixed(2)}</p><p>Gastos: €${metrics.paid.toFixed(2)}</p><p>Resultado: €${metrics.profit.toFixed(2)}</p></div><h3>Detalle de ${filterLabel}</h3><table><thead><tr><th>Fecha</th><th>Concepto</th><th>Contrapartida</th><th>Categoría</th><th>Importe</th><th>Estado</th></tr></thead><tbody>${filteredMovements.map(m => `<tr><td>${m.date}</td><td>${m.concept}</td><td>${m.counterparty}</td><td>${m.category}</td><td style="text-align: right;">€${m.amount.toFixed(2)}</td><td>${m.status}</td></tr>`).join('')}<tr class="total"><td colspan="4"></td><td style="text-align: right;">€${filteredMovements.reduce((sum, m) => sum + m.amount, 0).toFixed(2)}</td><td></td></tr></tbody></table></body></html>`;
-    
     printWindow.document.write(html);
     printWindow.document.close();
     printWindow.print();
   };
   
   return <div className="space-y-6">
-    <div className="grid gap-4 md:grid-cols-2">
-      <article className="panel rounded-2xl p-6">
-        <h3 className="font-bold text-white">Cuenta de resultados</h3>
-        <dl className="mt-5 space-y-3 text-sm">
-          <Row label="Ingresos" value={metrics.collected} tone="text-emerald-400" />
-          <Row label="Gastos" value={metrics.paid} tone="text-rose-400" />
-          <Row label="Resultado" value={metrics.profit} tone="text-amber-300" strong />
-        </dl>
-      </article>
-      <article className="panel rounded-2xl p-6">
-        <h3 className="font-bold text-white">Exportar informe</h3>
-        <div className="mt-4 space-y-3">
-          <div className="grid grid-cols-3 gap-2">
-            <button onClick={() => setFilter('todos')} className={`rounded-lg px-3 py-2 text-sm font-bold transition ${filter === 'todos' ? 'bg-amber-500 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'}`}>Todos</button>
-            <button onClick={() => setFilter('ingresos')} className={`rounded-lg px-3 py-2 text-sm font-bold transition ${filter === 'ingresos' ? 'bg-emerald-500 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'}`}>Ingresos</button>
-            <button onClick={() => setFilter('gastos')} className={`rounded-lg px-3 py-2 text-sm font-bold transition ${filter === 'gastos' ? 'bg-rose-500 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'}`}>Gastos</button>
-          </div>
-          <div className="mt-4 flex gap-2">
-            <button onClick={exportToCSV} className="flex-1 rounded-lg bg-emerald-500 px-3 py-2 text-sm font-bold text-white hover:bg-emerald-600 transition">Descargar CSV</button>
-            <button onClick={printReport} className="flex-1 rounded-lg bg-sky-500 px-3 py-2 text-sm font-bold text-white hover:bg-sky-600 transition">Imprimir</button>
+    <article className="panel rounded-2xl p-6">
+      <h3 className="font-bold text-white mb-6">Generador de Informes</h3>
+      <div className="grid gap-6 md:grid-cols-2">
+        <div>
+          <p className="text-sm font-bold text-slate-300 mb-3">Cuenta de resultados</p>
+          <dl className="space-y-2 text-sm">
+            <Row label="Ingresos" value={metrics.collected} tone="text-emerald-400" />
+            <Row label="Gastos" value={metrics.paid} tone="text-rose-400" />
+            <Row label="Resultado" value={metrics.profit} tone="text-amber-300" strong />
+          </dl>
+        </div>
+        <div>
+          <p className="text-sm font-bold text-slate-300 mb-3">Seleccionar datos</p>
+          <div className="space-y-2">
+            <div className="grid grid-cols-3 gap-2">
+              <button onClick={() => setFilter('todos')} className={`rounded-lg px-3 py-2 text-xs font-bold transition ${filter === 'todos' ? 'bg-amber-500 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'}`}>Todos</button>
+              <button onClick={() => setFilter('ingresos')} className={`rounded-lg px-3 py-2 text-xs font-bold transition ${filter === 'ingresos' ? 'bg-emerald-500 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'}`}>Ingresos</button>
+              <button onClick={() => setFilter('gastos')} className={`rounded-lg px-3 py-2 text-xs font-bold transition ${filter === 'gastos' ? 'bg-rose-500 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'}`}>Gastos</button>
+            </div>
+            <p className="text-xs text-slate-400 mt-2">{filteredMovements.length} registros</p>
           </div>
         </div>
-      </article>
-    </div>
-    <article className="panel rounded-2xl p-6">
-      <h3 className="font-bold text-white">Información importante</h3>
-      <p className="mt-3 text-sm text-slate-400">Los cálculos fiscales son orientativos y requieren revisión profesional.</p>
-      <p className="mt-2 text-xs text-amber-300">Los datos se generan según el período y filtro seleccionados.</p>
+      </div>
     </article>
+    <div className="grid gap-4 md:grid-cols-2">
+      <button onClick={exportToCSV} className="panel rounded-2xl p-6 text-center hover:bg-slate-800 transition cursor-pointer">
+        <p className="text-2xl mb-2">📥</p>
+        <p className="font-bold text-white">Descargar CSV</p>
+        <p className="text-xs text-slate-400 mt-1">Exportar datos en formato Excel</p>
+      </button>
+      <button onClick={printReport} className="panel rounded-2xl p-6 text-center hover:bg-slate-800 transition cursor-pointer">
+        <p className="text-2xl mb-2">🖨️</p>
+        <p className="font-bold text-white">Imprimir</p>
+        <p className="text-xs text-slate-400 mt-1">Ver e imprimir documento formateado</p>
+      </button>
+    </div>
   </div>; 
 }
 
