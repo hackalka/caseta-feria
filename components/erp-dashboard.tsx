@@ -190,7 +190,8 @@ function Movements({ title, movements, onCreate, onEdit, onDelete }: { title: st
               </button>
             </td>
             <td className={`p-4 text-right font-bold ${m.amount >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>{m.amount >= 0 ? '+' : '−'}{euro(Math.abs(m.amount))}</td>
-            <td className="p-4 text-right">
+            <td className="p-4 text-right space-x-2">
+              <button onClick={() => onEdit?.(m)} className="rounded-lg px-2 py-1 text-xs font-bold text-amber-300 hover:bg-amber-500/10">Editar</button>
               <button onClick={() => onDelete(`erp/transactions/${m.id}`, 'este movimiento')} className="rounded-lg px-2 py-1 text-xs font-bold text-rose-300 hover:bg-rose-500/10">Eliminar</button>
             </td>
           </tr>) : <tr><td colSpan={6} className="p-8 text-center text-slate-500">No hay movimientos todavía.</td></tr>}
@@ -392,21 +393,50 @@ function MovementModal({ kind, onClose, onSaved, onError }: { kind: 'income' | '
 }
 
 function EditMovementModal({ movement, onClose, onSaved, onError }: { movement: Movement; onClose: () => void; onSaved: () => void; onError: () => void }) {
+  const [concept, setConcept] = useState(movement.concept);
+  const [counterparty, setCounterparty] = useState(movement.counterparty);
+  const [amount, setAmount] = useState(Math.abs(movement.amount).toString());
+  const [category, setCategory] = useState(movement.category);
   const [status, setStatus] = useState<Status>(movement.status);
+  const [date, setDate] = useState(movement.date);
   
   const save = (event: FormEvent) => {
     event.preventDefault();
-    void update(ref(database, `erp/transactions/${movement.id}`), { status }).then(onSaved).catch(onError);
+    const value = Number(amount.replace(',', '.'));
+    if (!concept.trim() || !Number.isFinite(value) || value <= 0) return;
+    const updates = {
+      concept,
+      counterparty: counterparty || 'Sin asignar',
+      category,
+      amount: movement.amount < 0 ? -value : value,
+      status,
+      date
+    };
+    void update(ref(database, `erp/transactions/${movement.id}`), updates).then(onSaved).catch(onError);
   };
   
   return <Modal title="Editar movimiento" onClose={onClose}>
     <form onSubmit={save} className="space-y-4">
-      <div className="bg-slate-800 rounded-xl p-4 space-y-2">
-        <div><p className="text-xs text-slate-400">Concepto</p><p className="font-bold text-white">{movement.concept}</p></div>
-        <div><p className="text-xs text-slate-400">Cantidad</p><p className="font-bold text-white">{euro(movement.amount)}</p></div>
-        <div><p className="text-xs text-slate-400">Fecha</p><p className="font-bold text-white">{new Date(`${movement.date}T12:00:00`).toLocaleDateString('es-ES')}</p></div>
+      <Field label="Concepto">
+        <input required value={concept} onChange={e => setConcept(e.target.value)} className="input" />
+      </Field>
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Field label={movement.amount > 0 ? 'Cliente / origen' : 'Proveedor'}>
+          <input value={counterparty} onChange={e => setCounterparty(e.target.value)} className="input" />
+        </Field>
+        <Field label="Importe total (€)">
+          <input required value={amount} onChange={e => setAmount(e.target.value)} inputMode="decimal" className="input" />
+        </Field>
       </div>
-      <Field label="Cambiar estado">
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Field label="Categoría">
+          <input value={category} onChange={e => setCategory(e.target.value)} className="input" />
+        </Field>
+        <Field label="Fecha">
+          <input required value={date} onChange={e => setDate(e.target.value)} type="date" className="input" />
+        </Field>
+      </div>
+      <Field label="Estado">
         <select value={status} onChange={e => setStatus(e.target.value as Status)} className="input">
           <option value="Pendiente">Pendiente</option>
           <option value="Cobrado">Cobrado</option>
