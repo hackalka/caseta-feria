@@ -109,7 +109,7 @@ export function ErpDashboard() {
       {section === 'socios' && <Partners partners={partners} profit={0} onCreate={() => { setEditingPartner(null); setModal('partner'); }} onEdit={(p) => { setEditingPartner(p); setModal('partner'); }} onEditPayment={(p) => { setEditingPartner(p); setModal('editPartner'); }} onDelete={deleteRecord} />}
       {section === 'proveedores' && <Suppliers suppliers={suppliers} onCreate={() => { setEditingSupplier(null); setModal('supplier'); }} onEdit={(s) => { setEditingSupplier(s); setModal('supplier'); }} onDelete={deleteRecord} />}
       {section === 'cuentas' && <Accounts metrics={metrics} movements={movements} onDelete={deleteRecord} />}
-      {section === 'informes' && <Reports metrics={metrics} />}
+      {section === 'informes' && <Reports metrics={metrics} movements={movements} period={period} />}
     </section>
     
     {modal === 'movement' && <MovementModal kind={kind} onClose={() => setModal(null)} onSaved={() => setModal(null)} onError={() => setSyncStatus('error')} />}
@@ -317,20 +317,137 @@ function Account({ name, value, type }: { name: string; value: number; type: str
   </article>; 
 }
 
-function Reports({ metrics }: { metrics: Metrics }) { 
-  return <div className="grid gap-4 md:grid-cols-2">
+function Reports({ metrics, movements, period }: { metrics: Metrics; movements: Movement[]; period: string }) { 
+  const [filter, setFilter] = useState<'todos' | 'ingresos' | 'gastos'>('todos');
+  
+  const filteredMovements = filter === 'todos' ? movements : filter === 'ingresos' ? movements.filter(m => m.amount > 0) : movements.filter(m => m.amount < 0);
+  
+  const exportToCSV = () => {
+    const headers = ['Fecha', 'Concepto', 'Contrapartida', 'Categoría', 'Importe', 'Estado'];
+    const rows = filteredMovements.map(m => [m.date, m.concept, m.counterparty, m.category, m.amount.toFixed(2), m.status]);
+    const csv = [headers, ...rows].map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')).join('\n');
+    
+    const element = document.createElement('a');
+    element.setAttribute('href', `data:text/csv;charset=utf-8,${encodeURIComponent(csv)}`);
+    element.setAttribute('download', `informe-${filter}-${new Date().toISOString().slice(0, 10)}.csv`);
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  };
+  
+  const printReport = () => {
+    const printWindow = window.open('', '', 'width=800,height=600');
+    if (!printWindow) return;
+    
+    const html = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Informe - Los Manolos</title>
+        <style>
+          body { font-family: Arial, sans-serif; margin: 20px; }
+          h1 { text-align: center; }
+          table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+          th, td { border: 1px solid #000; padding: 8px; text-align: left; }
+          th { background-color: #f0f0f0; font-weight: bold; }
+          .summary { margin: 20px 0; }
+          .total { font-weight: bold; background-color: #f0f0f0; }
+        </style>
+      </head>
+      <body>
+        <h1>Informe Financiero - Los Manolos</h1>
+        <p>Período: ${period}</p>
+        <p>Fecha de generación: ${new Date().toLocaleDateString('es-ES')}</p>
+        
+        <div class="summary">
+          <h3>Resumen</h3>
+          <p><strong>Ingresos totales:</strong> €${metrics.collected.toFixed(2)}</p>
+          <p><strong>Gastos totales:</strong> €${metrics.paid.toFixed(2)}</p>
+          <p><strong>Resultado:</strong> €${metrics.profit.toFixed(2)}</p>
+        </div>
+        
+        <h3>Detalle de ${filter === 'todos' ? 'Movimientos' : filter === 'ingresos' ? 'Ingresos' : 'Gastos'}</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Concepto</th>
+              <th>Contrapartida</th>
+              <th>Categoría</th>
+              <th>Importe</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${filteredMovements.map(m => `
+              <tr>
+                <td>${m.date}</td>
+                <td>${m.concept}</td>
+                <td>${m.counterparty}</td>
+                <td>${m.category}</td>
+                <td style="text-align: right;">€${m.amount.toFixed(2)}</td>
+                <td>${m.status}</td>
+              </tr>
+            `).join('')}
+            <tr class="total">
+              <td colspan="4"></td>
+              <td style="text-align: right;">€${filteredMovements.reduce((sum, m) => sum + m.amount, 0).toFixed(2)}</td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </body>
+      </html>
+    `;
+    
+    printWindow.document.write(html);
+    printWindow.document.close();
+    printWindow.print();
+  };
+  
+  return <div className="space-y-6">
+    <div className="grid gap-4 md:grid-cols-2">
+      <article className="panel rounded-2xl p-6">
+        <h3 className="font-bold text-white">Cuenta de resultados</h3>
+        <dl className="mt-5 space-y-3 text-sm">
+          <Row label="Ingresos" value={metrics.collected} tone="text-emerald-400" />
+          <Row label="Gastos" value={metrics.paid} tone="text-rose-400" />
+          <Row label="Resultado" value={metrics.profit} tone="text-amber-300" strong />
+        </dl>
+      </article>
+      <article className="panel rounded-2xl p-6">
+        <h3 className="font-bold text-white">Exportar informe</h3>
+        <div className="mt-4 space-y-3">
+          <div className="flex gap-2">
+            <label className="flex items-center gap-2 text-sm text-slate-300">
+              <input type="radio" name="filter" value="todos" checked={filter === 'todos'} onChange={(e) => setFilter(e.target.value as any)} className="cursor-pointer" />
+              Todos los movimientos
+            </label>
+          </div>
+          <div className="flex gap-2">
+            <label className="flex items-center gap-2 text-sm text-slate-300">
+              <input type="radio" name="filter" value="ingresos" checked={filter === 'ingresos'} onChange={(e) => setFilter(e.target.value as any)} className="cursor-pointer" />
+              Solo ingresos/cobros
+            </label>
+          </div>
+          <div className="flex gap-2">
+            <label className="flex items-center gap-2 text-sm text-slate-300">
+              <input type="radio" name="filter" value="gastos" checked={filter === 'gastos'} onChange={(e) => setFilter(e.target.value as any)} className="cursor-pointer" />
+              Solo gastos/pagos
+            </label>
+          </div>
+          <div className="mt-4 flex gap-2">
+            <button onClick={exportToCSV} className="flex-1 rounded-lg bg-emerald-500 px-3 py-2 text-sm font-bold text-white hover:bg-emerald-600 transition">📥 Descargar CSV</button>
+            <button onClick={printReport} className="flex-1 rounded-lg bg-sky-500 px-3 py-2 text-sm font-bold text-white hover:bg-sky-600 transition">🖨️ Imprimir</button>
+          </div>
+        </div>
+      </article>
+    </div>
     <article className="panel rounded-2xl p-6">
-      <h3 className="font-bold text-white">Cuenta de resultados</h3>
-      <dl className="mt-5 space-y-3 text-sm">
-        <Row label="Ingresos" value={metrics.collected} tone="text-emerald-400" />
-        <Row label="Gastos" value={metrics.paid} tone="text-rose-400" />
-        <Row label="Resultado" value={metrics.profit} tone="text-amber-300" strong />
-      </dl>
-    </article>
-    <article className="panel rounded-2xl p-6">
-      <h3 className="font-bold text-white">Informes</h3>
-      <p className="mt-2 text-sm text-slate-400">Los filtros y exportaciones se añadirán sobre los movimientos de Firebase.</p>
-      <p className="mt-5 text-xs text-amber-300">Los cálculos fiscales son orientativos y requieren revisión profesional.</p>
+      <h3 className="font-bold text-white">Información importante</h3>
+      <p className="mt-3 text-sm text-slate-400">Los cálculos fiscales son orientativos y requieren revisión profesional.</p>
+      <p className="mt-2 text-xs text-amber-300">Los datos descargados se generan según el período seleccionado y los filtros aplicados.</p>
     </article>
   </div>; 
 }
