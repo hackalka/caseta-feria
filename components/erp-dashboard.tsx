@@ -448,7 +448,7 @@ function MovementModal({ kind, onClose, onSaved, onError }: { kind: 'income' | '
         </Field>
         <Field label="Estado">
           <select value={status} onChange={e => setStatus(e.target.value as Status)} className="input">
-            <option>Cobrado</option><option>Pagado</option><option>Pendiente</option>
+            {kind === 'income' ? <><option>Cobrado</option><option>Pendiente</option></> : <><option>Pagado</option><option>Pendiente</option></>}
           </select>
         </Field>
       </div>
@@ -462,7 +462,7 @@ function EditMovementModal({ movement, onClose, onSaved, onError }: { movement: 
   const [counterparty, setCounterparty] = useState(movement.counterparty);
   const [amount, setAmount] = useState(Math.abs(movement.amount).toString());
   const [category, setCategory] = useState(movement.category);
-  const [status, setStatus] = useState<Status>(movement.status);
+  const [status, setStatus] = useState<Status>(movement.status === 'Pendiente' ? 'Pendiente' : movement.amount > 0 ? 'Cobrado' : 'Pagado');
   const [date, setDate] = useState(movement.date);
   
   const save = (event: FormEvent) => {
@@ -503,9 +503,7 @@ function EditMovementModal({ movement, onClose, onSaved, onError }: { movement: 
       </div>
       <Field label="Estado">
         <select value={status} onChange={e => setStatus(e.target.value as Status)} className="input">
-          <option value="Pendiente">Pendiente</option>
-          <option value="Cobrado">Cobrado</option>
-          <option value="Pagado">Pagado</option>
+          {movement.amount > 0 ? <><option value="Cobrado">Cobrado</option><option value="Pendiente">Pendiente</option></> : <><option value="Pagado">Pagado</option><option value="Pendiente">Pendiente</option></>}
         </select>
       </Field>
       <Actions onClose={onClose} label="Guardar cambios" />
