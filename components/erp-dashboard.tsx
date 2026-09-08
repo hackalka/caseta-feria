@@ -13,6 +13,8 @@ type Section = 'inicio' | 'ingresos' | 'gastos' | 'socios' | 'cuentas' | 'provee
 type Metrics = { collected: number; paid: number; receivable: number; payable: number; balance: number; profit: number };
 
 const euro = (value: number) => new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(value);
+const ACCESS_USER = 'casetaferia2026';
+const ACCESS_PASSWORD = 'Adminlosmanolos2026';
 const navigation: { id: Section; label: string; icon: string }[] = [
   { id: 'inicio', label: 'Resumen', icon: '◈' }, 
   { id: 'ingresos', label: 'Ingresos', icon: '↗' },
@@ -35,6 +37,7 @@ export function ErpDashboard() {
   const [editingPartner, setEditingPartner] = useState<Partner | null>(null);
   const [editingSupplier, setEditingSupplier] = useState<Supplier | null>(null);
   const [syncStatus, setSyncStatus] = useState<'loading' | 'live' | 'error'>('loading');
+  const [authorized, setAuthorized] = useState(false);
 
   useEffect(() => {
     const stopTransactions = onValue(ref(database, 'erp/transactions'), snapshot => {
@@ -64,12 +67,54 @@ export function ErpDashboard() {
     return { collected, paid, receivable, payable, balance: collected - paid, profit: collected - paid };
   }, [movements]);
 
+  const requestAuthorization = () => {
+    if (authorized) return true;
+    const username = window.prompt('Usuario de administración:');
+    if (username === null) return false;
+    const password = window.prompt('Contraseña de administración:');
+    if (username === ACCESS_USER && password === ACCESS_PASSWORD) {
+      setAuthorized(true);
+      return true;
+    }
+    window.alert('Usuario o contraseña incorrectos. No tienes permiso para modificar datos.');
+    return false;
+  };
+
   const deleteRecord = (path: string, label: string) => {
+    if (!requestAuthorization()) return;
     if (!window.confirm(`¿Eliminar ${label}? Esta acción no se puede deshacer.`)) return;
     void remove(ref(database, path)).catch(() => setSyncStatus('error'));
   };
   
-  const openMovement = (newKind: 'income' | 'expense') => { setKind(newKind); setModal('movement'); };
+  const openMovement = (newKind: 'income' | 'expense') => {
+    if (!requestAuthorization()) return;
+    setKind(newKind);
+    setModal('movement');
+  };
+
+  const editMovement = (movement: Movement) => {
+    if (!requestAuthorization()) return;
+    setEditingMovement(movement);
+    setModal('editMovement');
+  };
+
+  const openPartner = (partner: Partner | null) => {
+    if (!requestAuthorization()) return;
+    setEditingPartner(partner);
+    setModal('partner');
+  };
+
+  const editPartnerPayment = (partner: Partner) => {
+    if (!requestAuthorization()) return;
+    setEditingPartner(partner);
+    setModal('editPartner');
+  };
+
+  const openSupplier = (supplier: Supplier | null) => {
+    if (!requestAuthorization()) return;
+    setEditingSupplier(supplier);
+    setModal('supplier');
+  };
 
   return <main className="min-h-screen bg-slate-950 text-slate-100 lg:flex">
     <aside className="border-b border-slate-800 bg-[#13090d] lg:min-h-screen lg:w-64 lg:border-b-0 lg:border-r">
@@ -100,15 +145,15 @@ export function ErpDashboard() {
           <select value={period} onChange={e => setPeriod(e.target.value)} className="rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-sm">
             <option>Este mes</option><option>Mes anterior</option><option>Trimestre</option><option>Año</option>
           </select>
-          {section === 'socios' ? <button onClick={() => { setEditingPartner(null); setModal('partner'); }} className="rounded-xl bg-amber-400 px-4 py-2 text-sm font-bold text-slate-950">+ Añadir socio</button> : section === 'proveedores' ? <button onClick={() => { setEditingSupplier(null); setModal('supplier'); }} className="rounded-xl bg-amber-400 px-4 py-2 text-sm font-bold text-slate-950">+ Añadir proveedor</button> : <button onClick={() => openMovement(section === 'gastos' ? 'expense' : 'income')} className="rounded-xl bg-amber-400 px-4 py-2 text-sm font-bold text-slate-950">+ Registrar movimiento</button>}
+          {section === 'socios' ? <button onClick={() => openPartner(null)} className="rounded-xl bg-amber-400 px-4 py-2 text-sm font-bold text-slate-950">+ Añadir socio</button> : section === 'proveedores' ? <button onClick={() => openSupplier(null)} className="rounded-xl bg-amber-400 px-4 py-2 text-sm font-bold text-slate-950">+ Añadir proveedor</button> : <button onClick={() => openMovement(section === 'gastos' ? 'expense' : 'income')} className="rounded-xl bg-amber-400 px-4 py-2 text-sm font-bold text-slate-950">+ Registrar movimiento</button>}
         </div>
       </header>
       
       {section === 'inicio' && <Overview metrics={metrics} movements={movements} period={period} onCreate={openMovement} onDelete={deleteRecord} />}
-      {section === 'ingresos' && <Movements title="Ingresos y facturas" movements={movements.filter(m => m.amount > 0)} onCreate={() => openMovement('income')} onEdit={(m) => { setEditingMovement(m); setModal('editMovement'); }} onDelete={deleteRecord} />}
-      {section === 'gastos' && <Movements title="Gastos, proveedores y compras" movements={movements.filter(m => m.amount < 0)} onCreate={() => openMovement('expense')} onEdit={(m) => { setEditingMovement(m); setModal('editMovement'); }} onDelete={deleteRecord} />}
-      {section === 'socios' && <Partners partners={partners} profit={0} onCreate={() => { setEditingPartner(null); setModal('partner'); }} onEdit={(p) => { setEditingPartner(p); setModal('partner'); }} onEditPayment={(p) => { setEditingPartner(p); setModal('editPartner'); }} onDelete={deleteRecord} />}
-      {section === 'proveedores' && <Suppliers suppliers={suppliers} onCreate={() => { setEditingSupplier(null); setModal('supplier'); }} onEdit={(s) => { setEditingSupplier(s); setModal('supplier'); }} onDelete={deleteRecord} />}
+      {section === 'ingresos' && <Movements title="Ingresos y facturas" movements={movements.filter(m => m.amount > 0)} onCreate={() => openMovement('income')} onEdit={editMovement} onDelete={deleteRecord} />}
+      {section === 'gastos' && <Movements title="Gastos, proveedores y compras" movements={movements.filter(m => m.amount < 0)} onCreate={() => openMovement('expense')} onEdit={editMovement} onDelete={deleteRecord} />}
+      {section === 'socios' && <Partners partners={partners} profit={0} onCreate={() => openPartner(null)} onEdit={openPartner} onEditPayment={editPartnerPayment} onDelete={deleteRecord} />}
+      {section === 'proveedores' && <Suppliers suppliers={suppliers} onCreate={() => openSupplier(null)} onEdit={openSupplier} onDelete={deleteRecord} />}
       {section === 'cuentas' && <Accounts metrics={metrics} movements={movements} onDelete={deleteRecord} />}
       {section === 'informes' && <Reports metrics={metrics} movements={movements} period={period} />}
     </section>
@@ -185,7 +230,7 @@ function Movements({ title, movements, onCreate, onEdit, onDelete }: { title: st
             <td className="p-4 font-medium text-white">{m.concept}<span className="mt-1 block text-xs text-slate-500">{m.category}</span></td>
             <td className="p-4 text-slate-300">{m.counterparty}</td>
             <td className="p-4">
-              <button onClick={() => onEdit?.(m)} className={`rounded-full px-2 py-1 text-xs font-bold cursor-pointer transition ${m.status === 'Pendiente' ? 'bg-amber-500/15 text-amber-300 hover:bg-amber-500/30' : 'bg-emerald-500/15 text-emerald-300 hover:bg-emerald-500/30'}`}>
+              <button onClick={() => onEdit?.(m)} className={`rounded-full px-2 py-1 text-xs font-bold cursor-pointer transition ${m.status === 'Pendiente' ? 'bg-rose-500/15 text-rose-300 hover:bg-rose-500/30' : m.status === 'Cobrado' ? 'bg-emerald-500/15 text-emerald-300 hover:bg-emerald-500/30' : 'bg-sky-500/15 text-sky-300 hover:bg-sky-500/30'}`}>
                 {m.status}
               </button>
             </td>
@@ -245,7 +290,7 @@ function SociosList({ title, partners, onCreate, onEdit, onEditPayment, onDelete
             <td className="p-4 text-slate-400">{p.phone || '—'}</td>
             <td className="p-4 text-slate-400">{p.email || '—'}</td>
             <td className="p-4">
-              <button onClick={() => onEditPayment(p)} className={`rounded-full px-2 py-1 text-xs font-bold cursor-pointer transition ${p.paymentStatus === 'Pagado' ? 'bg-emerald-500/15 text-emerald-300 hover:bg-emerald-500/30' : 'bg-amber-500/15 text-amber-300 hover:bg-amber-500/30'}`}>
+              <button onClick={() => onEditPayment(p)} className={`rounded-full px-2 py-1 text-xs font-bold cursor-pointer transition ${p.paymentStatus === 'Pagado' ? 'bg-sky-500/15 text-sky-300 hover:bg-sky-500/30' : 'bg-rose-500/15 text-rose-300 hover:bg-rose-500/30'}`}>
                 {p.paymentStatus || 'Pendiente'}
               </button>
             </td>
