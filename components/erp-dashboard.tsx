@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { onValue, push, ref, remove, set, update } from 'firebase/database';
+import * as XLSX from 'xlsx';
 import { database } from '@/lib/firebase';
 
 type Status = 'Cobrado' | 'Pagado' | 'Pendiente';
@@ -217,7 +218,6 @@ function Partners({ partners, onCreate, onEdit, onEditPayment, onDelete }: { par
     <SociosList title="Directorio de socios" partners={partners} onCreate={onCreate} onEdit={onEdit} onEditPayment={onEditPayment} onDelete={onDelete} />
   </div>; 
 }
-}
 
 function SociosList({ title, partners, onCreate, onEdit, onEditPayment, onDelete }: { title: string; partners: Partner[]; onCreate: () => void; onEdit: (p: Partner) => void; onEditPayment: (p: Partner) => void; onDelete: (path: string, label: string) => void }) { 
   return <article className="panel overflow-hidden rounded-2xl">
@@ -316,31 +316,44 @@ function Account({ name, value, type }: { name: string; value: number; type: str
   </article>; 
 }
 
-function Reports({ metrics, movements, period }: { metrics: Metrics; movements: Movement[]; period: string }) { 
+function Reports({ metrics, movements, period }: { metrics: Metrics; movements: Movement[]; period: string }) {
   const [filter, setFilter] = useState<'todos' | 'ingresos' | 'gastos'>('todos');
-  
   const filteredMovements = filter === 'todos' ? movements : filter === 'ingresos' ? movements.filter(m => m.amount > 0) : movements.filter(m => m.amount < 0);
-  
-  const exportToCSV = () => {
+
+  const exportToExcel = () => {
     if (filteredMovements.length === 0) { alert('No hay datos para exportar'); return; }
-    const headers = ['Fecha', 'Concepto', 'Contrapartida', 'Categoría', 'Importe', 'Estado'];
-    const rows = filteredMovements.map(m => [m.date, m.concept, m.counterparty, m.category, m.amount.toFixed(2), m.status]);
-    const csv = [headers, ...rows].map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')).join('\n');
-    const element = document.createElement('a');
-    element.setAttribute('href', `data:text/csv;charset=utf-8,${encodeURIComponent(csv)}`);
-    element.setAttribute('download', `informe-${filter}-${new Date().toISOString().slice(0, 10)}.csv`);
-    element.style.display = 'none';
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
+    const rows = filteredMovements.map(m => ({ Fecha: m.date, Concepto: m.concept, Tercero: m.counterparty, Categoría: m.category, Importe: m.amount, Estado: m.status }));
+    const incomeRows = rows.filter((_, index) => filteredMovements[index].amount > 0);
+    const expenseRows = rows.filter((_, index) => filteredMovements[index].amount < 0).map(row => ({ ...row, Importe: Math.abs(row.Importe) }));
+    const summaryRows = [
+      { Concepto: 'Período', Valor: period },
+      { Concepto: 'Ingresos cobrados', Valor: metrics.collected },
+      { Concepto: 'Gastos pagados', Valor: metrics.paid },
+      { Concepto: 'Por cobrar', Valor: metrics.receivable },
+      { Concepto: 'Por pagar', Valor: metrics.payable },
+      { Concepto: 'Resultado', Valor: metrics.profit },
+      { Concepto: 'Registros exportados', Valor: filteredMovements.length }
+    ];
+    const workbook = XLSX.utils.book_new();
+    const addSheet = (name: string, data: object[]) => {
+      const sheet = XLSX.utils.json_to_sheet(data);
+      sheet['!cols'] = [{ wch: 14 }, { wch: 28 }, { wch: 24 }, { wch: 22 }, { wch: 14 }, { wch: 14 }];
+      XLSX.utils.book_append_sheet(workbook, sheet, name);
+    };
+    addSheet('Resumen', summaryRows);
+    addSheet('Gastos', expenseRows);
+    addSheet('Ingresos y cobros', incomeRows);
+    addSheet('Facturas', incomeRows);
+    XLSX.writeFile(workbook, `informe-${filter}-${new Date().toISOString().slice(0, 10)}.xlsx`);
   };
-  
+
   const printReport = () => {
     if (filteredMovements.length === 0) { alert('No hay datos para imprimir'); return; }
     const printWindow = window.open('', '', 'width=800,height=600');
     if (!printWindow) return;
     const filterLabel = filter === 'todos' ? 'Movimientos' : filter === 'ingresos' ? 'Ingresos' : 'Gastos';
-    const html = `<!DOCTYPE html><html><head><title>Informe - Los Manolos</title><style>body { font-family: Arial, sans-serif; margin: 20px; } h1 { text-align: center; } table { width: 100%; border-collapse: collapse; margin-top: 20px; } th, td { border: 1px solid #000; padding: 8px; text-align: left; } th { background-color: #f0f0f0; font-weight: bold; } .summary { margin: 20px 0; } .total { font-weight: bold; background-color: #f0f0f0; }</style></head><body><h1>Informe Financiero - Los Manolos</h1><p>Período: ${period}</p><p>Fecha: ${new Date().toLocaleDateString('es-ES')}</p><div class="summary"><h3>Resumen</h3><p>Ingresos: €${metrics.collected.toFixed(2)}</p><p>Gastos: €${metrics.paid.toFixed(2)}</p><p>Resultado: €${metrics.profit.toFixed(2)}</p></div><h3>Detalle de ${filterLabel}</h3><table><thead><tr><th>Fecha</th><th>Concepto</th><th>Contrapartida</th><th>Categoría</th><th>Importe</th><th>Estado</th></tr></thead><tbody>${filteredMovements.map(m => `<tr><td>${m.date}</td><td>${m.concept}</td><td>${m.counterparty}</td><td>${m.category}</td><td style="text-align: right;">€${m.amount.toFixed(2)}</td><td>${m.status}</td></tr>`).join('')}<tr class="total"><td colspan="4"></td><td style="text-align: right;">€${filteredMovements.reduce((sum, m) => sum + m.amount, 0).toFixed(2)}</td><td></td></tr></tbody></table></body></html>`;
+    const escapeHtml = (value: string) => value.replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character] || character));
+    const html = `<!DOCTYPE html><html><head><title>Informe - Los Manolos</title><style>body { font-family: Arial, sans-serif; margin: 20px; color: #111; } h1 { text-align: center; } table { width: 100%; border-collapse: collapse; margin-top: 20px; } th, td { border: 1px solid #000; padding: 8px; text-align: left; } th { background-color: #f0f0f0; font-weight: bold; } .summary { margin: 20px 0; } .total { font-weight: bold; background-color: #f0f0f0; } @media print { body { margin: 0; } }</style></head><body><h1>Informe Financiero - Los Manolos</h1><p>Período: ${escapeHtml(period)}</p><p>Fecha: ${new Date().toLocaleDateString('es-ES')}</p><div class="summary"><h3>Resumen</h3><p>Ingresos cobrados: ${euro(metrics.collected)}</p><p>Gastos pagados: ${euro(metrics.paid)}</p><p>Resultado: ${euro(metrics.profit)}</p><p>Por cobrar: ${euro(metrics.receivable)} · Por pagar: ${euro(metrics.payable)}</p></div><h3>Detalle de ${filterLabel}</h3><table><thead><tr><th>Fecha</th><th>Concepto</th><th>Tercero</th><th>Categoría</th><th>Importe</th><th>Estado</th></tr></thead><tbody>${filteredMovements.map(m => `<tr><td>${escapeHtml(m.date)}</td><td>${escapeHtml(m.concept)}</td><td>${escapeHtml(m.counterparty)}</td><td>${escapeHtml(m.category)}</td><td style="text-align: right;">${euro(Math.abs(m.amount))}</td><td>${escapeHtml(m.status)}</td></tr>`).join('')}<tr class="total"><td colspan="4">Total del informe</td><td style="text-align: right;">${euro(filteredMovements.reduce((sum, m) => sum + m.amount, 0))}</td><td></td></tr></tbody></table></body></html>`;
     printWindow.document.write(html);
     printWindow.document.close();
     printWindow.print();
@@ -372,10 +385,10 @@ function Reports({ metrics, movements, period }: { metrics: Metrics; movements: 
       </div>
     </article>
     <div className="grid gap-4 md:grid-cols-2">
-      <button onClick={exportToCSV} className="panel rounded-2xl p-6 text-center hover:bg-slate-800 transition cursor-pointer">
+      <button onClick={exportToExcel} className="panel rounded-2xl p-6 text-center hover:bg-slate-800 transition cursor-pointer">
         <p className="text-2xl mb-2">📥</p>
-        <p className="font-bold text-white">Descargar CSV</p>
-        <p className="text-xs text-slate-400 mt-1">Exportar datos en formato Excel</p>
+        <p className="font-bold text-white">Exportar a Excel</p>
+        <p className="text-xs text-slate-400 mt-1">Resumen, gastos, cobros, ingresos y facturas</p>
       </button>
       <button onClick={printReport} className="panel rounded-2xl p-6 text-center hover:bg-slate-800 transition cursor-pointer">
         <p className="text-2xl mb-2">🖨️</p>
